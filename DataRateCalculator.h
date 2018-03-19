@@ -8,10 +8,10 @@
 
 /**
  * @brief	The DataRateCalculator calculates the rate with the given template arguments.
- * @param 	The CalculationDataType is the data type of the data that will be calculated.
- * @param	The RateDataType is the data type of the rate. Could be float for better
+ * @param 	CalculationDataType is the data type of the data that will be calculated.
+ * @param	RateDataType is the data type of the rate. Could be float for better
  *			precision.
- * @param	The RateCalculation is the class that will calculate the rate.
+ * @param	RateCalculation is the class that will calculate the rate.
  */
 template< typename CalculationDataType, typename RateDataType, typename RateCalculation >
 class DataRateCalculator
@@ -44,7 +44,6 @@ public:
 	/**
 	 * @brief DataRateCalculator
 	 * @param statisticPath
-	 * @param alphaValue
 	 */
 	DataRateCalculator( const std::string& statisticPath )
 		: _statisticPath( statisticPath )
