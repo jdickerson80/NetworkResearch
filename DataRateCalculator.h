@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <ctime>
+#include <cstdlib>
 #include "CurrentAndLastValues.h"
 
 /**
