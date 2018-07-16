@@ -1,11 +1,10 @@
 cmake_minimum_required( VERSION 2.8 )
 
 # Name the project
-project( TrafficControlTesting )
+project( WCEnabler )
 
 # Find all of the libraries needed to build project
-#find_package( Threads )
-#find_package( BlueZ )
+find_package( Threads )
 
 # Set the active build type
 #set( CMAKE_BUILD_TYPE Release )
@@ -25,5 +24,5 @@ file( GLOB_RECURSE Sources "*.c" "*.cpp" )
 add_executable( ${PROJECT_NAME} ${Headers} ${Sources} )
 
 # Setup all of the link libraries
-#target_link_libraries( ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries( ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} )
 #target_link_libraries( ${PROJECT_NAME} ${BLUEZ_LIBRARIES} )
