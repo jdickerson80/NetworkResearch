@@ -14,6 +14,7 @@
  *			precision.
  * @param	RateCalculation is the class that will calculate the rate.
  */
+
 template< typename CalculationDataType, typename RateDataType, typename RateCalculation >
 class DataRateCalculator
 {
