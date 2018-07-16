@@ -13,15 +13,16 @@
 #include <sstream>
 #include <iostream>
 #include <signal.h>
+#include <sstream>
 
-#include "ExponentialSmoothing.h"
 #include "DataRateCalculator.h"
+#include "ExponentialSmoothing.h"
+#include "FileControl.h"
 
 using namespace std;
 
-static const string ReceiveBytesPath( "/sys/class/net/wlp2s0/statistics/rx_bytes" );
-static const string SentBytesPath( "/sys/class/net/wlp2s0/statistics/tx_bytes" );
-static const string TCCommand( "tc -s -d class show dev wlp2s0" );
+static string TCCommand( "tc -s qdisc ls dev h1-eth0" );
+//static const string TCCommand( "tc -s -d class show dev enp0s31f6" );
 
 static bool isRunning = true;
 
@@ -34,10 +35,9 @@ static bool isRunning = true;
  */
 static void signalHandler( int signal );
 
-
 int main( int argc, char* argv[] )
 {
-	if( getuid() != 0 )
+    if ( getuid() != 0 )
 	{
 		printf("You must run this program as root. Exiting.\n");
 		exit( EXIT_FAILURE );
@@ -48,22 +48,30 @@ int main( int argc, char* argv[] )
 
 	unsigned int counter = 0;
 
-	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > receiveCalculator( ReceiveBytesPath );
-	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > sentCalculator( SentBytesPath );
+	string outputFile = FileControl::buildOutputFilePath( argv[ 1 ] );
+	std::ofstream outputStream;
 
-	system( TCCommand.c_str() );
+	printf("%s\n", argv[ 1 ] );
+
+	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > receiveCalculator( FileControl::buildReceivePath( argv[ 1 ] ) );
+	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > sentCalculator( FileControl::buildSendPath( argv[ 1 ] ) );
+
+//	system( TCCommand.c_str() );
 
 	setlocale( LC_ALL, "" );
 
-	while ( isRunning )
+    while ( isRunning )
 	{
-		receiveCalculator.calculateRate();
-		sentCalculator.calculateRate();
+//		receiveCalculator.calculateRate();
+//		sentCalculator.calculateRate();
 
 //		if ( counter % 10 == 0 )
 		{
-			printf("Rec. rate is:\t%'2.2f\tB/sec\n", receiveCalculator.rate() );
-//			printf("Send rate is:\t%'2.2f\tB/sec\n", sentCalculator.rate() );
+			outputStream.open( outputFile.c_str(), std::ofstream::out | std::ofstream::app );
+			outputStream << "Rec. rate is: " << receiveCalculator.calculateRate() << " B/sec\n";
+			outputStream << "Send rate is: " << sentCalculator.calculateRate() << " B/sec\n";
+			outputStream << "~~~~~~~~~~~~~~~~\n";
+			outputStream.close();
 		}
 
 		++counter;
