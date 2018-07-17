@@ -18,11 +18,10 @@
 #include "DataRateCalculator.h"
 #include "ExponentialSmoothing.h"
 #include "FileControl.h"
+#include "LoggingHandler.h"
+#include "TCControl.h"
 
 using namespace std;
-
-static string TCCommand( "tc -s qdisc ls dev h1-eth0" );
-//static const string TCCommand( "tc -s -d class show dev enp0s31f6" );
 
 static bool isRunning = true;
 
@@ -43,36 +42,44 @@ int main( int argc, char* argv[] )
 		exit( EXIT_FAILURE );
 	}
 
+	if ( argc < 2 )
+	{
+		printf("You must give the interface in the command line arguments. Exiting.\n");
+		exit( EXIT_FAILURE );
+	}
+
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
 
 	unsigned int counter = 0;
+	unsigned int bw = 2;
 
 	string outputFile = FileControl::buildOutputFilePath( argv[ 1 ] );
-	std::ofstream outputStream;
+	LoggingHandler bandwidthLogger( outputFile );
+	std::stringstream outputStream;
+	TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
 
-	printf("%s\n", argv[ 1 ] );
+	printf( "%s\n", argv[ 1 ] );
 
 	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > receiveCalculator( FileControl::buildReceivePath( argv[ 1 ] ) );
 	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > sentCalculator( FileControl::buildSendPath( argv[ 1 ] ) );
 
-//	system( TCCommand.c_str() );
-
 	setlocale( LC_ALL, "" );
 
-    while ( isRunning )
+	while ( isRunning )
 	{
-//		receiveCalculator.calculateRate();
-//		sentCalculator.calculateRate();
+//		if ( counter % 20 == 0 )
+//		{
+//			bw += 2;
+//			TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
+//			printf("set %d\n", bw );
+//		}
 
-//		if ( counter % 10 == 0 )
-		{
-			outputStream.open( outputFile.c_str(), std::ofstream::out | std::ofstream::app );
-			outputStream << "Rec. rate is: " << receiveCalculator.calculateRate() << " B/sec\n";
-			outputStream << "Send rate is: " << sentCalculator.calculateRate() << " B/sec\n";
-			outputStream << "~~~~~~~~~~~~~~~~\n";
-			outputStream.close();
-		}
+		outputStream << "Rec. rate is: " << receiveCalculator.calculateRate() << " B/sec\n";
+		outputStream << "Send rate is: " << sentCalculator.calculateRate() << " B/sec\n";
+		outputStream << "~~~~~~~~~~~~~~~~\n";
+
+		bandwidthLogger.log( outputStream.str() );
 
 		++counter;
 
