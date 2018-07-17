@@ -1,6 +1,6 @@
 #include "ExponentialSmoothing.h"
 
-static float Alpha = 0.25;
+//static float Alpha = 1.0;
 
 namespace Math {
 
@@ -29,7 +29,7 @@ float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeV
 	timeDelta = timeDelta <= 0 ? 1 : timeDelta;
 
 	// calculate the rate using the last rate
-	_rate = (float)( ( dataDelta / timeDelta ) ) * Alpha + ( 1 - Alpha ) * _rate;
+	_rate = (float)( ( dataDelta / timeDelta ) );// * Alpha + ( 1 - Alpha ) * _rate;
 
 	// bound the rate
 	_rate = _rate < 0 ? 0 : _rate;
