@@ -15,13 +15,16 @@ set( CMAKE_CXX_FLAGS "-Wall" )
 
 # Bring in the project headers
 include_directories( ${CMAKE_SOURCE_DIR}/* )
+include_directories( ../Common/ )
 
 # Add all of the files to the build
 file( GLOB_RECURSE Headers "*.h" )
 file( GLOB_RECURSE Sources "*.c" "*.cpp" )
+file( GLOB_RECURSE CommonHeaders ../Common/*.h )
+file( GLOB_RECURSE CommonSource ../Common/*.cpp )
 
 # Add the executable output
-add_executable( ${PROJECT_NAME} ${Headers} ${Sources} )
+add_executable( ${PROJECT_NAME} ${Headers} ${Sources} ${CommonSource} ${CommonHeaders} )
 
 # Setup all of the link libraries
 target_link_libraries( ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} )
