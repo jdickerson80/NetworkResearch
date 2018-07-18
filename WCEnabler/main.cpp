@@ -1,20 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <syslog.h>
-#include <fcntl.h>
-#include <dlfcn.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <string>
-#include <errno.h>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <signal.h>
 #include <sstream>
+#include <unistd.h>
 
+#include "BandwidthCommunicator.h"
 #include "DataRateCalculator.h"
 #include "ExponentialSmoothing.h"
 #include "FileControl.h"
@@ -66,6 +54,10 @@ int main( int argc, char* argv[] )
 
 	setlocale( LC_ALL, "" );
 
+	BandwidthCommunicator communicator( "10.0.0.1", string( argv[ 1 ] ) );
+
+
+
 	while ( isRunning )
 	{
 //		if ( counter % 20 == 0 )
@@ -81,11 +73,14 @@ int main( int argc, char* argv[] )
 
 		bandwidthLogger.log( outputStream.str() );
 
+		communicator.sendBandwidth( receiveCalculator.rate() );
+
 		++counter;
 
-		sleep( 1 );
+		usleep( 500000 );
 	}
 
+	communicator.setBandwidthThreadRunning( false );
 	exit( EXIT_SUCCESS );
 }
 

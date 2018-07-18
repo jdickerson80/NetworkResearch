@@ -1,21 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <syslog.h>
-#include <fcntl.h>
-#include <dlfcn.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <string>
-#include <errno.h>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <signal.h>
 #include <sstream>
+#include <stdlib.h>
+#include <unistd.h>
 
+#include <stdio.h>
 
+#include "HandleHostBandwidth.h"
 using namespace std;
 
 static bool isRunning = true;
@@ -39,48 +29,25 @@ int main( int argc, char* argv[] )
 
 	if ( argc < 2 )
 	{
-		printf("You must give the interface in the command line arguments. Exiting.\n");
+		printf("You must give the number of hosts in the command line arguments. Exiting.\n");
 		exit( EXIT_FAILURE );
 	}
 
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
 
-//	unsigned int counter = 0;
-//	unsigned int bw = 2;
-
-//	string outputFile = FileControl::buildOutputFilePath( argv[ 1 ] );
-//	LoggingHandler bandwidthLogger( outputFile );
-//	std::stringstream outputStream;
-//	TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
-
-//	printf( "%s\n", argv[ 1 ] );
-
-//	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > receiveCalculator( FileControl::buildReceivePath( argv[ 1 ] ) );
-//	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > sentCalculator( FileControl::buildSendPath( argv[ 1 ] ) );
-
 	setlocale( LC_ALL, "" );
+
+	HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) );
 
 	while ( isRunning )
 	{
-//		if ( counter % 20 == 0 )
-//		{
-//			bw += 2;
-//			TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
-//			printf("set %d\n", bw );
-//		}
-
-//		outputStream << "Rec. rate is: " << receiveCalculator.calculateRate() << " B/sec\n";
-//		outputStream << "Send rate is: " << sentCalculator.calculateRate() << " B/sec\n";
-//		outputStream << "~~~~~~~~~~~~~~~~\n";
-
-//		bandwidthLogger.log( outputStream.str() );
-
-//		++counter;
-
-		sleep( 1 );
+		hostBandwidth.sendBandwidthRates();
+		hostBandwidth.printBandwidths();
+		usleep( 500000 );
 	}
 
+	hostBandwidth.setRunning( false );
 	exit( EXIT_SUCCESS );
 }
 
