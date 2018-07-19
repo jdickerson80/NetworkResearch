@@ -43,14 +43,14 @@ int main( int argc, char* argv[] )
 	unsigned int bw = 2;
 
 	string outputFile = FileControl::buildOutputFilePath( argv[ 1 ] );
-	LoggingHandler bandwidthLogger( outputFile );
+	Common::LoggingHandler bandwidthLogger( outputFile );
 	std::stringstream outputStream;
-	TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
+	Common::TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
 
 	printf( "%s\n", argv[ 1 ] );
 
-	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > receiveCalculator( FileControl::buildReceivePath( argv[ 1 ] ) );
-	DataRateCalculator< unsigned int, float, Math::ExponentialSmoothing > sentCalculator( FileControl::buildSendPath( argv[ 1 ] ) );
+	Common::DataRateCalculator< unsigned int, float, Common::Math::ExponentialSmoothing > receiveCalculator( FileControl::buildReceivePath( argv[ 1 ] ) );
+	Common::DataRateCalculator< unsigned int, float, Common::Math::ExponentialSmoothing > sentCalculator( FileControl::buildSendPath( argv[ 1 ] ) );
 
 	setlocale( LC_ALL, "" );
 

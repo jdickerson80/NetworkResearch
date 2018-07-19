@@ -1,7 +1,11 @@
+/*
+ * Licensed under the 'LICENSE'.
+ * See LICENSE file in the project root for full license information.
+ */
 #ifndef CURRENTANDLASTVALUES_H
 #define CURRENTANDLASTVALUES_H
 
-
+namespace Common {
 /**
  * @brief	The CurrentAndLastValues struct just wraps a
  *			previous and current value.
@@ -36,4 +40,6 @@ struct CurrentAndLastValues
 	 */
     ~CurrentAndLastValues() {}
 };
+
+} // namespace Common
 #endif // CURRENTANDLASTVALUES_H

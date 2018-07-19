@@ -71,5 +71,7 @@ private:
 	 */
 	ThreadHelper& operator=( const ThreadHelper& threadHelper );
 };
+
 } // namespace Common
+
 #endif // THREADHELPER_H

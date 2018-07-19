@@ -1,3 +1,7 @@
+/*
+ * Licensed under the 'LICENSE'.
+ * See LICENSE file in the project root for full license information.
+ */
 #ifndef DATARATECALCULATOR_H
 #define DATARATECALCULATOR_H
 
@@ -7,6 +11,7 @@
 #include <cstdlib>
 #include "CurrentAndLastValues.h"
 
+namespace Common {
 /**
  * @brief	The DataRateCalculator calculates the rate with the given template arguments.
  * @param 	CalculationDataType is the data type of the data that will be calculated.
@@ -101,4 +106,5 @@ public:
 	}
 };
 
+} // namespace Common
 #endif // DATARATECALCULATOR_H

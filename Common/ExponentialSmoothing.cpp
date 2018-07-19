@@ -1,7 +1,7 @@
 #include "ExponentialSmoothing.h"
 
 //static float Alpha = 1.0;
-
+namespace Common {
 namespace Math {
 
 ExponentialSmoothing::ExponentialSmoothing()
@@ -39,3 +39,5 @@ float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeV
 }
 
 } // namespace Math
+
+} // namespace Common

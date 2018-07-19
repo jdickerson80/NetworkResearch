@@ -1,8 +1,13 @@
+/*
+ * Licensed under the 'LICENSE'.
+ * See LICENSE file in the project root for full license information.
+ */
 #ifndef TCCONTROL_H
 #define TCCONTROL_H
 
 #include <string>
 
+namespace Common {
 class TCControl
 {
 private:
@@ -27,4 +32,5 @@ public:
 	static void clearTCCommands( const std::string& interface );
 };
 
+} // namespace Common
 #endif // TCCONTROL_H

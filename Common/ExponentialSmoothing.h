@@ -1,9 +1,14 @@
+/*
+ * Licensed under the 'LICENSE'.
+ * See LICENSE file in the project root for full license information.
+ */
 #ifndef EXPONENTIALSMOOTHING_H
 #define EXPONENTIALSMOOTHING_H
 
 #include "CurrentAndLastValues.h"
 #include <time.h>
 
+namespace Common {
 namespace Math {
 
 /**
@@ -50,4 +55,5 @@ public:
 };
 
 } // namespace Math
+} // namespace Common
 #endif // EXPONENTIALSMOOTHING_H

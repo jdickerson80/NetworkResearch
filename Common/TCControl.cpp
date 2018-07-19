@@ -17,7 +17,7 @@ using namespace std;
 //	static TCControl control;
 //	return control;
 //}
-
+namespace Common {
 void TCControl::setEgressBandwidth( const std::string& interface, const std::string& desiredBandwidth, const std::string& latency )
 {
 	clearTCCommands( interface );
@@ -68,3 +68,5 @@ void TCControl::clearTCCommands( const string& interface )
 //	printf("!!!!!!!!!!!!!!%s com is %s\n", interface.c_str(), command.c_str() );
 	system( command.c_str() );
 }
+
+} // namespace Common

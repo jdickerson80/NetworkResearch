@@ -1,5 +1,7 @@
 #include "LoggingHandler.h"
 
+namespace Common {
+
 LoggingHandler::LoggingHandler( const std::string& loggingPath )
     : _loggingPath( loggingPath )
 {
@@ -17,3 +19,5 @@ void LoggingHandler::log( const std::string& stringToLog )
     _outputStream << stringToLog;
     _outputStream.close();
 }
+
+} // namespace Common

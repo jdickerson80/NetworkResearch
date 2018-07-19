@@ -77,7 +77,7 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 	while ( bandwidthCommunicator->_incomingBandwidthThreadRunning )
 	{
 		receiveLength = recvfrom( bandwidthCommunicator->_socketFileDescriptor, &bandwidth, sizeof( bandwidth ), 0, (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress, &length );
-		TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, bandwidth, "50" );
+		Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, bandwidth, "50" );
 		printf("setting bw %2.2f\n", bandwidth );
 	}
 
