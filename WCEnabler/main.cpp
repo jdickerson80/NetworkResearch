@@ -1,15 +1,10 @@
 #include <signal.h>
-#include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
-#include "BandwidthCommunicator.h"
-#include "DataRateCalculator.h"
-#include "ExponentialSmoothing.h"
-#include "FileControl.h"
-#include "LoggingHandler.h"
-#include "TCControl.h"
-
-using namespace std;
+#include "Macros.h"
+#include "WCEnablerObject.h"
 
 static bool isRunning = true;
 
@@ -30,57 +25,22 @@ int main( int argc, char* argv[] )
 		exit( EXIT_FAILURE );
 	}
 
-	if ( argc < 2 )
-	{
-		printf("You must give the interface in the command line arguments. Exiting.\n");
-		exit( EXIT_FAILURE );
-	}
-
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
-
-	unsigned int counter = 0;
-	unsigned int bw = 2;
-
-	string outputFile = FileControl::buildOutputFilePath( argv[ 1 ] );
-	Common::LoggingHandler bandwidthLogger( outputFile );
-	std::stringstream outputStream;
-	Common::TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
-
-	printf( "%s\n", argv[ 1 ] );
-
-	Common::DataRateCalculator< unsigned int, float, Common::Math::ExponentialSmoothing > receiveCalculator( FileControl::buildReceivePath( argv[ 1 ] ) );
-	Common::DataRateCalculator< unsigned int, float, Common::Math::ExponentialSmoothing > sentCalculator( FileControl::buildSendPath( argv[ 1 ] ) );
-
 	setlocale( LC_ALL, "" );
 
-	BandwidthCommunicator communicator( "10.0.0.1", string( argv[ 1 ] ) );
+//	system( "sysctl -w net.ipv4.tcp_ecn=3" );
+//	system( "sysctl net.mptcp.mptcp_path_manager=ndiffports" );
+//	system( "echo 2 > /sys/module/mptcp_ndiffports/parameters/num_subflows" );
 
+	WCEnablerObject object( std::string( BGAdaptorIPAddress ) );
 
-
+	// do nothing loop to keep the app going
 	while ( isRunning )
 	{
-//		if ( counter % 20 == 0 )
-//		{
-//			bw += 2;
-//			TCControl::setEgressBandwidth( string( argv[ 1 ] ), bw, "50" );
-//			printf("set %d\n", bw );
-//		}
-
-		outputStream << "Rec. rate is: " << receiveCalculator.calculateRate() << " B/sec\n";
-		outputStream << "Send rate is: " << sentCalculator.calculateRate() << " B/sec\n";
-		outputStream << "~~~~~~~~~~~~~~~~\n";
-
-		bandwidthLogger.log( outputStream.str() );
-
-		communicator.sendBandwidth( receiveCalculator.rate() );
-
-		++counter;
-
-		usleep( 500000 );
+		sleep( 1 );
 	}
 
-	communicator.setBandwidthThreadRunning( false );
 	exit( EXIT_SUCCESS );
 }
 
@@ -89,12 +49,12 @@ void signalHandler( int signal )
 	switch ( signal )
 	{
 	case SIGINT:
-		printf( "Caught Ctrl + C\r\n" );
+		printf( "Caught Ctrl + C\n" );
 		isRunning = false;
 		break;
 
 	case SIGTERM:
-		printf( "Caught Terminate\r\n" );
+		printf( "Caught Terminate\n" );
 		isRunning = false;
 		break;
 

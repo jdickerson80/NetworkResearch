@@ -14,8 +14,8 @@ set( CMAKE_BUILD_TYPE Debug )
 set( CMAKE_CXX_FLAGS "-Wall" )
 
 # Bring in the project headers
-include_directories( ${CMAKE_SOURCE_DIR}/* )
-include_directories( ../Common/ )
+include_directories( ${CMAKE_SOURCE_DIR} )
+include_directories( ../Common )
 
 # Add all of the files to the build
 file( GLOB_RECURSE Headers "*.h" )
@@ -28,4 +28,3 @@ add_executable( ${PROJECT_NAME} ${Headers} ${Sources} ${CommonSource} ${CommonHe
 
 # Setup all of the link libraries
 target_link_libraries( ${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} )
-#target_link_libraries( ${PROJECT_NAME} ${BLUEZ_LIBRARIES} )
