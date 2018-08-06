@@ -2,8 +2,8 @@
  * Licensed under the 'LICENSE'.
  * See LICENSE file in the project root for full license information.
  */
-#ifndef EXPONENTIALSMOOTHING_H
-#define EXPONENTIALSMOOTHING_H
+#ifndef SIMPLERATECALCULATION_H
+#define SIMPLERATECALCULATION_H
 
 #include "CurrentAndLastValues.h"
 #include <time.h>
@@ -18,7 +18,7 @@ namespace Math {
  *
  * @note https://en.wikipedia.org/wiki/Exponential_smoothing
  */
-class ExponentialSmoothing
+class SimpleRateCalculation
 {
 public:
 
@@ -30,24 +30,20 @@ private:
 	// Typedef of the time values
 	typedef CurrentAndLastValues< time_t > TimeValues;
 
-	// Alpha value
-	float _alpha;
-
 	// Rate variable
 	float _rate;
 
 public:
 
 	/**
-	 * @brief ExponentialSmoothing default constructor
-	 * @param alpha
+	 * @brief SimpleRateCalculation default constructor
 	 */
-	ExponentialSmoothing( float alpha = 1.0 );
+	SimpleRateCalculation();
 
 	/**
-	 * @brief ExponentialSmoothing do nothing destructor
+	 * @brief SimpleRateCalculation do nothing destructor
 	 */
-	~ExponentialSmoothing();
+	~SimpleRateCalculation();
 
 	/**
 	 * @brief calculate method calculates the rate
@@ -56,14 +52,9 @@ public:
 	 * @return new rate
 	 */
 	float calculate( const DataValues& dataValues, const TimeValues& timeValues );
-
-	/**
-	 * @brief alpha getter
-	 * @return alpha
-	 */
-	float alpha() const;
 };
 
 } // namespace Math
 } // namespace Common
-#endif // EXPONENTIALSMOOTHING_H
+
+#endif // SIMPLERATECALCULATION_H

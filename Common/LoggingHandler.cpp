@@ -15,9 +15,10 @@ LoggingHandler::~LoggingHandler()
 
 void LoggingHandler::log( const std::string& stringToLog )
 {
-    _outputStream.open( _loggingPath.c_str(), std::ofstream::out | std::ofstream::app );
+	// put the string into the file
+	_outputStream.open( _loggingPath.c_str(), std::ofstream::out | std::ofstream::app );
     _outputStream << stringToLog;
-    _outputStream.close();
+	_outputStream.close();
 }
 
 } // namespace Common

@@ -1,21 +1,20 @@
-#include "ExponentialSmoothing.h"
+#include "SimpleRateCalculation.h"
 
 namespace Common {
 namespace Math {
 
-ExponentialSmoothing::ExponentialSmoothing( float alpha )
-	: _alpha( alpha )
-	, _rate( 0 )
+SimpleRateCalculation::SimpleRateCalculation()
+	: _rate( 0 )
 {
 
 }
 
-ExponentialSmoothing::~ExponentialSmoothing()
+SimpleRateCalculation::~SimpleRateCalculation()
 {
 
 }
 
-float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeValues& timeValues )
+float SimpleRateCalculation::calculate( const DataValues& dataValues, const TimeValues& timeValues )
 {
 	// local variable
 	unsigned int dataDelta;
@@ -29,7 +28,7 @@ float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeV
 	timeDelta = timeDelta <= 0 ? 1 : timeDelta;
 
 	// calculate the rate using the last rate
-	_rate = (float)( ( dataDelta / timeDelta ) ) * _alpha + ( 1 - _alpha ) * _rate;
+	_rate = (float)( ( dataDelta / timeDelta ) );
 
 	// bound the rate
 	_rate = _rate < 0 ? 0 : _rate;
@@ -38,11 +37,5 @@ float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeV
 	return _rate;
 }
 
-float ExponentialSmoothing::alpha() const
-{
-	return _alpha;
-}
-
 } // namespace Math
-
 } // namespace Common

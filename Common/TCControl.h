@@ -8,27 +8,51 @@
 #include <string>
 
 namespace Common {
+
+/**
+ * @brief The TCControl class wraps the appropriate system call to TC in Linux.
+ * @note This class consists of all static methods
+ */
 class TCControl
 {
 private:
 
 	TCControl();
 
-private:
-
-//	bool _hasTCBeenModified;
 public:
 
-//	static TCControl& instance();
+	/**
+	 * @brief setEgressBandwidth set the outgoing bandwidth rate on an interface
+	 * @param interface to limit the outgoing rate
+	 * @param desiredBandwidth in megabits
+	 */
+	static void setEgressBandwidth( const std::string& interface, const std::string& desiredBandwidth );
 
-	static void setEgressBandwidth( const std::string& interface, const std::string& desiredBandwidth, const std::string& latency );
+	/**
+	 * @brief setEgressBandwidth
+	 * @param interface to limit the outgoing rate
+	 * @param desiredBandwidth in megabits
+	 */
+	static void setEgressBandwidth( const std::string& interface, const int desiredBandwidth );
 
-	static void setEgressBandwidth( const std::string& interface, const int desiredBandwidth, const std::string& latency );
+	/**
+	 * @brief setIgressBandwidth
+	 * @param interface to limit the incoming rate
+	 * @param desiredBandwidth in megabits
+	 */
+	static void setIgressBandwidth( const std::string& interface, const std::string& desiredBandwidth );
 
-	static void setIgressBandwidth( const std::string& interface, const std::string& desiredBandwidth, const std::string& latency );
+	/**
+	 * @brief setIgressBandwidth
+	 * @param interface to limit the incoming rate
+	 * @param desiredBandwidth in megabits
+	 */
+	static void setIgressBandwidth( const std::string& interface, const int desiredBandwidth );
 
-	static void setIgressBandwidth( const std::string& interface, const int desiredBandwidth, const std::string& latency );
-
+	/**
+	 * @brief clearTCCommands clears the current tc settings
+	 * @param interface to limit the incoming rate
+	 */
 	static void clearTCCommands( const std::string& interface );
 };
 
