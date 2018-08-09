@@ -5,8 +5,9 @@
 #ifndef EXPONENTIALSMOOTHING_H
 #define EXPONENTIALSMOOTHING_H
 
-#include "CurrentAndLastValues.h"
 #include <time.h>
+
+#include "CurrentAndLastValues.h"
 
 namespace Common {
 namespace Math {
@@ -23,7 +24,7 @@ class ExponentialSmoothing
 public:
 
 	// Typedef of the data values
-	typedef CurrentAndLastValues< unsigned int > DataValues;
+	typedef CurrentAndLastValues< float > DataValues;
 
 private:
 
@@ -62,6 +63,12 @@ public:
 	 * @return alpha
 	 */
 	float alpha() const;
+
+	/**
+	 * @brief setAlpha
+	 * @param alpha
+	 */
+	void setAlpha( float alpha );
 };
 
 } // namespace Math

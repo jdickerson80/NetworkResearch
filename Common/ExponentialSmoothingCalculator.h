@@ -1,26 +1,20 @@
-/*
- * Licensed under the 'LICENSE'.
- * See LICENSE file in the project root for full license information.
- */
-#ifndef SIMPLERATECALCULATOR_H
-#define SIMPLERATECALCULATOR_H
+#ifndef EXPONENTIALSMOOTHINGCALCULATOR_H
+#define EXPONENTIALSMOOTHINGCALCULATOR_H
 
 #include <ctime>
 
 #include "CurrentAndLastValues.h"
-#include "SimpleRateCalculation.h"
+#include "ExponentialSmoothing.h"
 
 namespace Common {
 namespace Math {
 
 /**
- * @brief The SimpleRateCalculator class calculates the rate by:
- *			  current value - last value
- *			------------------------------
- *			current time - last time value
+ * @brief	The ExponentialSmoothingCalculator class wraps the exponential smoothing
+ *			calculation to make it easier to use.
  */
 template< typename CalculationDataType, typename RateDataType >
-class SimpleRateCalculator
+class ExponentialSmoothingCalculator
 {
 public:
 
@@ -36,7 +30,7 @@ private:
 	RateDataType _rate;
 
 	// Rate calculation
-	SimpleRateCalculation _rateCalculation;
+	ExponentialSmoothing _rateCalculation;
 
 	// Variables for the data and time
 	CalculatorDataValues _dataValues;
@@ -45,11 +39,11 @@ private:
 public:
 
 	/**
-	 * @brief DataRateCalculator
-	 * @param statisticPath
+	 * @brief ExponentialSmoothingCalculator
 	 */
-	SimpleRateCalculator()
+	ExponentialSmoothingCalculator( float alpha )
 		: _rate( 0 )
+		, _rateCalculation( alpha )
 	{
 		_dataValues.currentValue = _dataValues.lastValue = 0;
 
@@ -92,4 +86,5 @@ public:
 
 } // namespace Math
 } // namespace Common
-#endif // SIMPLERATECALCULATOR_H
+
+#endif // EXPONENTIALSMOOTHINGCALCULATOR_H

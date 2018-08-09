@@ -38,6 +38,12 @@ public:
 	 * @param stringToLog string to log to the file
 	 */
 	void log( const std::string& stringToLog );
+
+	/**
+	 * @brief log method to log the given string
+	 * @param stringToLog string to log to the file
+	 */
+	void log( const char* const stringToLog );
 };
 
 } // namespace Common

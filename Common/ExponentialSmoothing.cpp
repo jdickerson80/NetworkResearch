@@ -1,5 +1,7 @@
 #include "ExponentialSmoothing.h"
 
+#include <stdlib.h>
+
 namespace Common {
 namespace Math {
 
@@ -22,17 +24,21 @@ float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeV
 	unsigned int timeDelta;
 
 	// calculation of the delta
-	dataDelta = dataValues.currentValue - dataValues.lastValue;
-	timeDelta = timeValues.currentValue - timeValues.lastValue;
+	dataDelta = abs( dataValues.currentValue - dataValues.lastValue );
+	timeDelta = abs( timeValues.currentValue - timeValues.lastValue );
 
 	// make sure the time delta is not zero
-	timeDelta = timeDelta <= 0 ? 1 : timeDelta;
+	timeDelta = timeDelta == 0 ? 1 : timeDelta;
 
 	// calculate the rate using the last rate
 	_rate = (float)( ( dataDelta / timeDelta ) ) * _alpha + ( 1 - _alpha ) * _rate;
 
 	// bound the rate
 	_rate = _rate < 0 ? 0 : _rate;
+
+//	printf( "dd %u td %u\n"
+//			, dataDelta
+//			, timeDelta );
 
 	// and return it
 	return _rate;
@@ -43,6 +49,10 @@ float ExponentialSmoothing::alpha() const
 	return _alpha;
 }
 
-} // namespace Math
+void ExponentialSmoothing::setAlpha( float alpha )
+{
+	_alpha = alpha;
+}
 
+} // namespace Math
 } // namespace Common

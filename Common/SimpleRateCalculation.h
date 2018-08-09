@@ -12,11 +12,13 @@ namespace Common {
 namespace Math {
 
 /**
- * @brief The ExponentialSmoothing class calculates the rate by the
- *        simplest form of exponential smoothing formula found
- *        at the address in the note.
+ * @brief	The SimpleRateCalculation class calculates the rate by the
+ *			the simple calculation:
  *
- * @note https://en.wikipedia.org/wiki/Exponential_smoothing
+ *			  current value - last value
+ *			------------------------------
+ *			current time - last time value
+ *
  */
 class SimpleRateCalculation
 {
