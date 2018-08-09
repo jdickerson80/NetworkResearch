@@ -16,6 +16,7 @@
 #include "ThreadHelper.h"
 #include "WorkConservationFlowHandler.h"
 
+namespace WCEnabler {
 BandwidthCommunicator::BandwidthCommunicator( const std::string& bGAdaptorAddress
 											  , const std::string& interface
 											  , BandwidthCalculator* bandwidthCalculator
@@ -163,3 +164,5 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 	pthread_exit( NULL );
 	return NULL;
 }
+
+} // namespace WCEnabler

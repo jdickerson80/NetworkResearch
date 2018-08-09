@@ -17,6 +17,7 @@
 #define PacketBufferSize ( 65536 )
 #define IPAddressSize ( 20 )
 
+namespace WCEnabler {
 BandwidthCalculator::BandwidthCalculator(Common::LoggingHandler* logger, const std::string& interface, const std::string& interfaceIPAddress )
 	: _packetSniffingThreadRunning( false )
 	, _calculationThreadRunning( false )
@@ -88,19 +89,19 @@ uint8_t BandwidthCalculator::ecn() const
 
 void BandwidthCalculator::updateBandwidthGuaranteeRate()
 {
-	// calculate the rates
+	/// calculate the rates
 	_bandwidthGuaranteeRate = _bandwidthGuaranteeRateCalculator.calculateRate( _bandwidthGuaranteeCounter );
 }
 
 void BandwidthCalculator::updateWorkConservingRate()
 {
-	// calculate the rates
+	/// calculate the rates
 	_workConservingRate = _workConservingRateCalculator.calculateRate( _workConservingCounter );
 }
 
 void BandwidthCalculator::updateTotalBandwidthRate()
 {
-	// calculate the rates
+	/// calculate the rates
 	_totalRate = _bandwidthGuaranteeRate + _workConservingRate;
 }
 
@@ -215,3 +216,4 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 	return NULL;
 }
 
+} // namespace WCEnabler

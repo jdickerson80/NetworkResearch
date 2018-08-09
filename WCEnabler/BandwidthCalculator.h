@@ -13,6 +13,7 @@ class LoggingHandler;
 }
 class iphdr;
 
+namespace WCEnabler {
 /**
  * @brief	The BandwidthCalculator class calculates the bandwidth of
  *			the bandwidth guarantee and work conservation flows by,
@@ -118,4 +119,5 @@ private:
 	static void* handleRateCalculation( void* input );
 };
 
+} // namespace WCEnabler
 #endif // BANDWIDTHCALCULATOR_H

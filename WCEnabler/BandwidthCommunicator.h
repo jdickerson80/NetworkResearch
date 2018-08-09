@@ -10,6 +10,8 @@ namespace Common {
 class LoggingHandler;
 }
 
+namespace WCEnabler {
+
 class BandwidthCalculator;
 class WorkConservationFlowHandler;
 
@@ -73,4 +75,5 @@ private:
 	static void* handleOutgoingBandwidthRequest( void* input );
 };
 
+} // namespace WCEnabler
 #endif // BANDWIDTHCOMMUNICATOR_H

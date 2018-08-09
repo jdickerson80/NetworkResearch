@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 #include "Macros.h"
-#include "WCEnablerObject.h"
+#include "MainObject.h"
 
 static bool isRunning = true;
 
@@ -32,7 +32,7 @@ int main( int argc, char* argv[] )
 	setlocale( LC_ALL, "" );
 
 	// create the main object
-	WCEnablerObject object( std::string( BGAdaptorIPAddress ) );
+	WCEnabler::MainObject object( std::string( BGAdaptorIPAddress ) );
 
 	// do nothing loop to keep the app going
 	while ( isRunning )

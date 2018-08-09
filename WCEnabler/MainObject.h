@@ -1,5 +1,5 @@
-#ifndef WCENABLEROBJECT_H
-#define WCENABLEROBJECT_H
+#ifndef MAINOBJECT_H
+#define MAINOBJECT_H
 
 #include <string>
 
@@ -8,6 +8,7 @@ namespace Common {
 class LoggingHandler;
 }
 
+namespace WCEnabler {
 class BandwidthCalculator;
 class BandwidthCommunicator;
 class WorkConservationFlowHandler;
@@ -16,7 +17,7 @@ class WorkConservationFlowHandler;
  * @brief	The WCEnablerObject class is the main object of the app. This class holds all of the
  *			instances of the classes.
  */
-class WCEnablerObject
+class MainObject
 {
 private:
 
@@ -28,13 +29,13 @@ private:
 public:
 
 	/**
-	 * @brief WCEnablerObject constructor for the app
+	 * @brief MainObject constructor for the app
 	 * @param interface ip address of the interface
 	 * @param bgAdaptorIPAddress ip address of the BGAdaptor module
 	 */
-	WCEnablerObject( const std::string& bgAdaptorIPAddress );
+	MainObject( const std::string& bgAdaptorIPAddress );
 
-	~WCEnablerObject();
+	~MainObject();
 
 private:
 
@@ -59,4 +60,6 @@ private:
 	static void setECNEnabled( bool isEnabled );
 };
 
-#endif // WCENABLEROBJECT_H
+} // namespace WCEnabler
+
+#endif // MAINOBJECT_H

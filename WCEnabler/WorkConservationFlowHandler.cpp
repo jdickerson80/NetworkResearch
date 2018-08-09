@@ -6,6 +6,7 @@
 
 #include "LoggingHandler.h"
 
+namespace WCEnabler {
 WorkConservationFlowHandler::WorkConservationFlowHandler( const std::string& interface
 														  , float beta
 														  , float safetyFactor
@@ -194,3 +195,5 @@ bool WorkConservationFlowHandler::vmLevelCheck( float bandwidthGuarantee )
 //			, ret );
 //	return ret;
 }
+
+} // namespace WCEnabler

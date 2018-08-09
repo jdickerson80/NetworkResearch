@@ -15,6 +15,7 @@ namespace Common {
 class LoggingHandler;
 }
 
+namespace WCEnabler {
 /**
  * @brief The WorkConservationFlowHandler class handles the logic of the work conservation flow.
  * @todo finish this class
@@ -153,4 +154,5 @@ private:
 	bool vmLevelCheck( float bandwidthGuarantee );
 };
 
+} // namespace WCEnabler
 #endif // WORKCONSERVATIONFLOWHANDLER_H
