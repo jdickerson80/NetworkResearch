@@ -27,9 +27,9 @@ int main( int argc, char* argv[] )
 		exit( EXIT_FAILURE );
 	}
 
-	if ( argc < 2 )
+	if ( argc < 3 )
 	{
-		printf("You must give the number of hosts in the command line arguments. Exiting.\n");
+		perror( "You must give the number of hosts and the tenant's total bandwidth in kilobytes the command line arguments. Exiting.\n" );
 		exit( EXIT_FAILURE );
 	}
 
@@ -38,13 +38,13 @@ int main( int argc, char* argv[] )
 
 	setlocale( LC_ALL, "" );
 
-	HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) );
+	HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) - 1, atoi( argv[ 2 ] ) );
 
 	while ( isRunning )
 	{
 		hostBandwidth.sendBandwidthRates();
-		hostBandwidth.printBandwidths();
-		usleep( 500000 );
+		hostBandwidth.logBandwidths();
+		usleep( 250000 );
 	}
 
 	hostBandwidth.setRunning( false );
