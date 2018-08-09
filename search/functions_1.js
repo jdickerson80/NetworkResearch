@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['bandwidthcalculator',['BandwidthCalculator',['../classBandwidthCalculator.html#a0b0d37a844a376651a1cee8f0b506d04',1,'BandwidthCalculator']]],
-  ['bandwidthcommunicator',['BandwidthCommunicator',['../classBandwidthCommunicator.html#a1f6644f51d8ffdf0473dcb99e2725350',1,'BandwidthCommunicator']]],
-  ['bandwidthguaranteerate',['bandwidthGuaranteeRate',['../classBandwidthCalculator.html#a54ae4861e782aecae570c2120321114d',1,'BandwidthCalculator']]]
+  ['bandwidthcalculator',['BandwidthCalculator',['../classWCEnabler_1_1BandwidthCalculator.html#aefd2e67bbde48ae518a57c6e5f7c3399',1,'WCEnabler::BandwidthCalculator']]],
+  ['bandwidthcommunicator',['BandwidthCommunicator',['../classWCEnabler_1_1BandwidthCommunicator.html#a7c40fa4715b3d0386e5536abd4602018',1,'WCEnabler::BandwidthCommunicator']]],
+  ['bandwidthguaranteerate',['bandwidthGuaranteeRate',['../classWCEnabler_1_1BandwidthCalculator.html#aa0619897c4b0911466067845b9c4bfd5',1,'WCEnabler::BandwidthCalculator']]]
 ];

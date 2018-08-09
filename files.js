@@ -2,11 +2,11 @@ var files =
 [
     [ "BandwidthCalculator.cpp", "BandwidthCalculator_8cpp.html", "BandwidthCalculator_8cpp" ],
     [ "BandwidthCalculator.h", "BandwidthCalculator_8h.html", [
-      [ "BandwidthCalculator", "classBandwidthCalculator.html", "classBandwidthCalculator" ]
+      [ "BandwidthCalculator", "classWCEnabler_1_1BandwidthCalculator.html", "classWCEnabler_1_1BandwidthCalculator" ]
     ] ],
     [ "BandwidthCommunicator.cpp", "BandwidthCommunicator_8cpp.html", null ],
     [ "BandwidthCommunicator.h", "BandwidthCommunicator_8h.html", [
-      [ "BandwidthCommunicator", "classBandwidthCommunicator.html", "classBandwidthCommunicator" ]
+      [ "BandwidthCommunicator", "classWCEnabler_1_1BandwidthCommunicator.html", "classWCEnabler_1_1BandwidthCommunicator" ]
     ] ],
     [ "CurrentAndLastValues.h", "CurrentAndLastValues_8h.html", [
       [ "CurrentAndLastValues", "structCommon_1_1CurrentAndLastValues.html", "structCommon_1_1CurrentAndLastValues" ]
@@ -32,6 +32,10 @@ var files =
     [ "Macros.h", "Macros_8h.html", "Macros_8h" ],
     [ "BGAdaptor/main.cpp", "BGAdaptor_2main_8cpp.html", "BGAdaptor_2main_8cpp" ],
     [ "WCEnabler/main.cpp", "WCEnabler_2main_8cpp.html", "WCEnabler_2main_8cpp" ],
+    [ "MainObject.cpp", "MainObject_8cpp.html", null ],
+    [ "MainObject.h", "MainObject_8h.html", [
+      [ "MainObject", "classWCEnabler_1_1MainObject.html", "classWCEnabler_1_1MainObject" ]
+    ] ],
     [ "SimpleRateCalculation.cpp", "SimpleRateCalculation_8cpp.html", null ],
     [ "SimpleRateCalculation.h", "SimpleRateCalculation_8h.html", [
       [ "SimpleRateCalculation", "classCommon_1_1Math_1_1SimpleRateCalculation.html", "classCommon_1_1Math_1_1SimpleRateCalculation" ]
@@ -47,13 +51,9 @@ var files =
     [ "ThreadHelper.h", "ThreadHelper_8h.html", [
       [ "ThreadHelper", "classCommon_1_1ThreadHelper.html", "classCommon_1_1ThreadHelper" ]
     ] ],
-    [ "WCEnablerObject.cpp", "WCEnablerObject_8cpp.html", null ],
-    [ "WCEnablerObject.h", "WCEnablerObject_8h.html", [
-      [ "WCEnablerObject", "classWCEnablerObject.html", "classWCEnablerObject" ]
-    ] ],
     [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", null ],
     [ "WorkConservationFlowHandler.h", "WorkConservationFlowHandler_8h.html", [
-      [ "WorkConservationFlowHandler", "classWorkConservationFlowHandler.html", "classWorkConservationFlowHandler" ],
-      [ "FlowState", "structWorkConservationFlowHandler_1_1FlowState.html", "structWorkConservationFlowHandler_1_1FlowState" ]
+      [ "WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", "classWCEnabler_1_1WorkConservationFlowHandler" ],
+      [ "FlowState", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState" ]
     ] ]
 ];

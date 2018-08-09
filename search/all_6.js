@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['guaranteedbandwidthsufficient',['GuaranteedBandwidthSufficient',['../structWorkConservationFlowHandler_1_1FlowState.html#a14c68f18a75259e71fe80563579c6b1aa0d407f15c7a327ad9dd28cbb639ad32d',1,'WorkConservationFlowHandler::FlowState']]]
+  ['guaranteedbandwidthsufficient',['GuaranteedBandwidthSufficient',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba2b7d424286a44fa6a8e94e4fd5808dc0',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]]
 ];

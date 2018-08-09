@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flowstate',['FlowState',['../structWorkConservationFlowHandler_1_1FlowState.html',1,'WorkConservationFlowHandler']]]
+  ['flowstate',['FlowState',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html',1,'WCEnabler::WorkConservationFlowHandler']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['updateworkconservation',['updateWorkConservation',['../classWorkConservationFlowHandler.html#a700e5f82fe481b2a13481e9ce809e0b6',1,'WorkConservationFlowHandler']]]
+  ['updateworkconservation',['updateWorkConservation',['../classWCEnabler_1_1WorkConservationFlowHandler.html#ac885e2a7596f6be373024de1a98c7480',1,'WCEnabler::WorkConservationFlowHandler']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['existingflowwithoutworkconservation',['ExistingFlowWithoutWorkConservation',['../structWorkConservationFlowHandler_1_1FlowState.html#a14c68f18a75259e71fe80563579c6b1aa7f24ff9dc09c94daca319698eeb97dc7',1,'WorkConservationFlowHandler::FlowState']]],
-  ['existingflowwithworkconservation',['ExistingFlowWithWorkConservation',['../structWorkConservationFlowHandler_1_1FlowState.html#a14c68f18a75259e71fe80563579c6b1aa333293ac10a8ba01621d3ccfcb7b4fdf',1,'WorkConservationFlowHandler::FlowState']]]
+  ['existingflowwithoutworkconservation',['ExistingFlowWithoutWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba51bdd2382c8aaf8ed22c2e54cf74aaf0',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
+  ['existingflowwithworkconservation',['ExistingFlowWithWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55abaa866e2d7e8c98ab16f924961543cdd70',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]]
 ];

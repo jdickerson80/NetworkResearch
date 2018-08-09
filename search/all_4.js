@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['ecn',['ecn',['../classBandwidthCalculator.html#a49e5a450975798a5659804c6f893e835',1,'BandwidthCalculator']]],
-  ['enum',['Enum',['../structWorkConservationFlowHandler_1_1FlowState.html#a14c68f18a75259e71fe80563579c6b1a',1,'WorkConservationFlowHandler::FlowState']]],
-  ['existingflowwithoutworkconservation',['ExistingFlowWithoutWorkConservation',['../structWorkConservationFlowHandler_1_1FlowState.html#a14c68f18a75259e71fe80563579c6b1aa7f24ff9dc09c94daca319698eeb97dc7',1,'WorkConservationFlowHandler::FlowState']]],
-  ['existingflowwithworkconservation',['ExistingFlowWithWorkConservation',['../structWorkConservationFlowHandler_1_1FlowState.html#a14c68f18a75259e71fe80563579c6b1aa333293ac10a8ba01621d3ccfcb7b4fdf',1,'WorkConservationFlowHandler::FlowState']]],
+  ['ecn',['ecn',['../classWCEnabler_1_1BandwidthCalculator.html#ab9a961a6fe8e0d9b92163f37f5e64cd2',1,'WCEnabler::BandwidthCalculator']]],
+  ['enum',['Enum',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55ab',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
+  ['existingflowwithoutworkconservation',['ExistingFlowWithoutWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba51bdd2382c8aaf8ed22c2e54cf74aaf0',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
+  ['existingflowwithworkconservation',['ExistingFlowWithWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55abaa866e2d7e8c98ab16f924961543cdd70',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
   ['exponentialsmoothing',['ExponentialSmoothing',['../classCommon_1_1Math_1_1ExponentialSmoothing.html#a398090f5818749c5915950e7cd2c138d',1,'Common::Math::ExponentialSmoothing']]],
   ['exponentialsmoothing',['ExponentialSmoothing',['../classCommon_1_1Math_1_1ExponentialSmoothing.html',1,'Common::Math']]],
   ['exponentialsmoothing_2ecpp',['ExponentialSmoothing.cpp',['../ExponentialSmoothing_8cpp.html',1,'']]],
