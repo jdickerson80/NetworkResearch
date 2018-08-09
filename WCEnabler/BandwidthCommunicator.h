@@ -11,6 +11,7 @@ class LoggingHandler;
 }
 
 class BandwidthCalculator;
+class WorkConservationFlowHandler;
 
 /**
  * @brief	The BandwidthCommunicator class handles the communication and setting
@@ -23,12 +24,14 @@ private:
 	bool _incomingBandwidthThreadRunning;
 	bool _outgoingBandwidthThreadRunning;
 	int _socketFileDescriptor;
-	Common::LoggingHandler* _logger;
+	Common::LoggingHandler* _bandwidthLimitLogger;
+	Common::LoggingHandler* _bandwidthUsageLogger;
 	sockaddr_in _bGAdaptorAddress;
 	pthread_t _incomingBandwidthThread;
 	pthread_t _outgoingBandwidthThread;
 	std::string _interface;
 	BandwidthCalculator* _bandwidthCalculator;
+	WorkConservationFlowHandler* _workConservationFlowHandler;
 
 public:
 
@@ -36,19 +39,19 @@ public:
 	 * @brief BandwidthCommunicator constructor
 	 * @param bGAdaptorAddress address of the BGAdaptor
 	 * @param interface of this host
+	 * @param bandwidthCalculator pointer to the bandwidth calculator
+	 * @param bandwidthLimitLogger pointer to the bandwidth limit logger
+	 * @param bandwidthUsageLogger pointer to the bandwidth usage logger
+	 * @param workConservationFlowHandler pointer to the WorkConservationFlowHandler
 	 */
 	BandwidthCommunicator( const std::string& bGAdaptorAddress
 						   , const std::string& interface
 						   , BandwidthCalculator* bandwidthCalculator
-						   , Common::LoggingHandler* logger );
+						   , Common::LoggingHandler* bandwidthLimitLogger
+						   , Common::LoggingHandler* bandwidthUsageLogger
+						   , WorkConservationFlowHandler* workConservationFlowHandler );
 
 	~BandwidthCommunicator();
-
-	/**
-	 * @brief setBandwidthThreadRunning turn on the thread
-	 * @param isRunning true the thread runs, false it shuts it off
-	 */
-	void setBandwidthThreadRunning( bool isRunning );
 
 private:
 

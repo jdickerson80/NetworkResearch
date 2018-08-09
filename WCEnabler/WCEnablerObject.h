@@ -44,7 +44,19 @@ private:
 	 * @param filename string of the filename
 	 * @return pointer to the logging handler
 	 */
-	static Common::LoggingHandler* buildLogger( const std::string& interface, const std::string& filename );
+	static Common::LoggingHandler* buildLogger( const std::string& interface, const std::string& filename, bool isCSV );
+
+	/**
+	 * @brief getInterfaceName getter
+	 * @return the name of the interface
+	 */
+	std::string getInterfaceName();
+
+	/**
+	 * @brief setECNEnabled setter
+	 * @param isEnabled true if ECN is enabled, false if ECN is disabled
+	 */
+	static void setECNEnabled( bool isEnabled );
 };
 
 #endif // WCENABLEROBJECT_H

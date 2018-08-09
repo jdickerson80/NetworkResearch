@@ -19,20 +19,19 @@ static void signalHandler( int signal );
 
 int main( int argc, char* argv[] )
 {
+	// check if the app is running as root
     if ( getuid() != 0 )
 	{
 		printf("You must run this program as root. Exiting.\n");
 		exit( EXIT_FAILURE );
 	}
 
+	// add the signal handlers
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
 	setlocale( LC_ALL, "" );
 
-//	system( "sysctl -w net.ipv4.tcp_ecn=3" );
-//	system( "sysctl net.mptcp.mptcp_path_manager=ndiffports" );
-//	system( "echo 2 > /sys/module/mptcp_ndiffports/parameters/num_subflows" );
-
+	// create the main object
 	WCEnablerObject object( std::string( BGAdaptorIPAddress ) );
 
 	// do nothing loop to keep the app going
