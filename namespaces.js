@@ -1,4 +1,4 @@
 var namespaces =
 [
-    [ "Math", "namespaceMath.html", null ]
+    [ "Common", "namespaceCommon.html", "namespaceCommon" ]
 ];

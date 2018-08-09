@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['exponentialsmoothing',['ExponentialSmoothing',['../classMath_1_1ExponentialSmoothing.html',1,'Math']]]
+  ['dataratecalculator',['DataRateCalculator',['../classCommon_1_1DataRateCalculator.html',1,'Common']]]
 ];

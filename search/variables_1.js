@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lastvalue',['lastValue',['../structCurrentAndLastValues.html#af3d06222eb6f2c730113c6dc716ee590',1,'CurrentAndLastValues']]]
+  ['lastvalue',['lastValue',['../structCommon_1_1CurrentAndLastValues.html#a706781ca6d98a9d04530144900fc6066',1,'Common::CurrentAndLastValues']]]
 ];
