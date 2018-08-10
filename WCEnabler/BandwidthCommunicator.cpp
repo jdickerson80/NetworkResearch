@@ -31,7 +31,7 @@ BandwidthCommunicator::BandwidthCommunicator( const std::string& bGAdaptorAddres
 	, _bandwidthCalculator( bandwidthCalculator )
 	, _workConservationFlowHandler( workConservationFlowHandler )
 {
-	/// create the udp socket to communicate with the BGAdaptor
+	// create the udp socket to communicate with the BGAdaptor
 	_socketFileDescriptor = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
 
 	if ( _socketFileDescriptor == -1 )
@@ -39,12 +39,12 @@ BandwidthCommunicator::BandwidthCommunicator( const std::string& bGAdaptorAddres
 		printf( "socket communcation failed\n" );
 	}
 
-	/// set up the BGAdaptor's address
+	// set up the BGAdaptor's address
 	inet_aton( bGAdaptorAddress.c_str(), &_bGAdaptorAddress.sin_addr );
 	_bGAdaptorAddress.sin_family = AF_INET;
 	_bGAdaptorAddress.sin_port = htons( 8888 );
 
-	/// start the sending and receiving threads
+	// start the sending and receiving threads
 	Common::ThreadHelper::startDetachedThread( &_incomingBandwidthThread
 											   , handleIncomingBandwidthRequest
 											   , &_incomingBandwidthThreadRunning
@@ -58,7 +58,7 @@ BandwidthCommunicator::BandwidthCommunicator( const std::string& bGAdaptorAddres
 
 BandwidthCommunicator::~BandwidthCommunicator()
 {
-	/// shut off all of the threads, close the socket, and delete the loggers
+	// shut off all of the threads, close the socket, and delete the loggers
 	_incomingBandwidthThreadRunning = false;
 	_outgoingBandwidthThreadRunning = false;
 	close( _socketFileDescriptor );
@@ -69,7 +69,7 @@ BandwidthCommunicator::~BandwidthCommunicator()
 
 void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 {
-	/// init the variables
+	// init the variables
 	BandwidthCommunicator* bandwidthCommunicator = static_cast< BandwidthCommunicator* >( input );
 	unsigned int bandwidth;
 	unsigned int bandwidthLength = sizeof( bandwidth );
@@ -79,10 +79,10 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 	WorkConservationFlowHandler* workConservationFlowHandler = bandwidthCommunicator->_workConservationFlowHandler;
 	BandwidthCalculator* bandwidthCalculator = bandwidthCommunicator->_bandwidthCalculator;
 
-	/// while the thread should run
+	// while the thread should run
 	while ( bandwidthCommunicator->_incomingBandwidthThreadRunning )
 	{
-		/// listen for incoming bandwidth rates
+		// listen for incoming bandwidth rates
 		receiveLength = recvfrom( bandwidthCommunicator->_socketFileDescriptor
 								  , &bandwidth
 								  , bandwidthLength
@@ -90,31 +90,31 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 								  , (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress
 								  , &length );
 
-		/// check for error
+		// check for error
 		if ( receiveLength < bandwidthLength )
 		{
 			continue;
 		}
 
-		/// enforce the rate limit
+		// enforce the rate limit
 		Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, bandwidth );
 
-		/// update the work conservation flow handler
-		/// @note this is done this way to only check for subflows when a new rate is received
-		/// @todo is this correct? should this be done in its own thread?
+		// update the work conservation flow handler
+		// @note this is done this way to only check for subflows when a new rate is received
+		// @todo is this correct? should this be done in its own thread?
 		workConservationFlowHandler->updateWorkConservation( bandwidthCalculator->bandwidthGuaranteeRate()
 															 , bandwidthCalculator->workConservingRate()
 															 , bandwidthCalculator->ecn()
 															 , bandwidth );
-		/// create the stream
+		// create the stream
 		std::ostringstream stream;
 		stream << bandwidth << "\n";
 
-		/// log the bandwidth limit
+		// log the bandwidth limit
 		logger->log( stream.str() );
 	}
 
-	/// clear the tc commands
+	// clear the tc commands
 	Common::TCControl::clearTCCommands( bandwidthCommunicator->_interface );
 	pthread_exit( NULL );
 	return NULL;
@@ -122,20 +122,20 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 
 void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 {
-	/// init the variables
+	// init the variables
 	BandwidthCommunicator* bandwidthCommunicator = static_cast< BandwidthCommunicator* >( input );
 	BandwidthCalculator* bandwidthCalculator = bandwidthCommunicator->_bandwidthCalculator;
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthUsageLogger;
 	size_t floatSize = sizeof( unsigned int );
 	unsigned int totalRate;
 
-	/// while the thread should run
+	// while the thread should run
 	while ( bandwidthCommunicator->_outgoingBandwidthThreadRunning )
 	{
-		/// get the total rate
+		// get the total rate
 		totalRate = bandwidthCalculator->totalRate();
 
-		/// send the current rate
+		// send the current rate
 		if ( sendto( bandwidthCommunicator->_socketFileDescriptor
 					 , &totalRate
 					 , floatSize
@@ -151,14 +151,14 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 			   , bandwidthCalculator->workConservingRate()
 			   , bandwidthCalculator->totalRate() );
 
-		/// create the stream
+		// create the stream
 		std::ostringstream stream;
 		stream << totalRate << "\n";
 
-		/// log the bandwidth limit
+		// log the bandwidth limit
 		logger->log( stream.str() );
 
-		/// send the bandwidth rate every second
+		// send the bandwidth rate every second
 		sleep( 1 );
 	}
 
@@ -166,4 +166,4 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 	return NULL;
 }
 
-} /// namespace WCEnabler
+} // namespace WCEnabler

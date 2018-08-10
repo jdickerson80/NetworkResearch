@@ -51,7 +51,7 @@ public:
 	 * @brief BandwidthCalculator constructor
 	 * @param logger pointer to the logging handler
 	 */
-	BandwidthCalculator( Common::LoggingHandler* logger, const std::string& interface, const std::string& interfaceIPAddress );
+	BandwidthCalculator( Common::LoggingHandler* logger, const std::string& interfaceIPAddress );
 	~BandwidthCalculator();
 
 	/**
@@ -119,5 +119,5 @@ private:
 	static void* handleRateCalculation( void* input );
 };
 
-} /// namespace WCEnabler
-#endif /// BANDWIDTHCALCULATOR_H
+} // namespace WCEnabler
+#endif // BANDWIDTHCALCULATOR_H

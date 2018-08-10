@@ -12,7 +12,7 @@ class LoggingHandler;
 
 namespace WCEnabler {
 
-/// Forward declarations
+// Forward declarations
 class BandwidthCalculator;
 class WorkConservationFlowHandler;
 
@@ -76,5 +76,5 @@ private:
 	static void* handleOutgoingBandwidthRequest( void* input );
 };
 
-} /// namespace WCEnabler
-#endif /// BANDWIDTHCOMMUNICATOR_H
+} // namespace WCEnabler
+#endif // BANDWIDTHCOMMUNICATOR_H

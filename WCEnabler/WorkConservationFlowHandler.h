@@ -10,7 +10,7 @@
 
 #include "ExponentialSmoothingCalculator.h"
 
-/// Forward declarations
+// Forward declarations
 namespace Common {
 class LoggingHandler;
 }
@@ -41,7 +41,7 @@ public:
 
 private:
 
-	/// typedef to make declarations easier
+	// typedef to make declarations easier
 	typedef Common::Math::ExponentialSmoothingCalculator< float, float > RateCalculator;
 
 	/**
@@ -63,7 +63,7 @@ private:
 			, bandwidthGuaranteeAverage( 1.0 )
 			, workConservingAverage( 1.0 ) {}
 
-		/// convenience method to update the variables
+		// convenience method to update the variables
 		void update( float bandwidthGuaranteeRate, uint8_t ecn, float workConservingRate )
 		{
 			bandwidthGuaranteeRate = bandwidthGuaranteeRate;
@@ -154,5 +154,5 @@ private:
 	bool vmLevelCheck( float bandwidthGuarantee );
 };
 
-} /// namespace WCEnabler
-#endif /// WORKCONSERVATIONFLOWHANDLER_H
+} // namespace WCEnabler
+#endif // WORKCONSERVATIONFLOWHANDLER_H

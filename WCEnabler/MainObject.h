@@ -3,7 +3,7 @@
 
 #include <string>
 
-/// Forward declarations
+// Forward declarations
 namespace Common {
 class LoggingHandler;
 }
@@ -53,14 +53,8 @@ private:
 	 * @return the name of the interface
 	 */
 	std::string getInterfaceName();
-
-	/**
-	 * @brief setECNEnabled setter
-	 * @param isEnabled true if ECN is enabled, false if ECN is disabled
-	 */
-	static void setECNEnabled( bool isEnabled );
 };
 
-} /// namespace WCEnabler
+} // namespace WCEnabler
 
-#endif /// MAINOBJECT_H
+#endif // MAINOBJECT_H
