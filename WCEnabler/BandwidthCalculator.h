@@ -7,7 +7,7 @@
 
 #include "SimpleRateCalculator.h"
 
-// Forward declarations
+/// Forward declarations
 namespace Common {
 class LoggingHandler;
 }
@@ -25,7 +25,7 @@ class BandwidthCalculator
 {
 private:
 
-	typedef Common::Math::SimpleRateCalculator< unsigned int, float > RateCalculator;
+	typedef Common::Math::SimpleRateCalculator< unsigned int, unsigned int > RateCalculator;
 
 private:
 
@@ -33,9 +33,9 @@ private:
 	bool _calculationThreadRunning;
 	uint8_t _ecn;
 	int _socketFileDescriptor;
-	float _bandwidthGuaranteeRate;
-	float _workConservingRate;
-	float _totalRate;
+	unsigned int _bandwidthGuaranteeRate;
+	unsigned int _workConservingRate;
+	unsigned int _totalRate;
 	unsigned int _bandwidthGuaranteeCounter;
 	unsigned int _workConservingCounter;
 	RateCalculator _bandwidthGuaranteeRateCalculator;
@@ -58,19 +58,19 @@ public:
 	 * @brief bandwidthGuaranteeRate getter
 	 * @return current rate
 	 */
-	float bandwidthGuaranteeRate() const;
+	unsigned int bandwidthGuaranteeRate() const;
 
 	/**
 	 * @brief workConservingRate getter
 	 * @return current rate
 	 */
-	float workConservingRate() const;
+	unsigned int workConservingRate() const;
 
 	/**
 	 * @brief totalRate getter
 	 * @return current rate
 	 */
-	float totalRate() const;
+	unsigned int totalRate() const;
 
 	/**
 	 * @brief ecn getter
@@ -119,5 +119,5 @@ private:
 	static void* handleRateCalculation( void* input );
 };
 
-} // namespace WCEnabler
-#endif // BANDWIDTHCALCULATOR_H
+} /// namespace WCEnabler
+#endif /// BANDWIDTHCALCULATOR_H

@@ -19,22 +19,22 @@ static void signalHandler( int signal );
 
 int main( int argc, char* argv[] )
 {
-	// check if the app is running as root
+	/// check if the app is running as root
     if ( getuid() != 0 )
 	{
 		printf("You must run this program as root. Exiting.\n");
 		exit( EXIT_FAILURE );
 	}
 
-	// add the signal handlers
+	/// add the signal handlers
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
 	setlocale( LC_ALL, "" );
 
-	// create the main object
+	/// create the main object
 	WCEnabler::MainObject object( std::string( BGAdaptorIPAddress ) );
 
-	// do nothing loop to keep the app going
+	/// do nothing loop to keep the app going
 	while ( isRunning )
 	{
 		sleep( 1 );

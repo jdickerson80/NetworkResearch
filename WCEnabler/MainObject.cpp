@@ -12,17 +12,18 @@
 #include "WorkConservationFlowHandler.h"
 
 namespace WCEnabler {
+
 MainObject::MainObject( const std::string& bgAdaptorIPAddress )
 {
-    // enable ECN
+	/// enable ECN
     setECNEnabled( true );
-    //	system( "sysctl net.mptcp.mptcp_path_manager=ndiffports" );
-    //	system( "echo 2 > /sys/module/mptcp_ndiffports/parameters/num_subflows" );
+///	system( "sysctl net.mptcp.mptcp_path_manager=ndiffports" );
+///	system( "echo 2 > /sys/module/mptcp_ndiffports/parameters/num_subflows" );
 
-    // get the interface's name
+	/// get the interface's name
     std::string interface = getInterfaceName();
 
-    // create the threads
+	/// create the threads
     _bandwidthCalculator = new BandwidthCalculator( buildLogger( interface, "BandwidthCalculator", true ), interface, _ipAddress );
 
     _workConservationFlowHandler = new WorkConservationFlowHandler( interface
@@ -40,7 +41,7 @@ MainObject::MainObject( const std::string& bgAdaptorIPAddress )
 
 MainObject::~MainObject()
 {
-    // delete all of the heap memory
+	/// delete all of the heap memory
     delete _bandwidthCalculator;
     delete _bandwidthCommunicator;
     delete _workConservationFlowHandler;
@@ -48,98 +49,98 @@ MainObject::~MainObject()
 
 Common::LoggingHandler* MainObject::buildLogger( const std::string& interface, const std::string& filename, bool isCSV )
 {
-    // remove the -eth0 from the interface name
-    char removeInterface[] = "-eth0";
-    std::string newInterface( interface );
+	/// remove the -eth0 from the interface name
+	char removeInterface[] = "-eth0";
+	std::string newInterface( interface );
 
-    // loop through the string, removing appropriate characters
-    for ( unsigned int i = 0; i < strlen( removeInterface ); ++i )
-    {
-	newInterface.erase( remove( ++newInterface.begin(), newInterface.end(), removeInterface[ i ] ), newInterface.end()  );
-    }
+	/// loop through the string, removing appropriate characters
+	for ( unsigned int i = 0; i < strlen( removeInterface ); ++i )
+	{
+		newInterface.erase( remove( ++newInterface.begin(), newInterface.end(), removeInterface[ i ] ), newInterface.end()  );
+	}
 
-    // stream the logging string, create and return the pointer to it
-    std::ostringstream stream;
-    stream << "/tmp/" << newInterface << "/" << filename;
+	/// stream the logging string, create and return the pointer to it
+	std::ostringstream stream;
+	stream << "/tmp/" << newInterface << "/" << filename;
 
-    // check if the output file should be a .csv
-    if ( isCSV )
-    {
-	stream << ".csv";
-    }
-    else // not a .csv field
-    {
-	stream << ".log";
-    }
+	/// check if the output file should be a .csv
+	if ( isCSV )
+	{
+		stream << ".csv";
+	}
+	else /// not a .csv field
+	{
+		stream << ".log";
+	}
 
-    return new Common::LoggingHandler( stream.str() );
+	return new Common::LoggingHandler( stream.str() );
 }
 
 std::string MainObject::getInterfaceName()
 {
-    // init local variables
-    ifaddrs* ifaddr;
-    ifaddrs* ifa;
-    int family, s, n;
-    char host[ NI_MAXHOST ];
-    std::string interface;
+	/// init local variables
+	ifaddrs* ifaddr;
+	ifaddrs* ifa;
+	int family, s, n;
+	char host[ NI_MAXHOST ];
+	std::string interface;
 
-    // check for error when trying to get if address
-    if ( getifaddrs( &ifaddr ) == -1 )
-    {
-	perror("getifaddrs");
-    }
-
-    // loop through the list of interfaces
-    for ( ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++ )
-    {
-	// if the name is empty or if it is the loopback address, start
-	// the loop over again
-	if ( ifa->ifa_addr == NULL || !strcmp( ifa->ifa_name, "lo" ) )
-	    continue;
-
-	// grab the family
-	family = ifa->ifa_addr->sa_family;
-
-	// check if the family is internet protocol
-	if ( family == AF_INET )
+	/// check for error when trying to get if address
+	if ( getifaddrs( &ifaddr ) == -1 )
 	{
-	    // get the name info
-	    s = getnameinfo( ifa->ifa_addr
-			     , sizeof( sockaddr_in )
-			     , host
-			     , NI_MAXHOST
-			     , NULL
-			     , 0
-			     , NI_NUMERICHOST );
-	    // check the return value
-	    if ( s != 0 )
-	    {
-		printf("getnameinfo() failed: %s\n", gai_strerror(s));
-	    }
-
-	    // save the local ip address and interface name
-	    _ipAddress = host;
-	    interface = ifa->ifa_name;
+		perror("getifaddrs");
 	}
-    }
 
-    // free the memory
-    freeifaddrs( ifaddr );
+	/// loop through the list of interfaces
+	for ( ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++ )
+	{
+		/// if the name is empty or if it is the loopback address, start
+		/// the loop over again
+		if ( ifa->ifa_addr == NULL || !strcmp( ifa->ifa_name, "lo" ) )
+			continue;
 
-    return interface;
+		/// grab the family
+		family = ifa->ifa_addr->sa_family;
+
+		/// check if the family is internet protocol v4
+		if ( family == AF_INET )
+		{
+			/// get the name info
+			s = getnameinfo( ifa->ifa_addr
+							 , sizeof( sockaddr_in )
+							 , host
+							 , NI_MAXHOST
+							 , NULL
+							 , 0
+							 , NI_NUMERICHOST );
+			/// check the return value
+			if ( s != 0 )
+			{
+				printf( "getnameinfo() failed: %s\n", gai_strerror( s ) );
+			}
+
+			/// save the local ip address and interface name
+			_ipAddress = host;
+			interface = ifa->ifa_name;
+		}
+	}
+
+	/// free the memory
+	freeifaddrs( ifaddr );
+
+	return interface;
 }
 
 void MainObject::setECNEnabled( bool isEnabled )
 {
-    if ( isEnabled )
-    {
-	system( "sysctl -w net.ipv4.tcp_ecn=1 > /dev/null" );
-    }
-    else
-    {
-	system( "sysctl -w net.ipv4.tcp_ecn=0 > /dev/null" );
-    }
+	if ( isEnabled )
+	{
+		system( "sysctl -w net.ipv4.tcp_ecn=1 > /dev/null" );
+	}
+	else
+	{
+		system( "sysctl -w net.ipv4.tcp_ecn=0 > /dev/null" );
+	}
 }
 
-} // namespace WCEnabler
+} /// namespace WCEnabler

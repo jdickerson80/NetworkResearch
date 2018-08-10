@@ -12,12 +12,13 @@
 #include "Macros.h"
 #include "ThreadHelper.h"
 
-// macros to avoid "magic numbers"
+/// macros to avoid "magic numbers"
 #define LogBufferSize ( 1024 )
 #define PacketBufferSize ( 65536 )
 #define IPAddressSize ( 20 )
 
 namespace WCEnabler {
+
 BandwidthCalculator::BandwidthCalculator(Common::LoggingHandler* logger, const std::string& interface, const std::string& interfaceIPAddress )
 	: _packetSniffingThreadRunning( false )
 	, _calculationThreadRunning( false )
@@ -30,23 +31,23 @@ BandwidthCalculator::BandwidthCalculator(Common::LoggingHandler* logger, const s
 	, _logger( logger )
 	, _interfaceIPAddress( interfaceIPAddress )
 {
-	// create the raw socket that intercepts ALL packets
+	/// create the raw socket that intercepts ALL packets
 	_socketFileDescriptor = socket( AF_PACKET, SOCK_RAW, htons( ETH_P_ALL ) );
 //	int results = setsockopt( _socketFileDescriptor, SOL_SOCKET, SO_BINDTODEVICE, interface.c_str(), strlen( interface.c_str() )+ 1 );
 //	printf("sock opt %i\n", results );
 
-	// check for socket fd error
+	/// check for socket fd error
 	if ( _socketFileDescriptor == -1 )
 	{
 		printf( "socket sniffer failed\n" );
 	}
 
-	// add the header to the log
+	/// add the header to the log
 	char buffer[ LogBufferSize ];
 	snprintf( buffer, LogBufferSize, "protocol, source, destination, ecn\n" );
 	_logger->log( buffer );
 
-	// start both threads
+	/// start both threads
 	Common::ThreadHelper::startDetachedThread( &_packetSniffingThread
 											   , handlePacketSniffing
 											   , &_packetSniffingThreadRunning
@@ -60,24 +61,24 @@ BandwidthCalculator::BandwidthCalculator(Common::LoggingHandler* logger, const s
 
 BandwidthCalculator::~BandwidthCalculator()
 {
-	// shut off all of the threads, close the socket, and delete the logger
+	/// shut off all of the threads, close the socket, and delete the logger
 	_calculationThreadRunning = false;
 	_packetSniffingThreadRunning = false;
 	close( _socketFileDescriptor );
 	delete _logger;
 }
 
-float BandwidthCalculator::bandwidthGuaranteeRate() const
+unsigned int BandwidthCalculator::bandwidthGuaranteeRate() const
 {
 	return _bandwidthGuaranteeRate;
 }
 
-float BandwidthCalculator::workConservingRate() const
+unsigned int BandwidthCalculator::workConservingRate() const
 {
 	return _workConservingRate;
 }
 
-float BandwidthCalculator::totalRate() const
+unsigned int BandwidthCalculator::totalRate() const
 {
 	return _totalRate;
 }
@@ -107,7 +108,7 @@ void BandwidthCalculator::updateTotalBandwidthRate()
 
 void* BandwidthCalculator::handlePacketSniffing( void* input )
 {
-	// init the variables
+	/// init the variables
 	BandwidthCalculator* bandwidthCalculator = static_cast< BandwidthCalculator* >( input );
 	sockaddr socketAddress;
 	ssize_t dataSize;
@@ -125,7 +126,7 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 	iphdr* ipHeader;
 	const char* const ipAddress = bandwidthCalculator->_interfaceIPAddress.c_str();
 
-	// while the thread should run
+	/// while the thread should run
 	while ( bandwidthCalculator->_packetSniffingThreadRunning )
 	{
 		dataSize = recvfrom( bandwidthCalculator->_socketFileDescriptor
@@ -135,60 +136,60 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 							 , &socketAddress
 							 , (socklen_t*)&socketAddressLength );
 
-		// check for error
+		/// check for error
 		if ( dataSize < 0 )
 		{
-			// log the error and continue
+			/// log the error and continue
 			logger->log( strerror( errno ) );
-//			printf("Err %s\n", strerror( errno ) );
+///			printf("Err %s\n", strerror( errno ) );
 			continue;
 		}
 
-		// get the appropriate headers
+		/// get the appropriate headers
 		ethernetHeader = (ethhdr*)packetBuffer;
 		ipHeader = (iphdr*)( packetBuffer + sizeof( ethhdr ) );
 
-		// put the addresses into the string
+		/// put the addresses into the string
 		/// @note This HAS to be done sequentially and stored because the inet_ntoa char* buffer
 		/// will be overridden every time it is called. This will make both addresses the
 		/// same.
 		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
 		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
 
-		// if the packet source is this interface
+		/// if the packet source is this interface
 		if ( !strcmp( sourceAddress, ipAddress ) )
 		{
-			// convert the bytes to bits
+			/// convert the bytes to bits
 			dataSize *= 8;
 
-			// mask the ecn field out to yield only the DSCP field
+			/// mask the ecn field out to yield only the DSCP field
 			dscpValue = ipHeader->tos & WorkConvervationMask;
 
-			// determine if the packet is from the work conservation flow
+			/// determine if the packet is from the work conservation flow
 			if ( dscpValue == WorkConservationFlowDecimalForm )
 			{
-				// add the packet size to the counter
+				/// add the packet size to the counter
 				(*workConservingCounter) += dataSize;
 			}
-			else // the packet is from the bandwidth guarantee flow
+			else /// the packet is from the bandwidth guarantee flow
 			{
-				//if ( ipHeader->tos == 0 ) // does the if need to be there??
-				// add the packet size to the counter
+				///if ( ipHeader->tos == 0 ) // does the if need to be there??
+				/// add the packet size to the counter
 				(*bandwidthGuaranteeCounter) += dataSize;
 			}
 		}
 
-		// mask out the DSCP field and check if congestion has been encountered
+		/// mask out the DSCP field and check if congestion has been encountered
 		(*ecn) = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
 
-		// set up the logging string
+		/// set up the logging string
 		snprintf( logBuffer, LogBufferSize, "%u, %s, %s, %u\n"
 				  , ethernetHeader->h_proto
 				  , sourceAddress
 				  , destinationAddress
 				  , *ecn );
 
-		// log it
+		/// log it
 		logger->log( logBuffer );
 	}
 
@@ -198,13 +199,13 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 
 void* BandwidthCalculator::handleRateCalculation( void* input )
 {
-	// init the variables
+	/// init the variables
 	BandwidthCalculator* bandwidthCalculator = static_cast< BandwidthCalculator* >( input );
 
-	// while the thread should run
+	/// while the thread should run
 	while ( bandwidthCalculator->_calculationThreadRunning )
 	{
-		// update the bandwidth calculation every second
+		/// update the bandwidth calculation every second
 		bandwidthCalculator->updateBandwidthGuaranteeRate();
 		bandwidthCalculator->updateWorkConservingRate();
 		bandwidthCalculator->updateTotalBandwidthRate();
@@ -216,4 +217,4 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 	return NULL;
 }
 
-} // namespace WCEnabler
+} /// namespace WCEnabler

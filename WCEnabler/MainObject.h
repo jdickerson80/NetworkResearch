@@ -3,12 +3,13 @@
 
 #include <string>
 
-// Forward declarations
+/// Forward declarations
 namespace Common {
 class LoggingHandler;
 }
 
 namespace WCEnabler {
+
 class BandwidthCalculator;
 class BandwidthCommunicator;
 class WorkConservationFlowHandler;
@@ -60,6 +61,6 @@ private:
 	static void setECNEnabled( bool isEnabled );
 };
 
-} // namespace WCEnabler
+} /// namespace WCEnabler
 
-#endif // MAINOBJECT_H
+#endif /// MAINOBJECT_H
