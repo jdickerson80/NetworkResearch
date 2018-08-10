@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['updateworkconservation',['updateWorkConservation',['../classWCEnabler_1_1WorkConservationFlowHandler.html#ac885e2a7596f6be373024de1a98c7480',1,'WCEnabler::WorkConservationFlowHandler']]]
+  ['totalrate',['totalRate',['../classWCEnabler_1_1BandwidthCalculator.html#a57a6165e8b30b6e327541019c07da8d3',1,'WCEnabler::BandwidthCalculator']]]
 ];
