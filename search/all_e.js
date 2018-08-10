@@ -12,7 +12,7 @@ var searchData=
   ['simpleratecalculator',['SimpleRateCalculator',['../classCommon_1_1Math_1_1SimpleRateCalculator.html',1,'Common::Math']]],
   ['simpleratecalculator',['SimpleRateCalculator',['../classCommon_1_1Math_1_1SimpleRateCalculator.html#a0bdecc411e6bd51ff0353c925aec856c',1,'Common::Math::SimpleRateCalculator']]],
   ['simpleratecalculator_2eh',['SimpleRateCalculator.h',['../SimpleRateCalculator_8h.html',1,'']]],
-  ['simpleratecalculator_3c_20unsigned_20int_2c_20float_20_3e',['SimpleRateCalculator&lt; unsigned int, float &gt;',['../classCommon_1_1Math_1_1SimpleRateCalculator.html',1,'Common::Math']]],
+  ['simpleratecalculator_3c_20unsigned_20int_2c_20unsigned_20int_20_3e',['SimpleRateCalculator&lt; unsigned int, unsigned int &gt;',['../classCommon_1_1Math_1_1SimpleRateCalculator.html',1,'Common::Math']]],
   ['startdetachedthread',['startDetachedThread',['../classCommon_1_1ThreadHelper.html#ac08e2d5dcb09787954f11fd70cb2c919',1,'Common::ThreadHelper']]],
   ['startjoinablethread',['startJoinableThread',['../classCommon_1_1ThreadHelper.html#ac7ff5bf160e8251bccefcf817b3f987c',1,'Common::ThreadHelper']]],
   ['startroutine',['StartRoutine',['../classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9',1,'Common::ThreadHelper']]],

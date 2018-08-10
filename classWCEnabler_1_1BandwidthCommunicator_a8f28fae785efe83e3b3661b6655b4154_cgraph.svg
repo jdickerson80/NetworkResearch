@@ -59,7 +59,7 @@
 </g>
 <!-- Node5 -->
 <g id="node5" class="node"><title>Node5</title>
-<g id="a_node5"><a xlink:href="classWCEnabler_1_1BandwidthCalculator.html#aa0619897c4b0911466067845b9c4bfd5" target="_top" xlink:title="bandwidthGuaranteeRate getter ">
+<g id="a_node5"><a xlink:href="classWCEnabler_1_1BandwidthCalculator.html#a9aeae22daf441b1b9276136e03f15e72" target="_top" xlink:title="bandwidthGuaranteeRate getter ">
 <polygon fill="white" stroke="black" points="230.5,-175.5 230.5,-205.5 393.5,-205.5 393.5,-175.5 230.5,-175.5"/>
 <text text-anchor="start" x="238.5" y="-193.5" font-family="Helvetica,sans-Serif" font-size="10.00">WCEnabler::BandwidthCalculator</text>
 <text text-anchor="middle" x="312" y="-182.5" font-family="Helvetica,sans-Serif" font-size="10.00">::bandwidthGuaranteeRate</text>
@@ -73,7 +73,7 @@
 </g>
 <!-- Node6 -->
 <g id="node6" class="node"><title>Node6</title>
-<g id="a_node6"><a xlink:href="classWCEnabler_1_1BandwidthCalculator.html#ab0c0a49b26ee11af3836d2cf54fecd48" target="_top" xlink:title="workConservingRate getter ">
+<g id="a_node6"><a xlink:href="classWCEnabler_1_1BandwidthCalculator.html#a00421c4a684862641bf757d51f39a2a4" target="_top" xlink:title="workConservingRate getter ">
 <polygon fill="white" stroke="black" points="230.5,-126.5 230.5,-156.5 393.5,-156.5 393.5,-126.5 230.5,-126.5"/>
 <text text-anchor="start" x="238.5" y="-144.5" font-family="Helvetica,sans-Serif" font-size="10.00">WCEnabler::BandwidthCalculator</text>
 <text text-anchor="middle" x="312" y="-133.5" font-family="Helvetica,sans-Serif" font-size="10.00">::workConservingRate</text>
@@ -113,7 +113,7 @@
 </g>
 <!-- Node10 -->
 <g id="node10" class="node"><title>Node10</title>
-<g id="a_node10"><a xlink:href="classWCEnabler_1_1BandwidthCalculator.html#a56f0b87ca9b6950ad2b4de38c72d6bcb" target="_top" xlink:title="totalRate getter ">
+<g id="a_node10"><a xlink:href="classWCEnabler_1_1BandwidthCalculator.html#a57a6165e8b30b6e327541019c07da8d3" target="_top" xlink:title="totalRate getter ">
 <polygon fill="white" stroke="black" points="230.5,-0.5 230.5,-30.5 393.5,-30.5 393.5,-0.5 230.5,-0.5"/>
 <text text-anchor="start" x="238.5" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">WCEnabler::BandwidthCalculator</text>
 <text text-anchor="middle" x="312" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">::totalRate</text>

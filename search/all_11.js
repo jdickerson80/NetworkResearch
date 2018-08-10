@@ -8,6 +8,6 @@ var searchData=
   ['workconservationflowhandler_2ecpp',['WorkConservationFlowHandler.cpp',['../WorkConservationFlowHandler_8cpp.html',1,'']]],
   ['workconservationflowhandler_2eh',['WorkConservationFlowHandler.h',['../WorkConservationFlowHandler_8h.html',1,'']]],
   ['workconservationflowhexform',['WorkConservationFlowHexForm',['../Macros_8h.html#a4c068d23936b841c0562febab9aeeb8b',1,'Macros.h']]],
-  ['workconservingrate',['workConservingRate',['../classWCEnabler_1_1BandwidthCalculator.html#ab0c0a49b26ee11af3836d2cf54fecd48',1,'WCEnabler::BandwidthCalculator']]],
+  ['workconservingrate',['workConservingRate',['../classWCEnabler_1_1BandwidthCalculator.html#a00421c4a684862641bf757d51f39a2a4',1,'WCEnabler::BandwidthCalculator']]],
   ['workconvervationmask',['WorkConvervationMask',['../Macros_8h.html#a314ca7637a0f6655d1de7d70ff98c962',1,'Macros.h']]]
 ];
