@@ -19,10 +19,10 @@ private:
 	 */
 	struct HostBandwidthStatistics
 	{
-		float demand;
-		float guarantee;
-		float lastDemand;
-		float lastGuarantee;
+		unsigned int demand;
+		unsigned int guarantee;
+		unsigned int lastDemand;
+		unsigned int lastGuarantee;
 		sockaddr_in address;
 
 		HostBandwidthStatistics()

@@ -100,7 +100,7 @@ void HandleHostBandwidth::setRunning( bool isRunning )
 void* HandleHostBandwidth::handleConnections( void* input )
 {
 	HandleHostBandwidth* bandwidthManager = static_cast< HandleHostBandwidth* >( input );
-	float bandwidth;
+	unsigned int bandwidth;
 	unsigned int bandwidthLength = sizeof( bandwidth );
 	unsigned int receiveLength;
 	unsigned int length = sizeof( bandwidthManager->_localAddresses );
@@ -196,12 +196,12 @@ size_t HandleHostBandwidth::findHostIndex( char* ipAddress )
 void HandleHostBandwidth::calculateHostBandwidth( HostBandwidthStatistics* hostStatistics )
 {
 	hostStatistics->lastGuarantee = hostStatistics->guarantee;
-	hostStatistics->guarantee = _totalBandwidth / _numberOfHosts;
+	hostStatistics->guarantee = _totalBandwidth / _numberOfHosts / 2;
 }
 
 void HandleHostBandwidth::sendBandwidthRates()
 {
-	float rate;
+	unsigned int rate;
 	size_t rateSize = sizeof( rate );
 	size_t size = sizeof( _hostsBandwidth[ 0 ].address );
 	std::stringstream stream;
