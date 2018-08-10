@@ -118,7 +118,7 @@ var NAVTREEINDEX0 =
 "classWCEnabler_1_1BandwidthCalculator.html#a57a6165e8b30b6e327541019c07da8d3":[3,0,1,0,4],
 "classWCEnabler_1_1BandwidthCalculator.html#a9aeae22daf441b1b9276136e03f15e72":[3,0,1,0,2],
 "classWCEnabler_1_1BandwidthCalculator.html#ab9a961a6fe8e0d9b92163f37f5e64cd2":[3,0,1,0,3],
-"classWCEnabler_1_1BandwidthCalculator.html#aefd2e67bbde48ae518a57c6e5f7c3399":[3,0,1,0,0],
+"classWCEnabler_1_1BandwidthCalculator.html#aeaa4b20de56f972916e664b842dc35df":[3,0,1,0,0],
 "classWCEnabler_1_1BandwidthCommunicator.html":[3,0,1,1],
 "classWCEnabler_1_1BandwidthCommunicator.html#a7c40fa4715b3d0386e5536abd4602018":[3,0,1,1,0],
 "classWCEnabler_1_1BandwidthCommunicator.html#a8f28fae785efe83e3b3661b6655b4154":[3,0,1,1,1],

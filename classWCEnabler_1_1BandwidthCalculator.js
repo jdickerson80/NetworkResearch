@@ -1,6 +1,6 @@
 var classWCEnabler_1_1BandwidthCalculator =
 [
-    [ "BandwidthCalculator", "classWCEnabler_1_1BandwidthCalculator.html#aefd2e67bbde48ae518a57c6e5f7c3399", null ],
+    [ "BandwidthCalculator", "classWCEnabler_1_1BandwidthCalculator.html#aeaa4b20de56f972916e664b842dc35df", null ],
     [ "~BandwidthCalculator", "classWCEnabler_1_1BandwidthCalculator.html#a4e8c950180195dbae46ef4c76b94c078", null ],
     [ "bandwidthGuaranteeRate", "classWCEnabler_1_1BandwidthCalculator.html#a9aeae22daf441b1b9276136e03f15e72", null ],
     [ "ecn", "classWCEnabler_1_1BandwidthCalculator.html#ab9a961a6fe8e0d9b92163f37f5e64cd2", null ],

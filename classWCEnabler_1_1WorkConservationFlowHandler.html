@@ -150,7 +150,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classWCEnabler_1_1WorkConservationFlowHandler.html" title="The WorkConservationFlowHandler class handles the logic of the work conservation flow. ">WorkConservationFlowHandler</a> class handles the logic of the work conservation flow. </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>finish this class </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>finish this class </dd></dl>
 
 <p>Definition at line <a class="el" href="WorkConservationFlowHandler_8h_source.html#l00023">23</a> of file <a class="el" href="WorkConservationFlowHandler_8h_source.html">WorkConservationFlowHandler.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -200,10 +200,6 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>init the stream</p>
-<p>stream the multipath off command</p>
-<p>stream the multipath on command</p>
-<p>set the state to GuaranteedBandwidthSufficient </p>
 
 <p>Definition at line <a class="el" href="WorkConservationFlowHandler_8cpp_source.html#l00010">10</a> of file <a class="el" href="WorkConservationFlowHandler_8cpp_source.html">WorkConservationFlowHandler.cpp</a>.</p>
 
@@ -329,20 +325,6 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>current state </dd></dl>
-<p>state where there is a flow but no WC flow</p>
-<p>if the previous time slot has an ECN,</p>
-<p>start the WC flow</p>
-<p>there is no ECN</p>
-<p>set the state of GuaranteedBandwidthSufficient</p>
-<p>state where there is an existing flow with a WC flow</p>
-<p>init the local variables</p>
-<p>average bandwidth rate &lt; average work conserving rate * a safety factor</p>
-<p>state where the bandwidth guarantee flow is sufficient</p>
-<p>do the vm level check</p>
-<p>bandwidth guarantee flow is still sufficient</p>
-<p>new flow state</p>
-<p>update the values. basically, set the last values to the current ones</p>
-<p>return the current state </p>
 
 <p>Definition at line <a class="el" href="WorkConservationFlowHandler_8cpp_source.html#l00039">39</a> of file <a class="el" href="WorkConservationFlowHandler_8cpp_source.html">WorkConservationFlowHandler.cpp</a>.</p>
 

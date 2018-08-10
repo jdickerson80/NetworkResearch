@@ -174,7 +174,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00111">111</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
+<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00158">158</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
@@ -226,8 +226,6 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 <p>clear the tc commands</p>
-<p>set up the qdisc</p>
-<p>set up the rate limit on the interface</p>
 <p>stream.flush();</p>
 <p>stream &lt;&lt; "iptables -t mangle -A PREROUTING -m tos --tos 0x00 -j MARK --set-mark 0x10;\n";</p>
 <p>stream &lt;&lt; "iptables -t mangle -A PREROUTING -m tos --tos 0x38 -j MARK --set-mark 0x11;\n";</p>
@@ -285,14 +283,12 @@ Here is the caller graph for this function:</div>
   </dd>
 </dl>
 <p>clear the tc commands</p>
-<p>set up the qdisc</p>
-<p>set up the rate limit on the interface</p>
 <p>clearTCCommands( interface ); string command; ostringstream stream;</p>
 <p>// stream the command into the string stream &lt;&lt; "tc qdisc add dev " &lt;&lt; interface &lt;&lt; "-eth0 handle 1: root htb default 11;\n"; stream &lt;&lt; "tc class add dev " &lt;&lt; interface &lt;&lt; "-eth0 parent 1: classid 1:1 htb rate " &lt;&lt; desiredBandwidth &lt;&lt; "mbit;\n";</p>
 <p>///</p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>move this into igress method?? stream &lt;&lt; "tc class add dev " &lt;&lt; interface &lt;&lt; "-eth0 parent 1:1 classid 1:11 htb rate " &lt;&lt; desiredBandwidth &lt;&lt; "mbit;\n"; </dd></dl>
 <p>command = stream.str(); system( command.c_str() ); </p>
 
-<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00054">54</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
+<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00067">67</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
 
 </div>
 </div>
@@ -338,7 +334,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>fill this method in </dd></dl>
 
-<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00101">101</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
+<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00148">148</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
 
 </div>
 </div>
@@ -384,7 +380,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>fill this method in </dd></dl>
 
-<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00106">106</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
+<p>Definition at line <a class="el" href="TCControl_8cpp_source.html#l00153">153</a> of file <a class="el" href="TCControl_8cpp_source.html">TCControl.cpp</a>.</p>
 
 </div>
 </div>
