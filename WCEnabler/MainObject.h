@@ -22,6 +22,13 @@ class MainObject
 {
 private:
 
+	/**
+	 * @brief MainObject constructor for the app
+	 */
+	MainObject();
+
+private:
+
 	BandwidthCalculator* _bandwidthCalculator;
 	BandwidthCommunicator* _bandwidthCommunicator;
 	std::string _ipAddress;
@@ -30,11 +37,12 @@ private:
 public:
 
 	/**
-	 * @brief MainObject constructor for the app
-	 * @param interface ip address of the interface
-	 * @param bgAdaptorIPAddress ip address of the BGAdaptor module
+	 * @brief instance instance method is the Singleton method of creating and accessing this
+	 *			class. This ensures there can only be ONE instance of this class.
+	 * @return reference to this class.
+	 * @note	https://en.wikipedia.org/wiki/Singleton_pattern
 	 */
-	MainObject( const std::string& bgAdaptorIPAddress );
+	static MainObject& instance();
 
 	~MainObject();
 

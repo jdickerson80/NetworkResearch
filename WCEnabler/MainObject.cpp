@@ -9,11 +9,12 @@
 #include "BandwidthCalculator.h"
 #include "BandwidthCommunicator.h"
 #include "LoggingHandler.h"
+#include "Macros.h"
 #include "WorkConservationFlowHandler.h"
 
 namespace WCEnabler {
 
-MainObject::MainObject( const std::string& bgAdaptorIPAddress )
+MainObject::MainObject()
 {
 	// get the interface's name
     std::string interface = getInterfaceName();
@@ -26,7 +27,7 @@ MainObject::MainObject( const std::string& bgAdaptorIPAddress )
 								    , 0.05
 								    , buildLogger( interface, "WorkConservation", false ) );
 
-    _bandwidthCommunicator = new BandwidthCommunicator( bgAdaptorIPAddress
+	_bandwidthCommunicator = new BandwidthCommunicator( BGAdaptorIPAddress
 							, interface
 							, _bandwidthCalculator
 							, buildLogger( interface, "BandwidthLimit", false )
@@ -40,6 +41,12 @@ MainObject::~MainObject()
     delete _bandwidthCalculator;
     delete _bandwidthCommunicator;
     delete _workConservationFlowHandler;
+}
+
+MainObject& MainObject::instance()
+{
+	static MainObject instance;
+	return instance;
 }
 
 Common::LoggingHandler* MainObject::buildLogger( const std::string& interface, const std::string& filename, bool isCSV )
