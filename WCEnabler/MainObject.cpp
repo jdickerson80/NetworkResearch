@@ -19,6 +19,8 @@ MainObject::MainObject()
 	// get the interface's name
     std::string interface = getInterfaceName();
 
+	setECNEnabled( true );
+
 	// create the threads
 	_bandwidthCalculator = new BandwidthCalculator( buildLogger( interface, "BandwidthCalculator", true ), _ipAddress );
 
@@ -131,6 +133,18 @@ std::string MainObject::getInterfaceName()
 	freeifaddrs( ifaddr );
 
 	return interface;
+}
+
+void MainObject::setECNEnabled( bool isEnabled )
+{
+	if ( isEnabled )
+	{
+		system( "sysctl -w net.ipv4.tcp_ecn=1 > /dev/null" );
+	}
+	else
+	{
+		system( "sysctl -w net.ipv4.tcp_ecn=0 > /dev/null" );
+	}
 }
 
 } // namespace WCEnabler

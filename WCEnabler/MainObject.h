@@ -61,6 +61,12 @@ private:
 	 * @return the name of the interface
 	 */
 	std::string getInterfaceName();
+
+	/**
+	 * @brief setECNEnabled setter
+	 * @param isEnabled true if ecn is enabled, false if ecn is not enabled
+	 */
+	void setECNEnabled( bool isEnabled );
 };
 
 } // namespace WCEnabler
