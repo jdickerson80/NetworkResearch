@@ -5,6 +5,7 @@
 #ifndef WORKCONSERVATIONFLOWHANDLER_H
 #define WORKCONSERVATIONFLOWHANDLER_H
 
+#include <pthread.h>
 #include <stdint.h>
 #include <string>
 
@@ -16,6 +17,9 @@ class LoggingHandler;
 }
 
 namespace WCEnabler {
+
+class BandwidthValues;
+
 /**
  * @brief The WorkConservationFlowHandler class handles the logic of the work conservation flow.
  * @todo finish this class
@@ -44,43 +48,46 @@ private:
 	// typedef to make declarations easier
 	typedef Common::Math::ExponentialSmoothingCalculator< float, float > RateCalculator;
 
-	/**
-	 * @brief The Values struct holds the pertinent values for flow control
-	 */
-	struct Values
-	{
-		float bandwidthGuaranteeRate;
-		uint8_t ecn;
-		float workConservingRate;
+//	/**
+//	 * @brief The Values struct holds the pertinent values for flow control
+//	 */
+//	struct Values
+//	{
+//		float bandwidthGuaranteeRate;
+//		uint8_t ecn;
+//		float workConservingRate;
 
-		RateCalculator bandwidthGuaranteeAverage;
-		RateCalculator workConservingAverage;
 
-		Values()
-			: bandwidthGuaranteeRate( 0 )
-			, ecn( 0 )
-			, workConservingRate( 0 )
-			, bandwidthGuaranteeAverage( 1.0 )
-			, workConservingAverage( 1.0 ) {}
+//		Values()
+//			: bandwidthGuaranteeRate( 0 )
+//			, ecn( 0 )
+//			, workConservingRate( 0 )
+//			, bandwidthGuaranteeAverage( 1.0 )
+//			, workConservingAverage( 1.0 ) {}
 
-		// convenience method to update the variables
-		void update( float bandwidthGuaranteeRate, uint8_t ecn, float workConservingRate )
-		{
-			bandwidthGuaranteeRate = bandwidthGuaranteeRate;
-			ecn = ecn;
-			workConservingRate = workConservingRate;
+//		// convenience method to update the variables
+//		void update( float bandwidthGuaranteeRate, uint8_t ecn, float workConservingRate )
+//		{
+//			bandwidthGuaranteeRate = bandwidthGuaranteeRate;
+//			ecn = ecn;
+//			workConservingRate = workConservingRate;
 
-			bandwidthGuaranteeAverage.calculateRate( bandwidthGuaranteeRate );
-			workConservingAverage.calculateRate( workConservingRate );
-		}
-	};
+//			bandwidthGuaranteeAverage.calculateRate( bandwidthGuaranteeRate );
+//			workConservingAverage.calculateRate( workConservingRate );
+//		}
+//	};
 
 private:
 
 	float _beta;
 	float _safetyFactor;
-	Values _values;
+	bool _updateThreadRunning;
+	const BandwidthValues* const _bandwidthValues;
+	pthread_t _updateThread;
+//	Values _values;
 	FlowState::Enum _currentState;
+	RateCalculator _bandwidthGuaranteeAverage;
+	RateCalculator _workConservingAverage;
 	std::string _multipathBackupCommand;
 	std::string _multipathNonBackupCommand;
 	Common::LoggingHandler* _logger;
@@ -97,22 +104,10 @@ public:
 	WorkConservationFlowHandler( const std::string& interface
 								 , float beta
 								 , float safetyFactor
-								 , Common::LoggingHandler* logger );
+								 , Common::LoggingHandler* logger
+								 , const BandwidthValues* const bandwidthValues );
 
 	~WorkConservationFlowHandler();
-
-	/**
-	 * @brief updateWorkConservation method updates the work conservation flow
-	 * @param currentBandwidthGuaranteeRate current bandwidth guarantee flow rate
-	 * @param workConservingRate current work conserving flow rate
-	 * @param ECNValue current ecn value
-	 * @param currentBandwidthGuarantee current bandwidth guarantee
-	 * @return current state
-	 */
-	FlowState::Enum updateWorkConservation( float currentBandwidthGuaranteeRate
-											, float workConservingRate
-											, uint8_t ECNValue
-											, float currentBandwidthGuarantee );
 
 	/**
 	 * @brief currentState getter
@@ -152,6 +147,13 @@ private:
 	 *			false if the formula holds
 	 */
 	bool vmLevelCheck( float bandwidthGuarantee );
+
+	/**
+	 * @brief	method updates the work conservation flow
+	 * @param input pointer to this class
+	 * @return NULL
+	 */
+	static void* updateWorkConservation( void* input );
 };
 
 } // namespace WCEnabler

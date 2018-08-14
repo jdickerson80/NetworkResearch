@@ -3,16 +3,26 @@
 #include <netinet/tcp.h>
 #include <sstream>
 #include <stdlib.h>
+#include <unistd.h>
 
+#include "BandwidthValues.h"
 #include "LoggingHandler.h"
+#include "Macros.h"
+#include "ThreadHelper.h"
 
+#define ModifyIPLink ( 1 )
 namespace WCEnabler {
-WorkConservationFlowHandler::WorkConservationFlowHandler( const std::string& interface
-														  , float beta
-														  , float safetyFactor
-														  , Common::LoggingHandler* logger )
+WorkConservationFlowHandler::WorkConservationFlowHandler(const std::string& interface
+		, float beta
+		, float safetyFactor
+		, Common::LoggingHandler* logger
+		, const BandwidthValues * const bandwidthValues )
 	: _beta( beta )
 	, _safetyFactor( safetyFactor )
+	, _updateThreadRunning( false )
+	, _bandwidthValues( bandwidthValues )
+	, _bandwidthGuaranteeAverage( 1.0 )
+	, _workConservingAverage( 1.0 )
 	, _logger( logger )
 {
 	// init the stream
@@ -29,77 +39,18 @@ WorkConservationFlowHandler::WorkConservationFlowHandler( const std::string& int
 
 	// set the state to GuaranteedBandwidthSufficient
 	setState( FlowState::GuaranteedBandwidthSufficient );
+
+	// start both threads
+	Common::ThreadHelper::startDetachedThread( &_updateThread
+											   , updateWorkConservation
+											   , &_updateThreadRunning
+											   , static_cast< void* >( this ) );
 }
 
 WorkConservationFlowHandler::~WorkConservationFlowHandler()
 {
+	_updateThreadRunning = false;
 	delete _logger;
-}
-
-WorkConservationFlowHandler::FlowState::Enum WorkConservationFlowHandler::updateWorkConservation( float currentBandwidthGuaranteeRate
-																								  , float workConservingRate
-																								  , uint8_t ECNValue
-																								  , float currentBandwidthGuarantee)
-{
-	switch ( _currentState )
-	{
-	// state where there is a flow but no WC flow
-	case FlowState::ExistingFlowWithoutWorkConservation:
-		// if the previous time slot has an ECN,
-		if ( _values.ecn )
-		{
-			// start the WC flow
-			setState( FlowState::ExistingFlowWithWorkConservation );
-		}
-		else // there is no ECN
-		{
-			// set the state of GuaranteedBandwidthSufficient
-			setState( FlowState::GuaranteedBandwidthSufficient );
-		}
-		break;
-
-	// state where there is an existing flow with a WC flow
-	case FlowState::ExistingFlowWithWorkConservation:
-	{
-		// init the local variables
-		float averageBandwidthGuaranteeRate	= _values.bandwidthGuaranteeAverage.rate();
-		float averageWorkConservingRate		= _values.workConservingAverage.rate();
-
-		// average bandwidth rate < average work conserving rate * a safety factor
-		if ( averageBandwidthGuaranteeRate < ( averageWorkConservingRate * _beta ) )
-		{
-			setState( FlowState::GuaranteedBandwidthSufficient );
-		}
-	}
-		break;
-
-	// state where the bandwidth guarantee flow is sufficient
-	case FlowState::GuaranteedBandwidthSufficient:
-		// do the vm level check
-		if ( !vmLevelCheck( currentBandwidthGuarantee ) )
-		{
-			// set the state to new wc flow
-			setState( FlowState::NewWCFlow );
-		}
-		// bandwidth guarantee flow is still sufficient
-		break;
-
-	// new flow state
-	case FlowState::NewWCFlow:
-		// do nothing state
-		break;
-	}
-
-//	printf( "lwc %f wc %f sf %f\n"
-//			, _values.workConservingRate
-//			, workConservingRate
-//			, _safetyFactor );
-
-	// update the values. basically, set the last values to the current ones
-	_values.update( currentBandwidthGuaranteeRate, ECNValue, workConservingRate );
-
-	// return the current state
-	return _currentState;
 }
 
 WorkConservationFlowHandler::FlowState::Enum WorkConservationFlowHandler::currentState() const
@@ -109,14 +60,16 @@ WorkConservationFlowHandler::FlowState::Enum WorkConservationFlowHandler::curren
 
 void WorkConservationFlowHandler::setWCSubFlowEnabled( bool isEnabled )
 {
-//	if ( isEnabled )
-//	{
-//		system( _multipathNonBackupCommand.c_str() );
-//	}
-//	else
-//	{
-//		system( _multipathBackupCommand.c_str() );
-//	}
+#if defined ( ModifyIPLink )
+	if ( isEnabled )
+	{
+		system( _multipathNonBackupCommand.c_str() );
+	}
+	else
+	{
+		system( _multipathBackupCommand.c_str() );
+	}
+#endif
 }
 
 std::string WorkConservationFlowHandler::stateToString( FlowState::Enum currentState )
@@ -128,7 +81,7 @@ std::string WorkConservationFlowHandler::stateToString( FlowState::Enum currentS
 		break;
 
 	case FlowState::ExistingFlowWithWorkConservation:
-		return std::string( "ExistingFlowWithWorkConservation" );
+		return std::string( "!!!!ExistingFlowWithWorkConservation" );
 		break;
 
 	case FlowState::GuaranteedBandwidthSufficient:
@@ -175,25 +128,89 @@ void WorkConservationFlowHandler::setState( FlowState::Enum flowState )
 		break;
 	}
 
-//	printf("%s\n", stateToString( _currentState ).c_str() );
+	printf("%s\n", stateToString( _currentState ).c_str() );
 }
 
 bool WorkConservationFlowHandler::vmLevelCheck( float bandwidthGuarantee )
 {
-	float bandwidthGuaranteeAverage = _values.bandwidthGuaranteeAverage.rate();
-	float workConservationGuaranteeRate = _values.workConservingAverage.rate();
+	float bandwidthGuaranteeAverage = _bandwidthGuaranteeAverage.rate();
+	float workConservationGuaranteeRate = _workConservingAverage.rate();
 
 	// bandwidth guarantee average + work conservation average rate
 	// < current bandwidth guarantee * safety factor
 	return ( bandwidthGuaranteeAverage + workConservationGuaranteeRate )
 			< ( bandwidthGuarantee * _safetyFactor );
-//	printf( "%2.2f, %2.2f, %2.2f, %2.2f, %i\n"
-//			, bandwidthGuaranteeAverage
-//			, workConservationGuaranteeRate
-//			, bandwidthGuarantee
-//			, _safetyFactor
-//			, ret );
-//	return ret;
+}
+
+void* WorkConservationFlowHandler::updateWorkConservation( void* input )
+{
+	// init the variables
+	WorkConservationFlowHandler* workConservationFlowHandler = static_cast< WorkConservationFlowHandler* >( input );
+	const BandwidthValues* const bandwidthValues = workConservationFlowHandler->_bandwidthValues;
+	FlowState::Enum* currentState = &workConservationFlowHandler->_currentState;
+	RateCalculator* bandwidthGuaranteeAverage = &workConservationFlowHandler->_bandwidthGuaranteeAverage;
+	RateCalculator* workConservingAverage = &workConservationFlowHandler->_workConservingAverage;
+
+	while ( workConservationFlowHandler->_updateThreadRunning )
+	{
+		switch ( *currentState )
+		{
+		// state where there is a flow but no WC flow
+		case FlowState::ExistingFlowWithoutWorkConservation:
+			// if the previous time slot has an ECN,
+			if ( bandwidthValues->ecnValue )
+			{
+				// start the WC flow
+				workConservationFlowHandler->setState( FlowState::ExistingFlowWithWorkConservation );
+			}
+			else // there is no ECN
+			{
+				// set the state of GuaranteedBandwidthSufficient
+				workConservationFlowHandler->setState( FlowState::GuaranteedBandwidthSufficient );
+			}
+			break;
+
+		// state where there is an existing flow with a WC flow
+		case FlowState::ExistingFlowWithWorkConservation:
+		{
+			// init the local variables
+			float averageBandwidthGuaranteeRate	= bandwidthGuaranteeAverage->rate();
+			float averageWorkConservingRate		= workConservingAverage->rate();
+			float beta							= workConservationFlowHandler->_beta;
+
+			// average bandwidth rate < average work conserving rate * a safety factor
+			if ( ( averageBandwidthGuaranteeRate * beta ) > averageWorkConservingRate )
+			{
+				workConservationFlowHandler->setState( FlowState::GuaranteedBandwidthSufficient );
+			}
+		}
+			break;
+
+		// state where the bandwidth guarantee flow is sufficient
+		case FlowState::GuaranteedBandwidthSufficient:
+			// do the vm level check
+			if ( !workConservationFlowHandler->vmLevelCheck( bandwidthValues->bandwidthGuarantee ) )
+			{
+				// set the state to new wc flow
+				workConservationFlowHandler->setState( FlowState::NewWCFlow );
+			}
+			// bandwidth guarantee flow is still sufficient
+			break;
+
+		// new flow state
+		case FlowState::NewWCFlow:
+			// do nothing state
+			break;
+		}
+
+		bandwidthGuaranteeAverage->calculateRate( (float)bandwidthValues->bandwidthGuaranteeRate );
+		workConservingAverage->calculateRate( (float)bandwidthValues->workConservingRate );
+
+		usleep( 250000 );
+	}
+
+	pthread_exit( NULL );
+	return NULL;
 }
 
 } // namespace WCEnabler
