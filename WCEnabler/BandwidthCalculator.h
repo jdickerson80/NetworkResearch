@@ -14,6 +14,9 @@ class LoggingHandler;
 class iphdr;
 
 namespace WCEnabler {
+
+class BandwidthValues;
+
 /**
  * @brief	The BandwidthCalculator class calculates the bandwidth of
  *			the bandwidth guarantee and work conservation flows by,
@@ -31,13 +34,10 @@ private:
 
 	bool _packetSniffingThreadRunning;
 	bool _calculationThreadRunning;
-	uint8_t _ecn;
 	int _socketFileDescriptor;
-	unsigned int _bandwidthGuaranteeRate;
-	unsigned int _workConservingRate;
-	unsigned int _totalRate;
 	unsigned int _bandwidthGuaranteeCounter;
 	unsigned int _workConservingCounter;
+	BandwidthValues* _bandwidthValues;
 	RateCalculator _bandwidthGuaranteeRateCalculator;
 	RateCalculator _workConservingRateCalculator;
 	pthread_t _packetSniffingThread;
@@ -51,32 +51,8 @@ public:
 	 * @brief BandwidthCalculator constructor
 	 * @param logger pointer to the logging handler
 	 */
-	BandwidthCalculator( Common::LoggingHandler* logger, const std::string& interfaceIPAddress );
+	BandwidthCalculator( Common::LoggingHandler* logger, const std::string& interfaceIPAddress, BandwidthValues* bandwidthValues );
 	~BandwidthCalculator();
-
-	/**
-	 * @brief bandwidthGuaranteeRate getter
-	 * @return current rate
-	 */
-	unsigned int bandwidthGuaranteeRate() const;
-
-	/**
-	 * @brief workConservingRate getter
-	 * @return current rate
-	 */
-	unsigned int workConservingRate() const;
-
-	/**
-	 * @brief totalRate getter
-	 * @return current rate
-	 */
-	unsigned int totalRate() const;
-
-	/**
-	 * @brief ecn getter
-	 * @return ecn
-	 */
-	uint8_t ecn() const;
 
 private:
 

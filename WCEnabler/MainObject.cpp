@@ -8,6 +8,7 @@
 
 #include "BandwidthCalculator.h"
 #include "BandwidthCommunicator.h"
+#include "BandwidthValues.h"
 #include "LoggingHandler.h"
 #include "Macros.h"
 #include "WorkConservationFlowHandler.h"
@@ -16,25 +17,32 @@ namespace WCEnabler {
 
 MainObject::MainObject()
 {
+	setECNEnabled( true );
+
 	// get the interface's name
     std::string interface = getInterfaceName();
 
-	setECNEnabled( true );
+	_bandwidthValues = new BandwidthValues();
 
 	// create the threads
-	_bandwidthCalculator = new BandwidthCalculator( buildLogger( interface, "BandwidthCalculator", true ), _ipAddress );
+	_bandwidthCommunicator = new BandwidthCommunicator(
+				BGAdaptorIPAddress
+				, interface
+				, _bandwidthValues
+				, buildLogger( interface, "BandwidthLimit", false )
+				, buildLogger( interface, "BandwidthUsage", false ) );
 
-    _workConservationFlowHandler = new WorkConservationFlowHandler( interface
-								    , 0.05
-								    , 0.05
-								    , buildLogger( interface, "WorkConservation", false ) );
+	_workConservationFlowHandler = new WorkConservationFlowHandler(
+				interface
+				, 0.05
+				, 0.05
+				, buildLogger( interface, "WorkConservation", false )
+				, _bandwidthValues  );
 
-	_bandwidthCommunicator = new BandwidthCommunicator( BGAdaptorIPAddress
-							, interface
-							, _bandwidthCalculator
-							, buildLogger( interface, "BandwidthLimit", false )
-							, buildLogger( interface, "BandwidthUsage", false )
-							, _workConservationFlowHandler );
+	_bandwidthCalculator = new BandwidthCalculator(
+				buildLogger( interface, "BandwidthCalculator", true )
+				, _ipAddress
+				, _bandwidthValues );
 }
 
 MainObject::~MainObject()
@@ -42,7 +50,13 @@ MainObject::~MainObject()
 	// delete all of the heap memory
     delete _bandwidthCalculator;
     delete _bandwidthCommunicator;
-    delete _workConservationFlowHandler;
+	delete _workConservationFlowHandler;
+	delete _bandwidthValues;
+}
+
+const BandwidthValues* const MainObject::bandwidthValues() const
+{
+	return _bandwidthValues;
 }
 
 MainObject& MainObject::instance()

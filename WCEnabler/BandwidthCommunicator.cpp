@@ -11,25 +11,25 @@
 #include <stdio.h>
 
 #include "BandwidthCalculator.h"
+#include "BandwidthValues.h"
 #include "LoggingHandler.h"
 #include "TCControl.h"
 #include "ThreadHelper.h"
-#include "WorkConservationFlowHandler.h"
 
 namespace WCEnabler {
-BandwidthCommunicator::BandwidthCommunicator( const std::string& bGAdaptorAddress
-											  , const std::string& interface
-											  , BandwidthCalculator* bandwidthCalculator
-											  , Common::LoggingHandler* bandwidthLimitLogger
-											  , Common::LoggingHandler* bandwidthUsageLogger
-											  , WorkConservationFlowHandler* workConservationFlowHandler )
+BandwidthCommunicator::BandwidthCommunicator(
+		const std::string& bGAdaptorAddress
+		, const std::string& interface
+		, BandwidthValues* bandwidthValues
+		, Common::LoggingHandler* bandwidthLimitLogger
+		, Common::LoggingHandler* bandwidthUsageLogger )
 	: _incomingBandwidthThreadRunning( false )
 	, _outgoingBandwidthThreadRunning( false )
+	, _currentBandwidthGuarantee( 0 )
 	, _bandwidthLimitLogger( bandwidthLimitLogger )
 	, _bandwidthUsageLogger( bandwidthUsageLogger )
+	, _bandwidthValues( bandwidthValues )
 	, _interface( interface )
-	, _bandwidthCalculator( bandwidthCalculator )
-	, _workConservationFlowHandler( workConservationFlowHandler )
 {
 	// create the udp socket to communicate with the BGAdaptor
 	_socketFileDescriptor = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
@@ -62,60 +62,56 @@ BandwidthCommunicator::~BandwidthCommunicator()
 	_incomingBandwidthThreadRunning = false;
 	_outgoingBandwidthThreadRunning = false;
 	close( _socketFileDescriptor );
-	Common::TCControl::clearTCCommands( _interface );
 	delete _bandwidthLimitLogger;
 	delete _bandwidthUsageLogger;
+	Common::TCControl::clearTCCommands( _interface );
 }
 
 void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 {
 	// init the variables
 	BandwidthCommunicator* bandwidthCommunicator = static_cast< BandwidthCommunicator* >( input );
-	unsigned int bandwidth;
-	unsigned int bandwidthLength = sizeof( bandwidth );
+	unsigned int localBandwidthGuarantee;
+	unsigned int* bandwidthGuarantee = &bandwidthCommunicator->_bandwidthValues->bandwidthGuarantee;
+	unsigned int bandwidthLength = sizeof( localBandwidthGuarantee );
 	unsigned int length = sizeof( bandwidthCommunicator->_bGAdaptorAddress );
 	unsigned int receiveLength;
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthLimitLogger;
-	WorkConservationFlowHandler* workConservationFlowHandler = bandwidthCommunicator->_workConservationFlowHandler;
-	BandwidthCalculator* bandwidthCalculator = bandwidthCommunicator->_bandwidthCalculator;
 
 	// while the thread should run
 	while ( bandwidthCommunicator->_incomingBandwidthThreadRunning )
 	{
 		// listen for incoming bandwidth rates
 		receiveLength = recvfrom( bandwidthCommunicator->_socketFileDescriptor
-								  , &bandwidth
+								  , &localBandwidthGuarantee
 								  , bandwidthLength
 								  , 0
 								  , (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress
 								  , &length );
 
+		/// @todo add checking of address to make sure it is coming from BGAdaptor
+		/// instead of some random sender
+
 		// check for error
-		if ( receiveLength < bandwidthLength )
+		if ( receiveLength != bandwidthLength )
 		{
+			printf("!!!!!receive error\n");
 			continue;
 		}
 
-		// enforce the rate limit
-		Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, bandwidth );
+		(*bandwidthGuarantee) = localBandwidthGuarantee;
 
-		// update the work conservation flow handler
-		// @note this is done this way to only check for subflows when a new rate is received
-		// @todo is this correct? should this be done in its own thread?
-		workConservationFlowHandler->updateWorkConservation( bandwidthCalculator->bandwidthGuaranteeRate()
-															 , bandwidthCalculator->workConservingRate()
-															 , bandwidthCalculator->ecn()
-															 , bandwidth );
+		// enforce the rate limit
+		Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, localBandwidthGuarantee );
+
 		// create the stream
 		std::ostringstream stream;
-		stream << bandwidth << "\n";
+		stream << localBandwidthGuarantee << "\n";
 
 		// log the bandwidth limit
 		logger->log( stream.str() );
 	}
 
-	// clear the tc commands
-	Common::TCControl::clearTCCommands( bandwidthCommunicator->_interface );
 	pthread_exit( NULL );
 	return NULL;
 }
@@ -124,21 +120,21 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 {
 	// init the variables
 	BandwidthCommunicator* bandwidthCommunicator = static_cast< BandwidthCommunicator* >( input );
-	BandwidthCalculator* bandwidthCalculator = bandwidthCommunicator->_bandwidthCalculator;
+	unsigned int* totalRate = &bandwidthCommunicator->_bandwidthValues->totalRate;
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthUsageLogger;
-	size_t floatSize = sizeof( unsigned int );
-	unsigned int totalRate;
+	size_t bandwidthSize = sizeof( unsigned int );
+	unsigned int localTotalRate;
 
 	// while the thread should run
 	while ( bandwidthCommunicator->_outgoingBandwidthThreadRunning )
 	{
 		// get the total rate
-		totalRate = bandwidthCalculator->totalRate();
+		localTotalRate = *totalRate;
 
 		// send the current rate
 		if ( sendto( bandwidthCommunicator->_socketFileDescriptor
-					 , &totalRate
-					 , floatSize
+					 , &localTotalRate
+					 , bandwidthSize
 					 , 0
 					 , (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress
 					 , sizeof( bandwidthCommunicator->_bGAdaptorAddress ) ) < 0 )
@@ -146,10 +142,7 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 			printf("Send failed with %s\n", strerror( errno ));
 		}
 
-		printf("bwg %u wc %u tot %u\n"
-			   , bandwidthCalculator->bandwidthGuaranteeRate()
-			   , bandwidthCalculator->workConservingRate()
-			   , bandwidthCalculator->totalRate() );
+		/// @todo fix the sendto function!!
 
 		// create the stream
 		std::ostringstream stream;

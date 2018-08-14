@@ -8,6 +8,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "BandwidthValues.h"
 #include "LoggingHandler.h"
 #include "Macros.h"
 #include "ThreadHelper.h"
@@ -17,17 +18,19 @@
 #define PacketBufferSize ( 65536 )
 #define IPAddressSize ( 20 )
 
+//#define LogPackets ( 1 )
+
 namespace WCEnabler {
 
-BandwidthCalculator::BandwidthCalculator( Common::LoggingHandler* logger, const std::string& interfaceIPAddress )
+BandwidthCalculator::BandwidthCalculator(
+		Common::LoggingHandler* logger
+		, const std::string& interfaceIPAddress
+		, BandwidthValues* bandwidthValues )
 	: _packetSniffingThreadRunning( false )
 	, _calculationThreadRunning( false )
-	, _ecn( false )
-	, _bandwidthGuaranteeRate( 0 )
-	, _workConservingRate( 0 )
-	, _totalRate( 0 )
 	, _bandwidthGuaranteeCounter( 0 )
 	, _workConservingCounter( 0 )
+	, _bandwidthValues( bandwidthValues )
 	, _logger( logger )
 	, _interfaceIPAddress( interfaceIPAddress )
 {
@@ -48,15 +51,17 @@ BandwidthCalculator::BandwidthCalculator( Common::LoggingHandler* logger, const 
 	_logger->log( buffer );
 
 	// start both threads
-	Common::ThreadHelper::startDetachedThread( &_packetSniffingThread
-											   , handlePacketSniffing
-											   , &_packetSniffingThreadRunning
-											   , static_cast< void* >( this ) );
+	Common::ThreadHelper::startDetachedThread(
+				&_packetSniffingThread
+				, handlePacketSniffing
+				, &_packetSniffingThreadRunning
+				, static_cast< void* >( this ) );
 
-	Common::ThreadHelper::startDetachedThread( &_calculationThread
-											   , handleRateCalculation
-											   , &_calculationThreadRunning
-											   , static_cast< void* >( this ) );
+	Common::ThreadHelper::startDetachedThread(
+				&_calculationThread
+				, handleRateCalculation
+				, &_calculationThreadRunning
+				, static_cast< void* >( this ) );
 }
 
 BandwidthCalculator::~BandwidthCalculator()
@@ -68,42 +73,22 @@ BandwidthCalculator::~BandwidthCalculator()
 	delete _logger;
 }
 
-unsigned int BandwidthCalculator::bandwidthGuaranteeRate() const
-{
-	return _bandwidthGuaranteeRate;
-}
-
-unsigned int BandwidthCalculator::workConservingRate() const
-{
-	return _workConservingRate;
-}
-
-unsigned int BandwidthCalculator::totalRate() const
-{
-	return _totalRate;
-}
-
-uint8_t BandwidthCalculator::ecn() const
-{
-	return _ecn;
-}
-
 void BandwidthCalculator::updateBandwidthGuaranteeRate()
 {
 	// calculate the rates
-	_bandwidthGuaranteeRate = _bandwidthGuaranteeRateCalculator.calculateRate( _bandwidthGuaranteeCounter );
+	_bandwidthValues->bandwidthGuaranteeRate = _bandwidthGuaranteeRateCalculator.calculateRate( _bandwidthGuaranteeCounter );
 }
 
 void BandwidthCalculator::updateWorkConservingRate()
 {
 	// calculate the rates
-	_workConservingRate = _workConservingRateCalculator.calculateRate( _workConservingCounter );
+	_bandwidthValues->workConservingRate = _workConservingRateCalculator.calculateRate( _workConservingCounter );
 }
 
 void BandwidthCalculator::updateTotalBandwidthRate()
 {
 	// calculate the rates
-	_totalRate = _bandwidthGuaranteeRate + _workConservingRate;
+	_bandwidthValues->totalRate = _bandwidthValues->bandwidthGuaranteeRate + _bandwidthValues->workConservingRate;
 }
 
 void* BandwidthCalculator::handlePacketSniffing( void* input )
@@ -115,23 +100,27 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 	int socketAddressLength = sizeof( socketAddress );
 	unsigned int* bandwidthGuaranteeCounter = &bandwidthCalculator->_bandwidthGuaranteeCounter;
 	unsigned int* workConservingCounter = &bandwidthCalculator->_workConservingCounter;
-	uint8_t* ecn = &bandwidthCalculator->_ecn;
+	unsigned int* ecn = &bandwidthCalculator->_bandwidthValues->ecnValue;
+	unsigned int localECN = 0;
 	unsigned char packetBuffer[ PacketBufferSize ];
 	Common::LoggingHandler* logger = bandwidthCalculator->_logger;
 	uint8_t dscpValue;
-	char logBuffer[ LogBufferSize ];
 	char sourceAddress[ IPAddressSize ];
 	char destinationAddress[ IPAddressSize ];
-	ethhdr* ethernetHeader;
 	iphdr* ipHeader;
 	const char* const ipAddress = bandwidthCalculator->_interfaceIPAddress.c_str();
+
+#if defined( LogPackets )
+	char logBuffer[ LogBufferSize ];
+	ethhdr* ethernetHeader;
+#endif
 
 	// while the thread should run
 	while ( bandwidthCalculator->_packetSniffingThreadRunning )
 	{
 		dataSize = recvfrom( bandwidthCalculator->_socketFileDescriptor
 							 , packetBuffer
-							 , 65536
+							 , PacketBufferSize
 							 , 0
 							 , &socketAddress
 							 , (socklen_t*)&socketAddressLength );
@@ -146,7 +135,6 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		}
 
 		// get the appropriate headers
-		ethernetHeader = (ethhdr*)packetBuffer;
 		ipHeader = (iphdr*)( packetBuffer + sizeof( ethhdr ) );
 
 		// put the addresses into the string
@@ -156,8 +144,19 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
 		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
 
-		// if the packet source is this interface
-		if ( !strcmp( sourceAddress, ipAddress ) )
+		// if the packet source is not this interface
+		if ( strcmp( sourceAddress, ipAddress ) )
+		{
+			// mask out the DSCP field and check if congestion has been encountered
+			localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
+			(*ecn) = localECN;
+
+			if ( *ecn == true )
+			{
+//				printf("GOT ECN!!!!!\n");
+			}
+		}
+		else // packet source is this interface
 		{
 			// convert the bytes to bits
 			dataSize *= 8;
@@ -179,10 +178,9 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 			}
 		}
 
-		// mask out the DSCP field and check if congestion has been encountered
-		(*ecn) = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
-
+#if defined( LogPackets )
 		// set up the logging string
+		ethernetHeader = (ethhdr*)packetBuffer;
 		snprintf( logBuffer, LogBufferSize, "%u, %s, %s, %u\n"
 				  , ethernetHeader->h_proto
 				  , sourceAddress
@@ -191,6 +189,7 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 
 		// log it
 		logger->log( logBuffer );
+#endif
 	}
 
 	pthread_exit( NULL );

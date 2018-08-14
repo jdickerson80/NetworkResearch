@@ -13,8 +13,7 @@ class LoggingHandler;
 namespace WCEnabler {
 
 // Forward declarations
-class BandwidthCalculator;
-class WorkConservationFlowHandler;
+class BandwidthValues;
 
 /**
  * @brief	The BandwidthCommunicator class handles the communication and setting
@@ -26,15 +25,15 @@ private:
 
 	bool _incomingBandwidthThreadRunning;
 	bool _outgoingBandwidthThreadRunning;
+	unsigned int _currentBandwidthGuarantee;
 	int _socketFileDescriptor;
 	Common::LoggingHandler* _bandwidthLimitLogger;
 	Common::LoggingHandler* _bandwidthUsageLogger;
+	BandwidthValues* _bandwidthValues;
 	sockaddr_in _bGAdaptorAddress;
 	pthread_t _incomingBandwidthThread;
 	pthread_t _outgoingBandwidthThread;
 	std::string _interface;
-	BandwidthCalculator* _bandwidthCalculator;
-	WorkConservationFlowHandler* _workConservationFlowHandler;
 
 public:
 
@@ -45,14 +44,12 @@ public:
 	 * @param bandwidthCalculator pointer to the bandwidth calculator
 	 * @param bandwidthLimitLogger pointer to the bandwidth limit logger
 	 * @param bandwidthUsageLogger pointer to the bandwidth usage logger
-	 * @param workConservationFlowHandler pointer to the WorkConservationFlowHandler
 	 */
 	BandwidthCommunicator( const std::string& bGAdaptorAddress
 						   , const std::string& interface
-						   , BandwidthCalculator* bandwidthCalculator
+						   , BandwidthValues* bandwidthValues
 						   , Common::LoggingHandler* bandwidthLimitLogger
-						   , Common::LoggingHandler* bandwidthUsageLogger
-						   , WorkConservationFlowHandler* workConservationFlowHandler );
+						   , Common::LoggingHandler* bandwidthUsageLogger );
 
 	~BandwidthCommunicator();
 

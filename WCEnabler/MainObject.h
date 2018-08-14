@@ -1,6 +1,7 @@
 #ifndef MAINOBJECT_H
 #define MAINOBJECT_H
 
+#include <stdint.h>
 #include <string>
 
 // Forward declarations
@@ -8,11 +9,12 @@ namespace Common {
 class LoggingHandler;
 }
 
+// Forward declarations
 namespace WCEnabler {
-
 class BandwidthCalculator;
 class BandwidthCommunicator;
 class WorkConservationFlowHandler;
+class BandwidthValues;
 
 /**
  * @brief	The WCEnablerObject class is the main object of the app. This class holds all of the
@@ -31,6 +33,7 @@ private:
 
 	BandwidthCalculator* _bandwidthCalculator;
 	BandwidthCommunicator* _bandwidthCommunicator;
+	BandwidthValues* _bandwidthValues;
 	std::string _ipAddress;
 	WorkConservationFlowHandler* _workConservationFlowHandler;
 
@@ -45,6 +48,12 @@ public:
 	static MainObject& instance();
 
 	~MainObject();
+
+	/**
+	 * @brief bandwidthValues getter
+	 * @return return pointer to the bandwidth values
+	 */
+	const BandwidthValues* const bandwidthValues() const;
 
 private:
 
