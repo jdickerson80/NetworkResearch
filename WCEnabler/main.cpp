@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "MainObject.h"
+#include "BandwidthValues.h"
 
 static bool isRunning = true;
 
@@ -31,11 +32,16 @@ int main( int argc, char* argv[] )
 	setlocale( LC_ALL, "" );
 
 	// create the main object
-	WCEnabler::MainObject::instance();
+	WCEnabler::MainObject& object = WCEnabler::MainObject::instance();
 
 	// do nothing loop to keep the app going
 	while ( isRunning )
 	{
+//		printf("bwg %u wc %u tot %u\n"
+//			   , object.bandwidthValues()->bandwidthGuaranteeRate
+//			   , object.bandwidthValues()->workConservingRate
+//			   , object.bandwidthValues()->totalRate );
+
 		sleep( 1 );
 	}
 
