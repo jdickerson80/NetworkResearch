@@ -8,6 +8,9 @@ var files =
     [ "BandwidthCommunicator.h", "BandwidthCommunicator_8h.html", [
       [ "BandwidthCommunicator", "classWCEnabler_1_1BandwidthCommunicator.html", "classWCEnabler_1_1BandwidthCommunicator" ]
     ] ],
+    [ "BandwidthValues.h", "BandwidthValues_8h.html", [
+      [ "BandwidthValues", "structWCEnabler_1_1BandwidthValues.html", "structWCEnabler_1_1BandwidthValues" ]
+    ] ],
     [ "CurrentAndLastValues.h", "CurrentAndLastValues_8h.html", [
       [ "CurrentAndLastValues", "structCommon_1_1CurrentAndLastValues.html", "structCommon_1_1CurrentAndLastValues" ]
     ] ],
@@ -51,7 +54,7 @@ var files =
     [ "ThreadHelper.h", "ThreadHelper_8h.html", [
       [ "ThreadHelper", "classCommon_1_1ThreadHelper.html", "classCommon_1_1ThreadHelper" ]
     ] ],
-    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", null ],
+    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", "WorkConservationFlowHandler_8cpp" ],
     [ "WorkConservationFlowHandler.h", "WorkConservationFlowHandler_8h.html", [
       [ "WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", "classWCEnabler_1_1WorkConservationFlowHandler" ],
       [ "FlowState", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState" ]

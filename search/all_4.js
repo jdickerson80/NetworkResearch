@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['ecn',['ecn',['../classWCEnabler_1_1BandwidthCalculator.html#ab9a961a6fe8e0d9b92163f37f5e64cd2',1,'WCEnabler::BandwidthCalculator']]],
+  ['ecnvalue',['ecnValue',['../structWCEnabler_1_1BandwidthValues.html#af46b3a12000ddf5d0fdcf5586f46b0d6',1,'WCEnabler::BandwidthValues']]],
   ['enum',['Enum',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55ab',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
   ['existingflowwithoutworkconservation',['ExistingFlowWithoutWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba51bdd2382c8aaf8ed22c2e54cf74aaf0',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
   ['existingflowwithworkconservation',['ExistingFlowWithWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55abaa866e2d7e8c98ab16f924961543cdd70',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
