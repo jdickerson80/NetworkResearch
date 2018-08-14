@@ -14,31 +14,44 @@ void TCControl::setEgressBandwidth( const std::string& interface, const std::str
 #if defined( UseTC )
 	/// clear the tc commands
 	clearTCCommands( interface );
-	std::string command;
-	ostringstream stream;
+//	std::string command;
+//	ostringstream stream;
 
-	/// set up the qdisc
-	stream << "tc qdisc add dev " << interface << " root handle 1: htb default 11;\n";
+//	stream << "tc qdisc add dev " << interface <<
+//			  " root handle 1: htb default 11;\n";
 
-	/// set up the rate limit on the interface
-	stream << "tc class add dev " << interface
-		   << " parent 1: classid 1:1 htb rate " << desiredBandwidth
-		   << "mbit ceil "<< desiredBandwidth << "mbit;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1: classid 1:1 htb rate " << desiredBandwidth << "mbit;\n";
 
-	stream << "tc class add dev " << interface
-		   << " parent 1:1 classid 1:10 htb rate " << desiredBandwidth
-		   << "mbit ceil "<< desiredBandwidth << "mbit prio 0;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1:1 classid 1:11 htb rate " << desiredBandwidth << "mbit ceil " << desiredBandwidth << "mbit prio 0;\n";
 
-	stream << "tc class add dev " << interface
-		   << " parent 1:1 classid 1:11 htb rate " << desiredBandwidth
-		   << "mbit ceil "<< desiredBandwidth << "mbit prio 1;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1:1 classid 1:12 htb rate 0.1kbit ceil " << desiredBandwidth << "mbit prio 1;\n";
 
-	stream << "iptables -t mangle -A PREROUTING -m tos --tos 0x00 -j MARK --set-mark 0x10;\n";
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;\n";
 
-	stream << "iptables -t mangle -A PREROUTING -m tos --tos 0x38 -j MARK --set-mark 0x11;\n";
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;\n";
 
-	command = stream.str();
-	system( command.c_str() );
+//	stream << "tc qdisc add dev " << interface <<
+//			  " root handle 1: htb default 11;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1: classid 1:1 htb rate " << desiredBandwidth << "mbit;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1:1 classid 1:11 htb rate " << desiredBandwidth << "mbit ceil " << desiredBandwidth << "mbit prio 0;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1:1 classid 1:12 htb rate 0.1kbit ceil " << desiredBandwidth << "mbit prio 1;\n";
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;\n";
+
+//	command = stream.str();
+//	system( command.c_str() );
 #endif
 
 ///	stream.flush();
@@ -59,27 +72,61 @@ void TCControl::setEgressBandwidth( const std::string& interface, const int desi
 	std::string command;
 	ostringstream stream;
 
-	/// set up the qdisc
-	stream << "tc qdisc add dev " << interface << " root handle 1: htb default 11;\n";
+//	printf("db %i\n", desiredBandwidth );
 
-	/// set up the rate limit on the interface
-	stream << "tc class add dev " << interface
-		   << " parent 1: classid 1:1 htb rate " << desiredBandwidth
-		   << "mbit ceil "<< desiredBandwidth << "mbit;\n";
+	stream << "tc qdisc add dev " << interface <<
+			  " root handle 1: htb default 11;\n";
 
-	stream << "tc class add dev " << interface
-		   << " parent 1:1 classid 1:10 htb rate " << desiredBandwidth
-		   << "mbit ceil "<< desiredBandwidth << "mbit prio 0;\n";
+	stream << "tc class add dev " << interface <<
+			  " parent 1: classid 1:1 htb rate " << desiredBandwidth << "mbit;\n";
 
-	stream << "tc class add dev " << interface
-		   << " parent 1:1 classid 1:11 htb rate " << desiredBandwidth
-		   << "mbit ceil "<< desiredBandwidth << "mbit prio 1;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1:1 classid 1:11 htb rate 400mbit ceil 400mbit prio 0;\n";
 
-	stream << "iptables -t mangle -A PREROUTING -m tos --tos 0x00 -j MARK --set-mark 0x10;\n";
+	stream << "tc class add dev " << interface <<
+			  " parent 1:1 classid 1:11 htb rate " << desiredBandwidth << "mbit ceil " << desiredBandwidth << "mbit prio 0;\n";
 
-	stream << "iptables -t mangle -A PREROUTING -m tos --tos 0x38 -j MARK --set-mark 0x11;\n";
+	stream << "tc class add dev " << interface <<
+			  " parent 1:1 classid 1:12 htb rate 0.1kbit ceil " << desiredBandwidth << "mbit prio 1;\n";
+
+	stream << "tc filter add dev " << interface <<
+			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+
+	stream << "tc filter add dev " << interface <<
+			  " parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;\n";
+
+	stream << "tc filter add dev " << interface <<
+			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+
+
+
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;\n";
+
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+
+
+
+//	stream << "tc qdisc add dev " << interface <<
+//			  " root handle 1: htb default 11;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1: classid 1:1 htb rate " << desiredBandwidth << "mbit;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1:1 classid 1:11 htb rate " << desiredBandwidth << "mbit ceil " << desiredBandwidth << "mbit prio 0;\n";
+//	stream << "tc class add dev " << interface <<
+//			  " parent 1:1 classid 1:12 htb rate 0.1kbit ceil " << desiredBandwidth << "mbit prio 1;\n";
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+//	stream << "tc filter add dev " << interface <<
+//			  " parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;\n";
+
 
 	command = stream.str();
+//	printf("\n%s\n", command.c_str() );
 	system( command.c_str() );
 #endif
 
@@ -122,3 +169,57 @@ void TCControl::clearTCCommands( const string& interface )
 }
 
 } /// namespace Common
+
+
+//stream << "tc qdisc add dev " << interface <<
+//		  " root handle 1: htb;\n";
+
+//stream << "tc class add dev " << interface <<
+//		  " parent 1: classid 1:1 htb rate " << desiredBandwidth << "mbit;\n";
+
+//stream << "tc class add dev " << interface <<
+//		  " parent 1:1 classid 1:11 htb rate " << desiredBandwidth << "mbit ceil " << desiredBandwidth << "mbit prio 0;\n";
+
+//stream << "tc class add dev " << interface <<
+//		  " parent 1:1 classid 1:12 htb rate 0.1kbit ceil " << desiredBandwidth << "mbit prio 1;\n";
+
+//stream << "tc filter add dev " << interface <<
+//		  " parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+
+//stream << "tc filter add dev " << interface <<
+//		  " parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;\n";
+
+//stream << "tc qdisc add dev " << interface <<
+//		  " root handle 1: htb default 11;\n";
+//stream << "tc class add dev " << interface <<
+//		  " parent 1: classid 1:1 htb rate " << desiredBandwidth << "mbit;\n";
+//stream << "tc class add dev " << interface <<
+//		  " parent 1:1 classid 1:11 htb rate " << desiredBandwidth << "mbit ceil " << desiredBandwidth << "mbit prio 0;\n";
+//stream << "tc class add dev " << interface <<
+//		  " parent 1:1 classid 1:12 htb rate 0.1kbit ceil " << desiredBandwidth << "mbit prio 1;\n";
+//stream << "tc filter add dev " << interface <<
+//		  " parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+//stream << "tc filter add dev " << interface <<
+//		  " parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 1:11;\n";
+//stream << "tc filter add dev " << interface <<
+//		  " parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;\n";
+
+///// set up the rate limit on the interface
+//stream << "tc class add dev " << interface
+//	   << " parent 1: classid 1:1 htb rate " << desiredBandwidth
+//	   << "mbit ceil "<< desiredBandwidth << "mbit;\n";
+
+//stream << "tc class add dev " << interface
+//	   << " parent 1:1 classid 1:10 htb rate " << desiredBandwidth
+//	   << "mbit ceil "<< desiredBandwidth << "mbit prio 0;\n";
+
+//stream << "tc class add dev " << interface
+//	   << " parent 1:1 classid 1:11 htb rate " << desiredBandwidth
+//	   << "mbit ceil "<< desiredBandwidth << "mbit prio 1;\n";
+
+//stream << "iptables -t mangle -A PREROUTING -m tos --tos 0x00 -j MARK --set-mark 0x10;\n";
+
+//stream << "iptables -t mangle -A PREROUTING -m tos --tos 0x38 -j MARK --set-mark 0x11;\n";
+
+//command = stream.str();
+//system( command.c_str() );
