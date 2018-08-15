@@ -1,6 +1,6 @@
 #include "ExponentialSmoothing.h"
 
-#include <stdlib.h>
+#include <cmath>
 
 namespace Common {
 namespace Math {
@@ -24,8 +24,8 @@ float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeV
 	unsigned int timeDelta;
 
 	// calculation of the delta
-	dataDelta = abs( dataValues.currentValue - dataValues.lastValue );
-	timeDelta = abs( timeValues.currentValue - timeValues.lastValue );
+	dataDelta = std::abs( dataValues.currentValue - dataValues.lastValue );
+	timeDelta = std::abs( timeValues.currentValue - timeValues.lastValue );
 
 	// make sure the time delta is not zero
 	timeDelta = timeDelta == 0 ? 1 : timeDelta;
