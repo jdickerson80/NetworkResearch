@@ -9,6 +9,8 @@
 #include <stdint.h>
 #include <string>
 
+#include <atomic>
+
 #include "ExponentialSmoothingCalculator.h"
 
 // Forward declarations
@@ -48,43 +50,13 @@ private:
 	// typedef to make declarations easier
 	typedef Common::Math::ExponentialSmoothingCalculator< float, float > RateCalculator;
 
-//	/**
-//	 * @brief The Values struct holds the pertinent values for flow control
-//	 */
-//	struct Values
-//	{
-//		float bandwidthGuaranteeRate;
-//		uint8_t ecn;
-//		float workConservingRate;
-
-
-//		Values()
-//			: bandwidthGuaranteeRate( 0 )
-//			, ecn( 0 )
-//			, workConservingRate( 0 )
-//			, bandwidthGuaranteeAverage( 1.0 )
-//			, workConservingAverage( 1.0 ) {}
-
-//		// convenience method to update the variables
-//		void update( float bandwidthGuaranteeRate, uint8_t ecn, float workConservingRate )
-//		{
-//			bandwidthGuaranteeRate = bandwidthGuaranteeRate;
-//			ecn = ecn;
-//			workConservingRate = workConservingRate;
-
-//			bandwidthGuaranteeAverage.calculateRate( bandwidthGuaranteeRate );
-//			workConservingAverage.calculateRate( workConservingRate );
-//		}
-//	};
-
 private:
 
 	float _beta;
 	float _safetyFactor;
-	bool _updateThreadRunning;
+	std::atomic_bool _updateThreadRunning;
 	const BandwidthValues* const _bandwidthValues;
 	pthread_t _updateThread;
-//	Values _values;
 	FlowState::Enum _currentState;
 	RateCalculator _bandwidthGuaranteeAverage;
 	RateCalculator _workConservingAverage;

@@ -2,6 +2,7 @@
 #define BANDWIDTHCOMMUNICATOR_H
 
 #include <arpa/inet.h>
+#include <atomic>
 #include <netinet/ip.h>
 #include <pthread.h>
 #include <string>
@@ -23,8 +24,8 @@ class BandwidthCommunicator
 {
 private:
 
-	bool _incomingBandwidthThreadRunning;
-	bool _outgoingBandwidthThreadRunning;
+	std::atomic_bool _incomingBandwidthThreadRunning;
+	std::atomic_bool _outgoingBandwidthThreadRunning;
 	unsigned int _currentBandwidthGuarantee;
 	int _socketFileDescriptor;
 	Common::LoggingHandler* _bandwidthLimitLogger;

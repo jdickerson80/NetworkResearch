@@ -5,6 +5,7 @@
 #ifndef THREADHELPER_H
 #define THREADHELPER_H
 
+#include <atomic>
 #include <pthread.h>
 
 namespace Common {
@@ -33,6 +34,16 @@ public:
 	static int startDetachedThread( pthread_t* thread, StartRoutine startRoutine, bool* isRunningFlag, void* objectPointer );
 
 	/**
+	 * @brief startDetachedThread
+	 * @param thread
+	 * @param startRoutine
+	 * @param isRunningFlag
+	 * @param objectPointer
+	 * @return
+	 */
+	static int startDetachedThread( pthread_t* thread, StartRoutine startRoutine, std::atomic_bool& isRunningFlag, void* objectPointer );
+
+	/**
 	 * @brief startJoinableThread
 	 * @param thread
 	 * @param startRoutine
@@ -41,6 +52,16 @@ public:
 	 * @return
 	 */
 	static int startJoinableThread( pthread_t* thread, StartRoutine startRoutine, bool* isRunningFlag, void* objectPointer );
+
+	/**
+	 * @brief startJoinableThread
+	 * @param thread
+	 * @param startRoutine
+	 * @param isRunningFlag
+	 * @param objectPointer
+	 * @return
+	 */
+	static int startJoinableThread( pthread_t* thread, StartRoutine startRoutine, std::atomic_bool& isRunningFlag, void* objectPointer );
 
 private:
 

@@ -54,13 +54,13 @@ BandwidthCalculator::BandwidthCalculator(
 	Common::ThreadHelper::startDetachedThread(
 				&_packetSniffingThread
 				, handlePacketSniffing
-				, &_packetSniffingThreadRunning
+				, _packetSniffingThreadRunning
 				, static_cast< void* >( this ) );
 
 	Common::ThreadHelper::startDetachedThread(
 				&_calculationThread
 				, handleRateCalculation
-				, &_calculationThreadRunning
+				, _calculationThreadRunning
 				, static_cast< void* >( this ) );
 }
 
@@ -73,24 +73,6 @@ BandwidthCalculator::~BandwidthCalculator()
 	delete _logger;
 }
 
-void BandwidthCalculator::updateBandwidthGuaranteeRate()
-{
-	// calculate the rates
-	_bandwidthValues->bandwidthGuaranteeRate = _bandwidthGuaranteeRateCalculator.calculateRate( _bandwidthGuaranteeCounter );
-}
-
-void BandwidthCalculator::updateWorkConservingRate()
-{
-	// calculate the rates
-	_bandwidthValues->workConservingRate = _workConservingRateCalculator.calculateRate( _workConservingCounter );
-}
-
-void BandwidthCalculator::updateTotalBandwidthRate()
-{
-	// calculate the rates
-	_bandwidthValues->totalRate = _bandwidthValues->bandwidthGuaranteeRate + _bandwidthValues->workConservingRate;
-}
-
 void* BandwidthCalculator::handlePacketSniffing( void* input )
 {
 	// init the variables
@@ -98,9 +80,10 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 	sockaddr socketAddress;
 	ssize_t dataSize;
 	int socketAddressLength = sizeof( socketAddress );
-	unsigned int* bandwidthGuaranteeCounter = &bandwidthCalculator->_bandwidthGuaranteeCounter;
-	unsigned int* workConservingCounter = &bandwidthCalculator->_workConservingCounter;
-	unsigned int* ecn = &bandwidthCalculator->_bandwidthValues->ecnValue;
+	std::atomic_bool& threadRunning = bandwidthCalculator->_packetSniffingThreadRunning;
+	std::atomic_uint& bandwidthGuaranteeCounter = bandwidthCalculator->_bandwidthGuaranteeCounter;
+	std::atomic_uint& workConservingCounter = bandwidthCalculator->_workConservingCounter;
+	std::atomic_uint& ecn = bandwidthCalculator->_bandwidthValues->ecnValue;
 	unsigned int localECN = 0;
 	unsigned char packetBuffer[ PacketBufferSize ];
 	Common::LoggingHandler* logger = bandwidthCalculator->_logger;
@@ -116,7 +99,7 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 #endif
 
 	// while the thread should run
-	while ( bandwidthCalculator->_packetSniffingThreadRunning )
+	while ( threadRunning.load() )
 	{
 		dataSize = recvfrom( bandwidthCalculator->_socketFileDescriptor
 							 , packetBuffer
@@ -149,11 +132,11 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		{
 			// mask out the DSCP field and check if congestion has been encountered
 			localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
-			(*ecn) = localECN;
+			ecn = localECN;
 
-			if ( *ecn == true )
+			if ( ecn.load() == true )
 			{
-//				printf("GOT ECN!!!!!\n");
+				printf("GOT ECN!!!!!\n");
 			}
 		}
 		else // packet source is this interface
@@ -168,13 +151,13 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 			if ( dscpValue == WorkConservationFlowDecimalForm )
 			{
 				// add the packet size to the counter
-				(*workConservingCounter) += dataSize;
+				workConservingCounter += dataSize;
 			}
 			else // the packet is from the bandwidth guarantee flow
 			{
 				//if ( ipHeader->tos == 0 ) // does the if need to be there??
 				// add the packet size to the counter
-				(*bandwidthGuaranteeCounter) += dataSize;
+				bandwidthGuaranteeCounter += dataSize;
 			}
 		}
 
@@ -200,14 +183,34 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 {
 	// init the variables
 	BandwidthCalculator* bandwidthCalculator = static_cast< BandwidthCalculator* >( input );
+	std::atomic_bool& threadRunning = bandwidthCalculator->_calculationThreadRunning;
+
+	std::atomic_uint& bandwidthGuaranteeRate = bandwidthCalculator->_bandwidthValues->bandwidthGuaranteeRate;
+	std::atomic_uint& bandwidthGuaranteeCounter = bandwidthCalculator->_bandwidthGuaranteeCounter;
+
+	std::atomic_uint& workConservingRate = bandwidthCalculator->_bandwidthValues->workConservingRate;
+	std::atomic_uint& workConservingCounter = bandwidthCalculator->_workConservingCounter;
+
+	std::atomic_uint& totalRate = bandwidthCalculator->_bandwidthValues->totalRate;
+
+	RateCalculator* bandwidthGuaranteeRateCalculator = &bandwidthCalculator->_bandwidthGuaranteeRateCalculator;
+	RateCalculator* workConservingRateCalculator = &bandwidthCalculator->_workConservingRateCalculator;
+	unsigned int tempBWGValue;
+	unsigned int tempWCValue;
 
 	// while the thread should run
-	while ( bandwidthCalculator->_calculationThreadRunning )
+	while ( threadRunning.load() )
 	{
-		// update the bandwidth calculation every second
-		bandwidthCalculator->updateBandwidthGuaranteeRate();
-		bandwidthCalculator->updateWorkConservingRate();
-		bandwidthCalculator->updateTotalBandwidthRate();
+		// calculate temp rate and atomically set it equal to the actual value
+		tempBWGValue = bandwidthGuaranteeRateCalculator->calculateRate( bandwidthGuaranteeCounter.load() );
+		bandwidthGuaranteeRate = tempBWGValue;
+
+		// calculate temp rate and atomically set it equal to the actual value
+		tempWCValue = workConservingRateCalculator->calculateRate( workConservingCounter.load() );
+		workConservingRate = tempWCValue;
+
+		// calculate temp rate and atomically set it equal to the actual value
+		totalRate = tempBWGValue + tempWCValue;
 
 		sleep( 1 );
 	}

@@ -1,7 +1,7 @@
 #ifndef BANDWIDTHVALUES_H
 #define BANDWIDTHVALUES_H
 
-#include <stdint.h>
+#include <atomic>
 
 namespace WCEnabler {
 
@@ -11,11 +11,11 @@ namespace WCEnabler {
  */
 struct BandwidthValues
 {
-	unsigned int bandwidthGuarantee;
-	unsigned int bandwidthGuaranteeRate;
-	unsigned int ecnValue;
-	unsigned int totalRate;
-	unsigned int workConservingRate;
+	std::atomic_uint bandwidthGuarantee;
+	std::atomic_uint bandwidthGuaranteeRate;
+	std::atomic_uint ecnValue;
+	std::atomic_uint totalRate;
+	std::atomic_uint workConservingRate;
 
 	BandwidthValues()
 		: bandwidthGuarantee( UINT32_MAX ) // use a large value, so nothing happens until we get a value from BGAdaptor

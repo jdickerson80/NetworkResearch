@@ -43,7 +43,7 @@ WorkConservationFlowHandler::WorkConservationFlowHandler(const std::string& inte
 	// start both threads
 	Common::ThreadHelper::startDetachedThread( &_updateThread
 											   , updateWorkConservation
-											   , &_updateThreadRunning
+											   , _updateThreadRunning
 											   , static_cast< void* >( this ) );
 }
 
@@ -146,19 +146,23 @@ void* WorkConservationFlowHandler::updateWorkConservation( void* input )
 {
 	// init the variables
 	WorkConservationFlowHandler* workConservationFlowHandler = static_cast< WorkConservationFlowHandler* >( input );
-	const BandwidthValues* const bandwidthValues = workConservationFlowHandler->_bandwidthValues;
+	const std::atomic_uint& bandwidthGuarantee = workConservationFlowHandler->_bandwidthValues->bandwidthGuarantee;
+	const std::atomic_uint& bandwidthGuaranteeRate = workConservationFlowHandler->_bandwidthValues->bandwidthGuaranteeRate;
+	const std::atomic_uint& ecnValue = workConservationFlowHandler->_bandwidthValues->ecnValue;
+	const std::atomic_uint& workConservingRate = workConservationFlowHandler->_bandwidthValues->workConservingRate;
+	const std::atomic_bool& threadRunning = workConservationFlowHandler->_updateThreadRunning;
 	FlowState::Enum* currentState = &workConservationFlowHandler->_currentState;
 	RateCalculator* bandwidthGuaranteeAverage = &workConservationFlowHandler->_bandwidthGuaranteeAverage;
 	RateCalculator* workConservingAverage = &workConservationFlowHandler->_workConservingAverage;
 
-	while ( workConservationFlowHandler->_updateThreadRunning )
+	while ( threadRunning.load() )
 	{
 		switch ( *currentState )
 		{
 		// state where there is a flow but no WC flow
 		case FlowState::ExistingFlowWithoutWorkConservation:
 			// if the previous time slot has an ECN,
-			if ( bandwidthValues->ecnValue )
+			if ( ecnValue.load() )
 			{
 				// start the WC flow
 				workConservationFlowHandler->setState( FlowState::ExistingFlowWithWorkConservation );
@@ -189,7 +193,7 @@ void* WorkConservationFlowHandler::updateWorkConservation( void* input )
 		// state where the bandwidth guarantee flow is sufficient
 		case FlowState::GuaranteedBandwidthSufficient:
 			// do the vm level check
-			if ( !workConservationFlowHandler->vmLevelCheck( bandwidthValues->bandwidthGuarantee ) )
+			if ( !workConservationFlowHandler->vmLevelCheck( bandwidthGuarantee.load() ) )
 			{
 				// set the state to new wc flow
 				workConservationFlowHandler->setState( FlowState::NewWCFlow );
@@ -203,8 +207,8 @@ void* WorkConservationFlowHandler::updateWorkConservation( void* input )
 			break;
 		}
 
-		bandwidthGuaranteeAverage->calculateRate( (float)bandwidthValues->bandwidthGuaranteeRate );
-		workConservingAverage->calculateRate( (float)bandwidthValues->workConservingRate );
+		bandwidthGuaranteeAverage->calculateRate( (float)bandwidthGuaranteeRate.load() );
+		workConservingAverage->calculateRate( (float)workConservingRate.load() );
 
 		usleep( 250000 );
 	}

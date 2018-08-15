@@ -47,12 +47,12 @@ BandwidthCommunicator::BandwidthCommunicator(
 	// start the sending and receiving threads
 	Common::ThreadHelper::startDetachedThread( &_incomingBandwidthThread
 											   , handleIncomingBandwidthRequest
-											   , &_incomingBandwidthThreadRunning
+											   , _incomingBandwidthThreadRunning
 											   , static_cast< void* >( this ) );
 
 	Common::ThreadHelper::startDetachedThread( &_outgoingBandwidthThread
 											   , handleOutgoingBandwidthRequest
-											   , &_outgoingBandwidthThreadRunning
+											   , _outgoingBandwidthThreadRunning
 											   , static_cast< void* >( this ) );
 }
 
@@ -71,23 +71,25 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 {
 	// init the variables
 	BandwidthCommunicator* bandwidthCommunicator = static_cast< BandwidthCommunicator* >( input );
+	std::atomic_bool& threadRunning = bandwidthCommunicator->_incomingBandwidthThreadRunning;
 	unsigned int localBandwidthGuarantee;
-	unsigned int* bandwidthGuarantee = &bandwidthCommunicator->_bandwidthValues->bandwidthGuarantee;
+	std::atomic_uint& bandwidthGuarantee = bandwidthCommunicator->_bandwidthValues->bandwidthGuarantee;
 	unsigned int bandwidthLength = sizeof( localBandwidthGuarantee );
-	unsigned int length = sizeof( bandwidthCommunicator->_bGAdaptorAddress );
+	socklen_t length = sizeof( bandwidthCommunicator->_bGAdaptorAddress );
 	unsigned int receiveLength;
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthLimitLogger;
 
 	// while the thread should run
-	while ( bandwidthCommunicator->_incomingBandwidthThreadRunning )
+	while ( threadRunning.load() )
 	{
 		// listen for incoming bandwidth rates
-		receiveLength = recvfrom( bandwidthCommunicator->_socketFileDescriptor
-								  , &localBandwidthGuarantee
-								  , bandwidthLength
-								  , 0
-								  , (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress
-								  , &length );
+		receiveLength = recvfrom(
+					bandwidthCommunicator->_socketFileDescriptor
+					, &localBandwidthGuarantee
+					, bandwidthLength
+					, 0
+					, (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress
+					, &length );
 
 		/// @todo add checking of address to make sure it is coming from BGAdaptor
 		/// instead of some random sender
@@ -99,7 +101,7 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 			continue;
 		}
 
-		(*bandwidthGuarantee) = localBandwidthGuarantee;
+		bandwidthGuarantee = localBandwidthGuarantee;
 
 		// enforce the rate limit
 		Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, localBandwidthGuarantee );
@@ -120,16 +122,18 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 {
 	// init the variables
 	BandwidthCommunicator* bandwidthCommunicator = static_cast< BandwidthCommunicator* >( input );
-	unsigned int* totalRate = &bandwidthCommunicator->_bandwidthValues->totalRate;
+	std::atomic_bool& threadRunning = bandwidthCommunicator->_outgoingBandwidthThreadRunning;
+	std::atomic_uint& totalRate = bandwidthCommunicator->_bandwidthValues->totalRate;
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthUsageLogger;
 	size_t bandwidthSize = sizeof( unsigned int );
+	socklen_t length = sizeof( bandwidthCommunicator->_bGAdaptorAddress );
 	unsigned int localTotalRate;
 
 	// while the thread should run
-	while ( bandwidthCommunicator->_outgoingBandwidthThreadRunning )
+	while ( threadRunning.load() )
 	{
 		// get the total rate
-		localTotalRate = *totalRate;
+		localTotalRate = totalRate.load();
 
 		// send the current rate
 		if ( sendto( bandwidthCommunicator->_socketFileDescriptor
@@ -137,12 +141,10 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 					 , bandwidthSize
 					 , 0
 					 , (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress
-					 , sizeof( bandwidthCommunicator->_bGAdaptorAddress ) ) < 0 )
+					 , length ) < 0 )
 		{
 			printf("Send failed with %s\n", strerror( errno ));
 		}
-
-		/// @todo fix the sendto function!!
 
 		// create the stream
 		std::ostringstream stream;

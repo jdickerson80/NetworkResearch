@@ -35,6 +35,38 @@ int ThreadHelper::startDetachedThread( pthread_t* thread, StartRoutine startRout
 	}
 }
 
+int ThreadHelper::startDetachedThread( pthread_t* thread, StartRoutine startRoutine, std::atomic_bool& isRunningFlag, void* objectPointer )
+{
+	if ( isRunningFlag.load() )
+	{
+		return -1;
+	}
+
+	int returnValue = 0;
+
+	pthread_attr_t attribute;
+
+	pthread_attr_init( &attribute );
+
+	pthread_attr_setdetachstate( &attribute, PTHREAD_CREATE_DETACHED );
+
+	returnValue |= pthread_create( thread, &attribute, startRoutine, objectPointer );
+
+	pthread_attr_destroy( &attribute );
+
+	if ( returnValue )
+	{
+		perror( "startDetachedThread: Failed to create the thread" );
+		isRunningFlag = false;
+		return -1;
+	}
+	else
+	{
+		isRunningFlag = true;
+		return 0;
+	}
+}
+
 int ThreadHelper::startJoinableThread( pthread_t* thread, StartRoutine startRoutine, bool* isRunningFlag, void* objectPointer )
 {
 	if ( *isRunningFlag )
@@ -63,6 +95,38 @@ int ThreadHelper::startJoinableThread( pthread_t* thread, StartRoutine startRout
 	else
 	{
 		*isRunningFlag = true;
+		return 0;
+	}
+}
+
+int ThreadHelper::startJoinableThread( pthread_t* thread, StartRoutine startRoutine, std::atomic_bool& isRunningFlag, void* objectPointer )
+{
+	if ( isRunningFlag.load() )
+	{
+		return -1;
+	}
+
+	int returnValue = 0;
+
+	pthread_attr_t attribute;
+
+	pthread_attr_init( &attribute );
+
+	pthread_attr_setdetachstate( &attribute, PTHREAD_CREATE_JOINABLE );
+
+	returnValue |= pthread_create( thread, &attribute, startRoutine, objectPointer );
+
+	pthread_attr_destroy( &attribute );
+
+	if ( returnValue )
+	{
+		perror( "startJoinableThread: Failed to create the thread" );
+		isRunningFlag = false;
+		return -1;
+	}
+	else
+	{
+		isRunningFlag = true;
 		return 0;
 	}
 }
