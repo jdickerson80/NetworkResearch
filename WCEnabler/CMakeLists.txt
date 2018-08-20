@@ -11,7 +11,7 @@ find_package( Threads )
 set( CMAKE_BUILD_TYPE Debug )
 
 # Add compiler flags
-set( CMAKE_CXX_FLAGS "-Wall" )
+set( CMAKE_CXX_FLAGS "-Wall -std=c++11" )
 
 # Bring in the project headers
 include_directories( ${CMAKE_SOURCE_DIR} )
