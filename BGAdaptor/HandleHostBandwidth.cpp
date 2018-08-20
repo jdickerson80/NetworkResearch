@@ -12,19 +12,27 @@
 
 #define IPBytes ( 4 )
 
+bool findFunction( in_addr_t left, in_addr_t right )
+{
+	return left < right;
+}
+
+namespace BGAdaptor {
+
 HandleHostBandwidth::HandleHostBandwidth( unsigned int numberOfHosts, unsigned int totalBandwidth )
 	: _isRunning( false )
 	, _logger( "/tmp/h1/bandwidth.log" )
 	, _totalBandwidth( totalBandwidth )
+//	, _bandwidthMap( findFunction )
 	, _numberOfHosts( numberOfHosts )
 {
-	_hostsBandwidth = new HostBandwidthStatistics[ numberOfHosts ];
+//	_hostsBandwidth = new HostBandwidthStatistics[ numberOfHosts ];
 
-	for ( size_t i = 0; i < _numberOfHosts; ++i )
-	{
-		_hostsBandwidth[ i ].address.sin_family = AF_INET;
-		_hostsBandwidth[ i ].address.sin_port = htons( 8888 );
-	}
+//	for ( size_t i = 0; i < _numberOfHosts; ++i )
+//	{
+//		_hostsBandwidth[ i ].address.sin_family = AF_INET;
+//		_hostsBandwidth[ i ].address.sin_port = htons( 8888 );
+//	}
 
 	_socketFileDescriptor = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
 
@@ -55,7 +63,7 @@ HandleHostBandwidth::~HandleHostBandwidth()
 	}
 
 	close( _socketFileDescriptor );
-	delete _hostsBandwidth;
+//	delete _hostsBandwidth;
 }
 
 void HandleHostBandwidth::logBandwidths()
@@ -67,7 +75,7 @@ void HandleHostBandwidth::logBandwidths()
 	for ( size_t i = 0; i < _numberOfHosts; ++i )
 	{
 //		fprintf( file, "%2.2f, ", _hostsBandwidth[ i ].demand );
-		stream << _hostsBandwidth[ i ].demand << ",";
+//		stream << _hostsBandwidth[ i ].demand << ",";
 	}
 
 //	fprintf( file, "\n");
@@ -106,9 +114,14 @@ void* HandleHostBandwidth::handleConnections( void* input )
 	unsigned int length = sizeof( bandwidthManager->_localAddresses );
 	sockaddr_in receiveAddress;
 	size_t index;
-	HostBandwidthStatistics* hostsBandwidth = bandwidthManager->_hostsBandwidth;
+//	HostBandwidthStatistics* hostsBandwidth = bandwidthManager->_hostsBandwidth;
+	BandwidthMap& bandwidthMap = bandwidthManager->_bandwidthMap;
 	HostBandwidthStatistics* localStatistics;
 	char* address;
+	BandwidthMap::iterator iterator;
+	in_addr loopBack;
+	inet_aton( "127.0.0.1", &loopBack );
+
 
 	while ( bandwidthManager->_isRunning )
 	{
@@ -128,13 +141,39 @@ void* HandleHostBandwidth::handleConnections( void* input )
 		address = inet_ntoa( receiveAddress.sin_addr );
 		if ( strcmp( address, "127.0.0.1" ) == 0 )
 		{
+			printf("got loop\n");
 			continue;
 		}
-		index = findHostIndex( address );
-		localStatistics = &hostsBandwidth[ index ];
-		localStatistics->lastDemand = localStatistics->demand;
-		localStatistics->demand = bandwidth;
-		localStatistics->address = receiveAddress;
+		in_addr_t inAddress = receiveAddress.sin_addr.s_addr;
+
+//		iterator = bandwidthMap.insert( bandwidthMap.begin(), Pair( inAddress, tempHostStats ) );
+		bandwidthMap[ inAddress ].address = receiveAddress;
+		bandwidthMap[ inAddress ].lastDemand = bandwidthMap[ inAddress ].demand.load();
+		bandwidthMap[ inAddress ].demand = bandwidth;
+//		if ( iterator == bandwidthMap.end() )
+//		{
+//			printf("adding new host\n");
+//			iterator->second.address = receiveAddress;
+//		}
+
+//		iterator->second.lastDemand = iterator->second.demand.load();
+//		iterator->second.demand = bandwidth;
+
+
+//		if ( iterator == bandwidthMap.end() )
+//		{
+//			printf("adding new host\n");
+//			iterator->second.address = receiveAddress;
+//		}
+
+//		iterator->second.lastDemand = iterator->second.demand.load();
+//		iterator->second.demand = bandwidth;
+
+//		index = findHostIndex( address );
+//		localStatistics = &hostsBandwidth[ index ];
+//		localStatistics->lastDemand = localStatistics->demand;
+//		localStatistics->demand = bandwidth;
+//		localStatistics->address = receiveAddress;
 //		printf("index %lu band %f\n", index, bandwidth );
 	}
 
@@ -195,7 +234,7 @@ size_t HandleHostBandwidth::findHostIndex( char* ipAddress )
 
 void HandleHostBandwidth::calculateHostBandwidth( HostBandwidthStatistics* hostStatistics )
 {
-	hostStatistics->lastGuarantee = hostStatistics->guarantee;
+	hostStatistics->lastGuarantee = hostStatistics->guarantee.load();
 	hostStatistics->guarantee = _totalBandwidth / _numberOfHosts / 2;
 }
 
@@ -203,22 +242,27 @@ void HandleHostBandwidth::sendBandwidthRates()
 {
 	unsigned int rate;
 	size_t rateSize = sizeof( rate );
-	size_t size = sizeof( _hostsBandwidth[ 0 ].address );
+	size_t size = sizeof( sockaddr_in );
 	std::stringstream stream;
+	BandwidthMap::iterator end = _bandwidthMap.end();
+	BandwidthMap::iterator it = _bandwidthMap.begin();
 
-	for ( unsigned int q = 0; q < _numberOfHosts; ++q )
+	for ( ; it != end; ++it )
 	{
-		calculateHostBandwidth( &_hostsBandwidth[ q ] );
-		rate = _hostsBandwidth[ q ].guarantee;
+		calculateHostBandwidth( &it->second );
+//		rate = _hostsBandwidth[ q ].guarantee;
+		rate = it->second.guarantee;
 
 //		printf( "%f\n", rate );
 //		stream << "per host guarantee is " << rate << std::endl;
 //		_logger.log( stream.str() );
 //		stream.flush();
 
-		if ( sendto( _socketFileDescriptor, &rate, rateSize, 0, (sockaddr*)&_hostsBandwidth[ q ].address, size ) <= 0 )
+		if ( sendto( _socketFileDescriptor, &rate, rateSize, 0, (sockaddr*)&it->second.address, size ) <= 0 )
 		{
 			printf( "Send failed with %s\n", strerror( errno ) );
 		}
 	}
 }
+
+} // namespace BGAdaptor

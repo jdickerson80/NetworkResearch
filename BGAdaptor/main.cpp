@@ -38,7 +38,7 @@ int main( int argc, char* argv[] )
 
 	setlocale( LC_ALL, "" );
 
-	HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) - 1, atoi( argv[ 2 ] ) );
+	BGAdaptor::HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) - 1, atoi( argv[ 2 ] ) );
 
 	while ( isRunning )
 	{

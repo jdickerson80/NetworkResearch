@@ -2,10 +2,13 @@
 #define HANDLEHOSTBANDWIDTH_H
 
 #include <arpa/inet.h>
+#include <atomic>
+#include <map>
 #include <pthread.h>
 
 #include "LoggingHandler.h"
 
+namespace BGAdaptor {
 /**
  * @brief	The HandleHostBandwidth class handles all of the hosts bandwidth. This class collects and stores
  *			each hosts bandwidth. Then, calculates each VM's bandwidth limit and sends it to the VM.
@@ -19,10 +22,10 @@ private:
 	 */
 	struct HostBandwidthStatistics
 	{
-		unsigned int demand;
-		unsigned int guarantee;
-		unsigned int lastDemand;
-		unsigned int lastGuarantee;
+		std::atomic_uint demand;
+		std::atomic_uint guarantee;
+		std::atomic_uint lastDemand;
+		std::atomic_uint lastGuarantee;
 		sockaddr_in address;
 
 		HostBandwidthStatistics()
@@ -35,14 +38,21 @@ private:
 
 private:
 
+	typedef bool (*FindFunction)( in_addr_t, in_addr_t);
+	typedef std::map< in_addr_t, HostBandwidthStatistics/*, FindFunction */> BandwidthMap;
+	typedef std::pair< in_addr_t, HandleHostBandwidth::HostBandwidthStatistics > Pair;
+
 	bool _isRunning;
 	Common::LoggingHandler _logger;
 	unsigned int _totalBandwidth;
-	HostBandwidthStatistics* _hostsBandwidth;
+	BandwidthMap _bandwidthMap;
+//	HostBandwidthStatistics* _hostsBandwidth;
 	int _socketFileDescriptor;
 	sockaddr_in _localAddresses;
 	unsigned int _numberOfHosts;
 	pthread_t _receiveThread;
+
+
 
 public:
 
@@ -94,4 +104,5 @@ private:
 	void calculateHostBandwidth( HostBandwidthStatistics* hostStatistics );
 };
 
+} // namespace BGAdaptor
 #endif // HANDLEHOSTBANDWIDTH_H
