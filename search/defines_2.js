@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logbuffersize',['LogBufferSize',['../BandwidthCalculator_8cpp.html#a9271048392100e473a18ac405ac15444',1,'BandwidthCalculator.cpp']]]
+  ['clrbit',['clrbit',['../param_8h.html#afdcc6f67bfbd6aeeb042d5e7ab2be41d',1,'param.h']]]
 ];

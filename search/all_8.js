@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['inet_5fecn_5fce',['INET_ECN_CE',['../Macros_8h.html#a68ec113b59ea146bb2f51cfe7cbf9ec4',1,'Macros.h']]],
-  ['inet_5fecn_5fect_5f0',['INET_ECN_ECT_0',['../Macros_8h.html#af94c1ecad0b4b0e6ab8d9d7777697f9a',1,'Macros.h']]],
-  ['inet_5fecn_5fect_5f1',['INET_ECN_ECT_1',['../Macros_8h.html#a61fec1d3623394a2fefff5255ff33d52',1,'Macros.h']]],
-  ['inet_5fecn_5fmask',['INET_ECN_MASK',['../Macros_8h.html#a1a636091ae61e50fa3c7ea1809457711',1,'Macros.h']]],
-  ['inet_5fecn_5fnot_5fect',['INET_ECN_NOT_ECT',['../Macros_8h.html#a2afa6a74702a64a8b0f55966b666c61a',1,'Macros.h']]],
-  ['instance',['instance',['../classWCEnabler_1_1MainObject.html#a7c4630a566ddf5bcf9b6764686917b15',1,'WCEnabler::MainObject']]],
-  ['ipaddresssize',['IPAddressSize',['../BandwidthCalculator_8cpp.html#a9afbe004a8fcd1fb2165a6e41efa58c8',1,'BandwidthCalculator.cpp']]],
-  ['ipbytes',['IPBytes',['../HandleHostBandwidth_8cpp.html#afb80d78de79d8235c2021842cb348fbd',1,'HandleHostBandwidth.cpp']]]
+  ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html',1,'BGAdaptor']]],
+  ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html#a795cc4c53c8a29e8c1c6e4dd0090c1d0',1,'BGAdaptor::HandleHostBandwidth']]],
+  ['handlehostbandwidth_2ecpp',['HandleHostBandwidth.cpp',['../HandleHostBandwidth_8cpp.html',1,'']]],
+  ['handlehostbandwidth_2eh',['HandleHostBandwidth.h',['../HandleHostBandwidth_8h.html',1,'']]],
+  ['howmany',['howmany',['../param_8h.html#a5986a9a34b5ef2d56f42336b32ef85c7',1,'param.h']]]
 ];

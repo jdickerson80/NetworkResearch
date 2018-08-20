@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['bgadaptoripaddress',['BGAdaptorIPAddress',['../Macros_8h.html#a964ce18b780a57310801832387f6a0dc',1,'Macros.h']]]
+  ['_5f_5fneed_5fnull',['__need_NULL',['../param_8h.html#a6c27666e43b87c08fa8b2e8aa324601c',1,'param.h']]]
 ];

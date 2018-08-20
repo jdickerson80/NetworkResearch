@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['handlehostbandwidth_2ecpp',['HandleHostBandwidth.cpp',['../HandleHostBandwidth_8cpp.html',1,'']]],
-  ['handlehostbandwidth_2eh',['HandleHostBandwidth.h',['../HandleHostBandwidth_8h.html',1,'']]]
+  ['gen_5fstats_2eh',['gen_stats.h',['../gen__stats_8h.html',1,'']]]
 ];

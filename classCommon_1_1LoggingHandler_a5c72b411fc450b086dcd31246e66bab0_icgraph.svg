@@ -58,16 +58,16 @@
 </g>
 <!-- Node5 -->
 <g id="node5" class="node"><title>Node5</title>
-<g id="a_node5"><a xlink:href="classHandleHostBandwidth.html#a9c046a8b63e42ab6aece3e798bc497ad" target="_top" xlink:title="printBandwidths prints VM&#39;s bandwidth to the terminal ">
-<polygon fill="white" stroke="black" points="219,-0.5 219,-30.5 333,-30.5 333,-0.5 219,-0.5"/>
-<text text-anchor="start" x="227" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">HandleHostBandwidth</text>
+<g id="a_node5"><a xlink:href="classBGAdaptor_1_1HandleHostBandwidth.html#a0bd91d291729abdb12ac258eb00eb8d3" target="_top" xlink:title="printBandwidths prints VM&#39;s bandwidth to the terminal ">
+<polygon fill="white" stroke="black" points="192,-0.5 192,-30.5 360,-30.5 360,-0.5 192,-0.5"/>
+<text text-anchor="start" x="200" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">BGAdaptor::HandleHostBandwidth</text>
 <text text-anchor="middle" x="276" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">::logBandwidths</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node5 -->
 <g id="edge4" class="edge"><title>Node1&#45;&gt;Node5</title>
-<path fill="none" stroke="midnightblue" d="M103.992,-74.6755C125.832,-64.4074 156.894,-50.5064 185,-40.5 195.847,-36.6382 207.6,-32.9955 218.922,-29.7474"/>
+<path fill="none" stroke="midnightblue" d="M103.992,-74.6755C125.832,-64.4074 156.894,-50.5064 185,-40.5 194.93,-36.9645 205.62,-33.6127 216.043,-30.5792"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="102.475,-71.5212 94.9412,-78.9709 105.476,-77.8451 102.475,-71.5212"/>
 </g>
 <!-- Node6 -->
@@ -80,8 +80,8 @@
 </g>
 <!-- Node5&#45;&gt;Node6 -->
 <g id="edge5" class="edge"><title>Node5&#45;&gt;Node6</title>
-<path fill="none" stroke="midnightblue" d="M343.374,-15.5C365.203,-15.5 387.726,-15.5 402.851,-15.5"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="343.087,-12.0001 333.086,-15.5 343.086,-19.0001 343.087,-12.0001"/>
+<path fill="none" stroke="midnightblue" d="M370.369,-15.5C382.659,-15.5 394.035,-15.5 402.877,-15.5"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="370.348,-12.0001 360.348,-15.5 370.348,-19.0001 370.348,-12.0001"/>
 </g>
 </g>
 </svg>

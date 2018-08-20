@@ -21,8 +21,12 @@ var NAVTREE =
     [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
-        [ "All", "globals.html", null ],
+        [ "All", "globals.html", "globals_dup" ],
         [ "Functions", "globals_func.html", null ],
+        [ "Variables", "globals_vars.html", null ],
+        [ "Typedefs", "globals_type.html", null ],
+        [ "Enumerations", "globals_enum.html", null ],
+        [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
@@ -31,7 +35,10 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"BGAdaptor_2main_8cpp.html"
+"BGAdaptor_2main_8cpp.html",
+"rtnetlink_8h.html#a0a24f857b720ea82629522e1f5bd3cf5a582ca6b7707500588754319e5880efd9",
+"rtnetlink_8h.html#ac762fc85e383bf6dbc6bef3002fff649",
+"structtcmsg.html#a81ddedd1d573bdf41139da0db5cc29bb"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

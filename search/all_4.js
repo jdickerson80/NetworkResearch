@@ -1,15 +1,11 @@
 var searchData=
 [
-  ['ecnvalue',['ecnValue',['../structWCEnabler_1_1BandwidthValues.html#af46b3a12000ddf5d0fdcf5586f46b0d6',1,'WCEnabler::BandwidthValues']]],
-  ['enum',['Enum',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55ab',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
-  ['existingflowwithoutworkconservation',['ExistingFlowWithoutWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba51bdd2382c8aaf8ed22c2e54cf74aaf0',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
-  ['existingflowwithworkconservation',['ExistingFlowWithWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55abaa866e2d7e8c98ab16f924961543cdd70',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
-  ['exponentialsmoothing',['ExponentialSmoothing',['../classCommon_1_1Math_1_1ExponentialSmoothing.html#a398090f5818749c5915950e7cd2c138d',1,'Common::Math::ExponentialSmoothing']]],
-  ['exponentialsmoothing',['ExponentialSmoothing',['../classCommon_1_1Math_1_1ExponentialSmoothing.html',1,'Common::Math']]],
-  ['exponentialsmoothing_2ecpp',['ExponentialSmoothing.cpp',['../ExponentialSmoothing_8cpp.html',1,'']]],
-  ['exponentialsmoothing_2eh',['ExponentialSmoothing.h',['../ExponentialSmoothing_8h.html',1,'']]],
-  ['exponentialsmoothingcalculator',['ExponentialSmoothingCalculator',['../classCommon_1_1Math_1_1ExponentialSmoothingCalculator.html',1,'Common::Math']]],
-  ['exponentialsmoothingcalculator',['ExponentialSmoothingCalculator',['../classCommon_1_1Math_1_1ExponentialSmoothingCalculator.html#ad573f50897386a10f5ca119df83be3bb',1,'Common::Math::ExponentialSmoothingCalculator']]],
-  ['exponentialsmoothingcalculator_2eh',['ExponentialSmoothingCalculator.h',['../ExponentialSmoothingCalculator_8h.html',1,'']]],
-  ['exponentialsmoothingcalculator_3c_20float_2c_20float_20_3e',['ExponentialSmoothingCalculator&lt; float, float &gt;',['../classCommon_1_1Math_1_1ExponentialSmoothingCalculator.html',1,'Common::Math']]]
+  ['dataratecalculator',['DataRateCalculator',['../classCommon_1_1DataRateCalculator.html',1,'Common']]],
+  ['dataratecalculator',['DataRateCalculator',['../classCommon_1_1DataRateCalculator.html#adcfe40a4aa0043cd72ac3f874c533622',1,'Common::DataRateCalculator']]],
+  ['dataratecalculator_2eh',['DataRateCalculator.h',['../DataRateCalculator_8h.html',1,'']]],
+  ['datavalues',['DataValues',['../classCommon_1_1Math_1_1ExponentialSmoothing.html#a9d0b5a65d9286635b030efd61bc4cb38',1,'Common::Math::ExponentialSmoothing::DataValues()'],['../classCommon_1_1Math_1_1SimpleRateCalculation.html#a40d175a1bd3f95e9a051f56c66a58295',1,'Common::Math::SimpleRateCalculation::DataValues()']]],
+  ['dev_5fbsize',['DEV_BSIZE',['../param_8h.html#a9c8466b6111a11195a5cd2478c648e32',1,'param.h']]],
+  ['dport',['dport',['../structrta__session.html#aa6eaa1c06311eb6ccf62d66c213623aa',1,'rta_session']]],
+  ['drops',['drops',['../structgnet__stats__queue.html#ac37389a65837fab39096809447e6367d',1,'gnet_stats_queue']]],
+  ['dump',['dump',['../structrtnl__handle.html#a3e5b07ef999b7a331f91ae5065886871',1,'rtnl_handle']]]
 ];

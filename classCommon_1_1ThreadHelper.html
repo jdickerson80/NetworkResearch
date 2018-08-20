@@ -131,14 +131,20 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac08e2d5dcb09787954f11fd70cb2c919"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCommon_1_1ThreadHelper.html#ac08e2d5dcb09787954f11fd70cb2c919">startDetachedThread</a> (pthread_t *thread, <a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a> startRoutine, bool *isRunningFlag, void *objectPointer)</td></tr>
 <tr class="memdesc:ac08e2d5dcb09787954f11fd70cb2c919"><td class="mdescLeft">&#160;</td><td class="mdescRight">startDetachedThread  <a href="#ac08e2d5dcb09787954f11fd70cb2c919">More...</a><br /></td></tr>
 <tr class="separator:ac08e2d5dcb09787954f11fd70cb2c919"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3599a8d6bfb02717157989ee65190e89"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCommon_1_1ThreadHelper.html#a3599a8d6bfb02717157989ee65190e89">startDetachedThread</a> (pthread_t *thread, <a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a> startRoutine, std::atomic_bool &amp;isRunningFlag, void *objectPointer)</td></tr>
+<tr class="memdesc:a3599a8d6bfb02717157989ee65190e89"><td class="mdescLeft">&#160;</td><td class="mdescRight">startDetachedThread  <a href="#a3599a8d6bfb02717157989ee65190e89">More...</a><br /></td></tr>
+<tr class="separator:a3599a8d6bfb02717157989ee65190e89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7ff5bf160e8251bccefcf817b3f987c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCommon_1_1ThreadHelper.html#ac7ff5bf160e8251bccefcf817b3f987c">startJoinableThread</a> (pthread_t *thread, <a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a> startRoutine, bool *isRunningFlag, void *objectPointer)</td></tr>
 <tr class="memdesc:ac7ff5bf160e8251bccefcf817b3f987c"><td class="mdescLeft">&#160;</td><td class="mdescRight">startJoinableThread  <a href="#ac7ff5bf160e8251bccefcf817b3f987c">More...</a><br /></td></tr>
 <tr class="separator:ac7ff5bf160e8251bccefcf817b3f987c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae20b71b39bf5862b32aa602604e51a74"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCommon_1_1ThreadHelper.html#ae20b71b39bf5862b32aa602604e51a74">startJoinableThread</a> (pthread_t *thread, <a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a> startRoutine, std::atomic_bool &amp;isRunningFlag, void *objectPointer)</td></tr>
+<tr class="memdesc:ae20b71b39bf5862b32aa602604e51a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">startJoinableThread  <a href="#ae20b71b39bf5862b32aa602604e51a74">More...</a><br /></td></tr>
+<tr class="separator:ae20b71b39bf5862b32aa602604e51a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classCommon_1_1ThreadHelper.html" title="The ThreadHelper class wraps the attributes and other arguements necessary to create a pthread...">ThreadHelper</a> class wraps the attributes and other arguements necessary to create a pthread. </p>
 
-<p>Definition at line <a class="el" href="ThreadHelper_8h_source.html#l00016">16</a> of file <a class="el" href="ThreadHelper_8h_source.html">ThreadHelper.h</a>.</p>
+<p>Definition at line <a class="el" href="ThreadHelper_8h_source.html#l00017">17</a> of file <a class="el" href="ThreadHelper_8h_source.html">ThreadHelper.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a class="anchor" id="ab2839a17e1c2ccb5425c7a3c25c2a2e9"></a>
 <div class="memitem">
@@ -151,7 +157,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Typedef of the prototype necessary for pthread functions. </p>
 
-<p>Definition at line <a class="el" href="ThreadHelper_8h_source.html#l00023">23</a> of file <a class="el" href="ThreadHelper_8h_source.html">ThreadHelper.h</a>.</p>
+<p>Definition at line <a class="el" href="ThreadHelper_8h_source.html#l00024">24</a> of file <a class="el" href="ThreadHelper_8h_source.html">ThreadHelper.h</a>.</p>
 
 </div>
 </div>
@@ -217,9 +223,70 @@ Static Public Member Functions</h2></td></tr>
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classCommon_1_1ThreadHelper_ac08e2d5dcb09787954f11fd70cb2c919_icgraph.svg" width="562" height="328"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classCommon_1_1ThreadHelper_ac08e2d5dcb09787954f11fd70cb2c919_icgraph.svg" width="562" height="328"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </p>
+
+</div>
+</div>
+<a class="anchor" id="a3599a8d6bfb02717157989ee65190e89"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Common::ThreadHelper::startDetachedThread </td>
+          <td>(</td>
+          <td class="paramtype">pthread_t *&#160;</td>
+          <td class="paramname"><em>thread</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a>&#160;</td>
+          <td class="paramname"><em>startRoutine</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::atomic_bool &amp;&#160;</td>
+          <td class="paramname"><em>isRunningFlag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>objectPointer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>startDetachedThread </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thread</td><td></td></tr>
+    <tr><td class="paramname">startRoutine</td><td></td></tr>
+    <tr><td class="paramname">isRunningFlag</td><td></td></tr>
+    <tr><td class="paramname">objectPointer</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00038">38</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
 
 </div>
 </div>
@@ -279,7 +346,67 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00038">38</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
+<p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00070">70</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae20b71b39bf5862b32aa602604e51a74"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Common::ThreadHelper::startJoinableThread </td>
+          <td>(</td>
+          <td class="paramtype">pthread_t *&#160;</td>
+          <td class="paramname"><em>thread</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a>&#160;</td>
+          <td class="paramname"><em>startRoutine</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::atomic_bool &amp;&#160;</td>
+          <td class="paramname"><em>isRunningFlag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>objectPointer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>startJoinableThread </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thread</td><td></td></tr>
+    <tr><td class="paramname">startRoutine</td><td></td></tr>
+    <tr><td class="paramname">isRunningFlag</td><td></td></tr>
+    <tr><td class="paramname">objectPointer</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00102">102</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
 
 </div>
 </div>

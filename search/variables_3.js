@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['lastvalue',['lastValue',['../structCommon_1_1CurrentAndLastValues.html#a706781ca6d98a9d04530144900fc6066',1,'Common::CurrentAndLastValues']]]
+  ['code',['code',['../structrta__session.html#af2a0c221671b38bf1577fe9642a7d0c1',1,'rta_session']]],
+  ['currentvalue',['currentValue',['../structCommon_1_1CurrentAndLastValues.html#aa8485edc20ec5bc1588fcd75fc623968',1,'Common::CurrentAndLastValues']]]
 ];

@@ -24,10 +24,12 @@ var files =
     [ "ExponentialSmoothingCalculator.h", "ExponentialSmoothingCalculator_8h.html", [
       [ "ExponentialSmoothingCalculator", "classCommon_1_1Math_1_1ExponentialSmoothingCalculator.html", "classCommon_1_1Math_1_1ExponentialSmoothingCalculator" ]
     ] ],
+    [ "gen_stats.h", "gen__stats_8h.html", "gen__stats_8h" ],
     [ "HandleHostBandwidth.cpp", "HandleHostBandwidth_8cpp.html", "HandleHostBandwidth_8cpp" ],
     [ "HandleHostBandwidth.h", "HandleHostBandwidth_8h.html", [
-      [ "HandleHostBandwidth", "classHandleHostBandwidth.html", "classHandleHostBandwidth" ]
+      [ "HandleHostBandwidth", "classBGAdaptor_1_1HandleHostBandwidth.html", "classBGAdaptor_1_1HandleHostBandwidth" ]
     ] ],
+    [ "libnetlink.h", "libnetlink_8h.html", "libnetlink_8h" ],
     [ "LoggingHandler.cpp", "LoggingHandler_8cpp.html", null ],
     [ "LoggingHandler.h", "LoggingHandler_8h.html", [
       [ "LoggingHandler", "classCommon_1_1LoggingHandler.html", "classCommon_1_1LoggingHandler" ]
@@ -39,6 +41,8 @@ var files =
     [ "MainObject.h", "MainObject_8h.html", [
       [ "MainObject", "classWCEnabler_1_1MainObject.html", "classWCEnabler_1_1MainObject" ]
     ] ],
+    [ "param.h", "param_8h.html", "param_8h" ],
+    [ "rtnetlink.h", "rtnetlink_8h.html", "rtnetlink_8h" ],
     [ "SimpleRateCalculation.cpp", "SimpleRateCalculation_8cpp.html", null ],
     [ "SimpleRateCalculation.h", "SimpleRateCalculation_8h.html", [
       [ "SimpleRateCalculation", "classCommon_1_1Math_1_1SimpleRateCalculation.html", "classCommon_1_1Math_1_1SimpleRateCalculation" ]
@@ -54,7 +58,7 @@ var files =
     [ "ThreadHelper.h", "ThreadHelper_8h.html", [
       [ "ThreadHelper", "classCommon_1_1ThreadHelper.html", "classCommon_1_1ThreadHelper" ]
     ] ],
-    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", "WorkConservationFlowHandler_8cpp" ],
+    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", null ],
     [ "WorkConservationFlowHandler.h", "WorkConservationFlowHandler_8h.html", [
       [ "WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", "classWCEnabler_1_1WorkConservationFlowHandler" ],
       [ "FlowState", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState" ]

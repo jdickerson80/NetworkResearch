@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logginghandler',['LoggingHandler',['../classCommon_1_1LoggingHandler.html',1,'Common']]]
+  ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html',1,'BGAdaptor']]]
 ];

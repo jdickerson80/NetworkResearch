@@ -45,30 +45,30 @@
 </g>
 <!-- Node4 -->
 <g id="node4" class="node"><title>Node4</title>
-<g id="a_node4"><a xlink:href="classHandleHostBandwidth.html#acb2ff000ee7b1d0885631b28f351b3ec" target="_top" xlink:title="HandleHostBandwidth constructor. ">
-<polygon fill="white" stroke="black" points="188,-109 188,-139 308,-139 308,-109 188,-109"/>
-<text text-anchor="start" x="196" y="-127" font-family="Helvetica,sans-Serif" font-size="10.00">HandleHostBandwidth</text>
+<g id="a_node4"><a xlink:href="classBGAdaptor_1_1HandleHostBandwidth.html#a795cc4c53c8a29e8c1c6e4dd0090c1d0" target="_top" xlink:title="HandleHostBandwidth constructor. ">
+<polygon fill="white" stroke="black" points="164,-109 164,-139 332,-139 332,-109 164,-109"/>
+<text text-anchor="start" x="172" y="-127" font-family="Helvetica,sans-Serif" font-size="10.00">BGAdaptor::HandleHostBandwidth</text>
 <text text-anchor="middle" x="248" y="-116" font-family="Helvetica,sans-Serif" font-size="10.00">::HandleHostBandwidth</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node4 -->
 <g id="edge3" class="edge"><title>Node1&#45;&gt;Node4</title>
-<path fill="none" stroke="midnightblue" d="M131.369,-124C149.924,-124 169.783,-124 187.715,-124"/>
+<path fill="none" stroke="midnightblue" d="M131.235,-124C141.845,-124 152.883,-124 163.746,-124"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="131.214,-120.5 121.214,-124 131.214,-127.5 131.214,-120.5"/>
 </g>
 <!-- Node5 -->
 <g id="node5" class="node"><title>Node5</title>
-<g id="a_node5"><a xlink:href="classHandleHostBandwidth.html#ac47bbf835631d45e09bf50b03dbbf696" target="_top" xlink:title="setRunning turn on the thread that receives the VMs bandwidth ">
-<polygon fill="white" stroke="black" points="191,-60 191,-90 305,-90 305,-60 191,-60"/>
-<text text-anchor="start" x="199" y="-78" font-family="Helvetica,sans-Serif" font-size="10.00">HandleHostBandwidth</text>
+<g id="a_node5"><a xlink:href="classBGAdaptor_1_1HandleHostBandwidth.html#a97e21ed6ef251eb62bd0550d8a8c7921" target="_top" xlink:title="setRunning turn on the thread that receives the VMs bandwidth ">
+<polygon fill="white" stroke="black" points="164,-60 164,-90 332,-90 332,-60 164,-60"/>
+<text text-anchor="start" x="172" y="-78" font-family="Helvetica,sans-Serif" font-size="10.00">BGAdaptor::HandleHostBandwidth</text>
 <text text-anchor="middle" x="248" y="-67" font-family="Helvetica,sans-Serif" font-size="10.00">::setRunning</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node5 -->
 <g id="edge4" class="edge"><title>Node1&#45;&gt;Node5</title>
-<path fill="none" stroke="midnightblue" d="M128.308,-106.353C148.798,-100.94 171.125,-95.0425 190.829,-89.8377"/>
+<path fill="none" stroke="midnightblue" d="M128.215,-106.377C148.51,-101.016 170.614,-95.1775 190.191,-90.0062"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="127.191,-103.027 118.417,-108.965 128.979,-109.795 127.191,-103.027"/>
 </g>
 <!-- Node7 -->
@@ -96,8 +96,8 @@
 </g>
 <!-- Node5&#45;&gt;Node6 -->
 <g id="edge5" class="edge"><title>Node5&#45;&gt;Node6</title>
-<path fill="none" stroke="midnightblue" d="M315.374,-75C337.203,-75 359.726,-75 374.851,-75"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="315.087,-71.5001 305.086,-75 315.086,-78.5001 315.087,-71.5001"/>
+<path fill="none" stroke="midnightblue" d="M342.369,-75C354.659,-75 366.035,-75 374.877,-75"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="342.348,-71.5001 332.348,-75 342.348,-78.5001 342.348,-71.5001"/>
 </g>
 </g>
 </svg>

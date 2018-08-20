@@ -11,36 +11,36 @@
 <polygon fill="white" stroke="none" points="-4,4 -4,-73.5 352,-73.5 352,4 -4,4"/>
 <!-- Node1 -->
 <g id="node1" class="node"><title>Node1</title>
-<polygon fill="#bfbfbf" stroke="black" points="0,-17 0,-47 163,-47 163,-17 0,-17"/>
-<text text-anchor="start" x="8" y="-35" font-family="Helvetica,sans-Serif" font-size="10.00">WCEnabler::BandwidthCalculator</text>
-<text text-anchor="middle" x="81.5" y="-24" font-family="Helvetica,sans-Serif" font-size="10.00">::~BandwidthCalculator</text>
+<polygon fill="#bfbfbf" stroke="black" points="0,-22.5 0,-52.5 163,-52.5 163,-22.5 0,-22.5"/>
+<text text-anchor="start" x="8" y="-40.5" font-family="Helvetica,sans-Serif" font-size="10.00">WCEnabler::BandwidthCalculator</text>
+<text text-anchor="middle" x="81.5" y="-29.5" font-family="Helvetica,sans-Serif" font-size="10.00">::~BandwidthCalculator</text>
 </g>
 <!-- Node2 -->
 <g id="node2" class="node"><title>Node2</title>
-<g id="a_node2"><a xlink:href="classCommon_1_1Math_1_1SimpleRateCalculator.html#a45f717e9f919cbc3110685841c3a7baf" target="_top" xlink:title="calculateRate calculates the rate and returns it ">
-<polygon fill="white" stroke="black" points="203,-39 203,-69 344,-69 344,-39 203,-39"/>
-<text text-anchor="start" x="211" y="-57" font-family="Helvetica,sans-Serif" font-size="10.00">Common::Math::SimpleRate</text>
-<text text-anchor="middle" x="273.5" y="-46" font-family="Helvetica,sans-Serif" font-size="10.00">Calculator::calculateRate</text>
+<g id="a_node2"><a xlink:href="classCommon_1_1LoggingHandler.html#a5c72b411fc450b086dcd31246e66bab0" target="_top" xlink:title="log method to log the given string ">
+<polygon fill="white" stroke="black" points="199,-50 199,-69 348,-69 348,-50 199,-50"/>
+<text text-anchor="middle" x="273.5" y="-57" font-family="Helvetica,sans-Serif" font-size="10.00">Common::LoggingHandler::log</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node2 -->
 <g id="edge1" class="edge"><title>Node1&#45;&gt;Node2</title>
-<path fill="none" stroke="midnightblue" d="M163.077,-41.33C172.911,-42.4686 182.955,-43.6317 192.777,-44.7689"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="192.576,-48.2689 202.912,-45.9424 193.381,-41.3154 192.576,-48.2689"/>
+<path fill="none" stroke="midnightblue" d="M163.077,-46.83C171.582,-47.8148 180.246,-48.8179 188.786,-49.8068"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="188.401,-53.2855 198.737,-50.959 189.206,-46.332 188.401,-53.2855"/>
 </g>
 <!-- Node3 -->
 <g id="node3" class="node"><title>Node3</title>
-<g id="a_node3"><a xlink:href="classCommon_1_1LoggingHandler.html#a5c72b411fc450b086dcd31246e66bab0" target="_top" xlink:title="log method to log the given string ">
-<polygon fill="white" stroke="black" points="199,-0.5 199,-19.5 348,-19.5 348,-0.5 199,-0.5"/>
-<text text-anchor="middle" x="273.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">Common::LoggingHandler::log</text>
+<g id="a_node3"><a xlink:href="classCommon_1_1Math_1_1SimpleRateCalculator.html#a45f717e9f919cbc3110685841c3a7baf" target="_top" xlink:title="calculateRate calculates the rate and returns it ">
+<polygon fill="white" stroke="black" points="203,-0.5 203,-30.5 344,-30.5 344,-0.5 203,-0.5"/>
+<text text-anchor="start" x="211" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">Common::Math::SimpleRate</text>
+<text text-anchor="middle" x="273.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">Calculator::calculateRate</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node3 -->
 <g id="edge2" class="edge"><title>Node1&#45;&gt;Node3</title>
-<path fill="none" stroke="midnightblue" d="M163.077,-22.67C171.582,-21.6852 180.246,-20.6821 188.786,-19.6932"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="189.206,-23.168 198.737,-18.541 188.401,-16.2145 189.206,-23.168"/>
+<path fill="none" stroke="midnightblue" d="M163.077,-28.17C172.911,-27.0314 182.955,-25.8683 192.777,-24.7311"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="193.381,-28.1846 202.912,-23.5576 192.576,-21.2311 193.381,-28.1846"/>
 </g>
 </g>
 </svg>

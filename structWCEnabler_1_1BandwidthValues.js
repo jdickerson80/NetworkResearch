@@ -1,9 +1,9 @@
 var structWCEnabler_1_1BandwidthValues =
 [
     [ "BandwidthValues", "structWCEnabler_1_1BandwidthValues.html#acb8e424f38ef54ae23e073eef5be7251", null ],
-    [ "bandwidthGuarantee", "structWCEnabler_1_1BandwidthValues.html#a3d297fdd2662fbe82f9eedeced5788fe", null ],
-    [ "bandwidthGuaranteeRate", "structWCEnabler_1_1BandwidthValues.html#af1ff9cff0b4bcace5dd8b7d6f37524c4", null ],
-    [ "ecnValue", "structWCEnabler_1_1BandwidthValues.html#af46b3a12000ddf5d0fdcf5586f46b0d6", null ],
-    [ "totalRate", "structWCEnabler_1_1BandwidthValues.html#a0aee6b4e6d1ad1283ead926680383569", null ],
-    [ "workConservingRate", "structWCEnabler_1_1BandwidthValues.html#a8fada8dccfb9d1a7ac14471287fcae70", null ]
+    [ "bandwidthGuarantee", "structWCEnabler_1_1BandwidthValues.html#a8ccf03be9700da7d3a9cc03fca84d3e7", null ],
+    [ "bandwidthGuaranteeRate", "structWCEnabler_1_1BandwidthValues.html#ae03b89b15ab7d966b66f72ca12e3037b", null ],
+    [ "ecnValue", "structWCEnabler_1_1BandwidthValues.html#ae733cc193e771108515ddc1590ca77fb", null ],
+    [ "totalRate", "structWCEnabler_1_1BandwidthValues.html#aa3a004d6f822e523b4a13e544463d311", null ],
+    [ "workConservingRate", "structWCEnabler_1_1BandwidthValues.html#a7600476c50f1429ece8eb093f8c44b50", null ]
 ];

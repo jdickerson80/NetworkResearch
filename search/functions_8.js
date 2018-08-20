@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['main',['main',['../BGAdaptor_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../WCEnabler_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp']]]
+  ['instance',['instance',['../classWCEnabler_1_1MainObject.html#a7c4630a566ddf5bcf9b6764686917b15',1,'WCEnabler::MainObject']]]
 ];
