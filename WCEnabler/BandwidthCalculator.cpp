@@ -18,6 +18,10 @@
 #define PacketBufferSize ( 65536 )
 #define IPAddressSize ( 20 )
 
+#include "gen_stats.h"
+#include "rtnetlink.h"
+#include "libnetlink.h"
+#include <param.h>
 //#define LogPackets ( 1 )
 
 namespace WCEnabler {
@@ -91,12 +95,16 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 	char sourceAddress[ IPAddressSize ];
 	char destinationAddress[ IPAddressSize ];
 	iphdr* ipHeader;
-	const char* const ipAddress = bandwidthCalculator->_interfaceIPAddress.c_str();
+	in_addr ipAddress;
+	ssize_t ethhdrSize = sizeof( ethhdr );
+	inet_aton( bandwidthCalculator->_interfaceIPAddress.c_str(), &ipAddress );
 
 #if defined( LogPackets )
 	char logBuffer[ LogBufferSize ];
 	ethhdr* ethernetHeader;
 #endif
+		// get the appropriate headers
+		ipHeader = (iphdr*)( packetBuffer + ethhdrSize );
 
 	// while the thread should run
 	while ( threadRunning.load() )
@@ -117,29 +125,16 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 			continue;
 		}
 
-		// get the appropriate headers
-		ipHeader = (iphdr*)( packetBuffer + sizeof( ethhdr ) );
 
 		// put the addresses into the string
 		// @note This HAS to be done sequentially and stored because the inet_ntoa char* buffer
 		// will be overridden every time it is called. This will make both addresses the
 		// same.
-		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
-		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
+//		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
+//		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
 
-		// if the packet source is not this interface
-		if ( strcmp( sourceAddress, ipAddress ) )
-		{
-			// mask out the DSCP field and check if congestion has been encountered
-			localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
-			ecn = localECN;
-
-			if ( ecn.load() == true )
-			{
-				printf("GOT ECN!!!!!\n");
-			}
-		}
-		else // packet source is this interface
+		// if packet source is this interface
+		if ( ipHeader->saddr == ipAddress.s_addr )
 		{
 			// convert the bytes to bits
 			dataSize *= 8;
@@ -152,14 +147,36 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 			{
 				// add the packet size to the counter
 				workConservingCounter += dataSize;
+				continue;
 			}
-			else // the packet is from the bandwidth guarantee flow
+//			else // the packet is from the bandwidth guarantee flow
 			{
 				//if ( ipHeader->tos == 0 ) // does the if need to be there??
 				// add the packet size to the counter
 				bandwidthGuaranteeCounter += dataSize;
 			}
+			continue;
 		}
+//		else // if the packet source is not this interface
+		{
+			// mask out the DSCP field and check if congestion has been encountered
+			localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
+			ecn = localECN;
+
+			if ( ecn.load() == true )
+			{
+				printf("GOT ECN!!!!!\n");
+			}
+		}
+
+		struct rtattr *tbs[TCA_STATS_MAX + 1];
+
+		parse_rtattr_nested(tbs, TCA_STATS_MAX, rta);
+
+		struct gnet_stats_rate_est re = {0};
+		memcpy(&re, RTA_DATA(tbs[TCA_STATS_RATE_EST]), MIN(RTA_PAYLOAD(tbs[TCA_STATS_RATE_EST]), sizeof(re)));
+//		fprintf(fp, "\n%srate %s %upps ",
+//			prefix, sprint_rate(re.bps, b1), re.pps);
 
 #if defined( LogPackets )
 		// set up the logging string
@@ -211,6 +228,12 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 
 		// calculate temp rate and atomically set it equal to the actual value
 		totalRate = tempBWGValue + tempWCValue;
+
+		printf("bwg %u wc %u tot %u\n"
+			   , tempBWGValue
+			   , tempWCValue
+			   , totalRate.load() );
+
 
 		sleep( 1 );
 	}

@@ -37,11 +37,6 @@ int main( int argc, char* argv[] )
 	// do nothing loop to keep the app going
 	while ( isRunning )
 	{
-//		printf("bwg %u wc %u tot %u\n"
-//			   , object.bandwidthValues()->bandwidthGuaranteeRate
-//			   , object.bandwidthValues()->workConservingRate
-//			   , object.bandwidthValues()->totalRate );
-
 		sleep( 1 );
 	}
 
