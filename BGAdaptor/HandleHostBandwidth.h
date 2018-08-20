@@ -38,21 +38,19 @@ private:
 
 private:
 
-	typedef bool (*FindFunction)( in_addr_t, in_addr_t);
-	typedef std::map< in_addr_t, HostBandwidthStatistics/*, FindFunction */> BandwidthMap;
-	typedef std::pair< in_addr_t, HandleHostBandwidth::HostBandwidthStatistics > Pair;
+	typedef std::map< in_addr_t, HostBandwidthStatistics > BandwidthMap;
 
-	bool _isRunning;
-	Common::LoggingHandler _logger;
+	std::atomic_bool _incomingBandwidthRunning;
+	std::atomic_bool _outgoingBandwidthRunning;
+	Common::LoggingHandler _incomingBandwidthlogger;
+	Common::LoggingHandler _outgoingBandwidthlogger;
 	unsigned int _totalBandwidth;
 	BandwidthMap _bandwidthMap;
-//	HostBandwidthStatistics* _hostsBandwidth;
 	int _socketFileDescriptor;
 	sockaddr_in _localAddresses;
 	unsigned int _numberOfHosts;
 	pthread_t _receiveThread;
-
-
+	pthread_t _sendThread;
 
 public:
 
@@ -65,37 +63,21 @@ public:
 
 	~HandleHostBandwidth();
 
-	/**
-	 * @brief setRunning turn on the thread that receives the VMs bandwidth
-	 * @param isRunning true the thread runs, false it shuts it off
-	 */
-	void setRunning( bool isRunning );
-
-	/**
-	 * @brief printBandwidths prints VM's bandwidth to the terminal
-	 */
-	void logBandwidths();
-
-	/**
-	 * @brief sendBandwidthRates sends all of the VMs bandwidth
-	 */
-	void sendBandwidthRates();
-
 private:
 
 	/**
-	 * @brief handleConnections method that handles connections
+	 * @brief handleHostsIncomingBandwidth method that handles connections
 	 * @param input pointer to an instance of this class
 	 * @return NULL
 	 */
-	static void* handleConnections( void* input );
+	static void* handleHostsIncomingBandwidth( void* input );
 
 	/**
-	 * @brief findHostIndex finds the array index of the ip address
-	 * @param ipAddress
-	 * @return index
+	 * @brief handleHostsOutgoingBandwidth
+	 * @param input
+	 * @return
 	 */
-	static size_t findHostIndex( char* ipAddress );
+	static void* handleHostsOutgoingBandwidth( void* input );
 
 	/**
 	 * @brief calculateHostBandwidth methods calculates each VMs bandwidth limit

@@ -42,12 +42,9 @@ int main( int argc, char* argv[] )
 
 	while ( isRunning )
 	{
-		hostBandwidth.sendBandwidthRates();
-		hostBandwidth.logBandwidths();
-		usleep( 250000 );
+		sleep( 1 );
 	}
 
-	hostBandwidth.setRunning( false );
 	exit( EXIT_SUCCESS );
 }
 
