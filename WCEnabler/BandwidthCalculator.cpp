@@ -92,19 +92,20 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 	unsigned char packetBuffer[ PacketBufferSize ];
 	Common::LoggingHandler* logger = bandwidthCalculator->_logger;
 	uint8_t dscpValue;
-	char sourceAddress[ IPAddressSize ];
-	char destinationAddress[ IPAddressSize ];
 	iphdr* ipHeader;
 	in_addr ipAddress;
 	ssize_t ethhdrSize = sizeof( ethhdr );
 	inet_aton( bandwidthCalculator->_interfaceIPAddress.c_str(), &ipAddress );
 
 #if defined( LogPackets )
+	char sourceAddress[ IPAddressSize ];
+	char destinationAddress[ IPAddressSize ];
 	char logBuffer[ LogBufferSize ];
 	ethhdr* ethernetHeader;
 #endif
-		// get the appropriate headers
-		ipHeader = (iphdr*)( packetBuffer + ethhdrSize );
+
+	// get the appropriate headers
+	ipHeader = (iphdr*)( packetBuffer + ethhdrSize );
 
 	// while the thread should run
 	while ( threadRunning.load() )
@@ -125,13 +126,14 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 			continue;
 		}
 
-
+#if defined( LogPackets )
 		// put the addresses into the string
 		// @note This HAS to be done sequentially and stored because the inet_ntoa char* buffer
 		// will be overridden every time it is called. This will make both addresses the
 		// same.
-//		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
-//		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
+		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
+		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
+#endif
 
 		// if packet source is this interface
 		if ( ipHeader->saddr == ipAddress.s_addr )
@@ -169,12 +171,12 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 			}
 		}
 
-		struct rtattr *tbs[TCA_STATS_MAX + 1];
+//		struct rtattr *tbs[TCA_STATS_MAX + 1];
 
-		parse_rtattr_nested(tbs, TCA_STATS_MAX, rta);
+//		parse_rtattr_nested(tbs, TCA_STATS_MAX, rta);
 
-		struct gnet_stats_rate_est re = {0};
-		memcpy(&re, RTA_DATA(tbs[TCA_STATS_RATE_EST]), MIN(RTA_PAYLOAD(tbs[TCA_STATS_RATE_EST]), sizeof(re)));
+//		struct gnet_stats_rate_est re = {0};
+//		memcpy(&re, RTA_DATA(tbs[TCA_STATS_RATE_EST]), MIN(RTA_PAYLOAD(tbs[TCA_STATS_RATE_EST]), sizeof(re)));
 //		fprintf(fp, "\n%srate %s %upps ",
 //			prefix, sprint_rate(re.bps, b1), re.pps);
 
@@ -185,7 +187,7 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 				  , ethernetHeader->h_proto
 				  , sourceAddress
 				  , destinationAddress
-				  , *ecn );
+				  , ecn.load() );
 
 		// log it
 		logger->log( logBuffer );

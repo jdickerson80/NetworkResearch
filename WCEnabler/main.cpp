@@ -1,6 +1,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <unistd.h>
 
 #include "MainObject.h"

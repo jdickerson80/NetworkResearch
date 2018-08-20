@@ -1,14 +1,12 @@
 #include "MainObject.h"
 
-#include <algorithm>
-#include <ifaddrs.h>
-#include <netdb.h>
 #include <sstream>
-#include <string.h>
 
 #include "BandwidthCalculator.h"
 #include "BandwidthCommunicator.h"
 #include "BandwidthValues.h"
+#include "HelperMethods.h"
+#include "LoggerFactory.h"
 #include "LoggingHandler.h"
 #include "Macros.h"
 #include "WorkConservationFlowHandler.h"
@@ -20,28 +18,30 @@ MainObject::MainObject()
 	setECNEnabled( true );
 
 	// get the interface's name
-    std::string interface = getInterfaceName();
+	Common::HelperMethods::InterfaceInfo interface = Common::HelperMethods::getInterfaceName();
 
 	_bandwidthValues = new BandwidthValues();
+
+	printf("iface %s ip %s\n", interface.interfaceName.c_str(), interface.ipAddress.c_str() );
 
 	// create the threads
 	_bandwidthCommunicator = new BandwidthCommunicator(
 				BGAdaptorIPAddress
-				, interface
+				, interface.interfaceName
 				, _bandwidthValues
-				, buildLogger( interface, "BandwidthLimit", false )
-				, buildLogger( interface, "BandwidthUsage", false ) );
+				, Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthLimit", false )
+				, Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthUsage", false ) );
 
 	_workConservationFlowHandler = new WorkConservationFlowHandler(
-				interface
+				interface.interfaceName
 				, 0.05
 				, 0.05
-				, buildLogger( interface, "WorkConservation", false )
+				, Common::LoggerFactory::buildLogger( interface.interfaceName, "WorkConservation", false )
 				, _bandwidthValues  );
 
 	_bandwidthCalculator = new BandwidthCalculator(
-				buildLogger( interface, "BandwidthCalculator", true )
-				, _ipAddress
+				Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthCalculator", true )
+				, interface.ipAddress
 				, _bandwidthValues );
 }
 
@@ -63,90 +63,6 @@ MainObject& MainObject::instance()
 {
 	static MainObject instance;
 	return instance;
-}
-
-Common::LoggingHandler* MainObject::buildLogger( const std::string& interface, const std::string& filename, bool isCSV )
-{
-	// remove the -eth0 from the interface name
-	char removeInterface[] = "-eth0";
-	std::string newInterface( interface );
-
-	// loop through the string, removing appropriate characters
-	for ( unsigned int i = 0; i < strlen( removeInterface ); ++i )
-	{
-		newInterface.erase( remove( ++newInterface.begin(), newInterface.end(), removeInterface[ i ] ), newInterface.end()  );
-	}
-
-	// stream the logging string, create and return the pointer to it
-	std::ostringstream stream;
-	stream << "/tmp/" << newInterface << "/" << filename;
-
-	// check if the output file should be a .csv
-	if ( isCSV )
-	{
-		stream << ".csv";
-	}
-	else // not a .csv field
-	{
-		stream << ".log";
-	}
-
-	return new Common::LoggingHandler( stream.str() );
-}
-
-std::string MainObject::getInterfaceName()
-{
-	// init local variables
-	ifaddrs* ifaddr;
-	ifaddrs* ifa;
-	int family, s, n;
-	char host[ NI_MAXHOST ];
-	std::string interface;
-
-	// check for error when trying to get if address
-	if ( getifaddrs( &ifaddr ) == -1 )
-	{
-		perror("getifaddrs");
-	}
-
-	// loop through the list of interfaces
-	for ( ifa = ifaddr, n = 0; ifa != NULL; ifa = ifa->ifa_next, n++ )
-	{
-		// if the name is empty or if it is the loopback address, start
-		// the loop over again
-		if ( ifa->ifa_addr == NULL || !strcmp( ifa->ifa_name, "lo" ) )
-			continue;
-
-		// grab the family
-		family = ifa->ifa_addr->sa_family;
-
-		// check if the family is internet protocol v4
-		if ( family == AF_INET )
-		{
-			// get the name info
-			s = getnameinfo( ifa->ifa_addr
-							 , sizeof( sockaddr_in )
-							 , host
-							 , NI_MAXHOST
-							 , NULL
-							 , 0
-							 , NI_NUMERICHOST );
-			// check the return value
-			if ( s != 0 )
-			{
-				printf( "getnameinfo() failed: %s\n", gai_strerror( s ) );
-			}
-
-			// save the local ip address and interface name
-			_ipAddress = host;
-			interface = ifa->ifa_name;
-		}
-	}
-
-	// free the memory
-	freeifaddrs( ifaddr );
-
-	return interface;
 }
 
 void MainObject::setECNEnabled( bool isEnabled )

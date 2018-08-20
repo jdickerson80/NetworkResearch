@@ -2,7 +2,6 @@
 #define MAINOBJECT_H
 
 #include <stdint.h>
-#include <string>
 
 // Forward declarations
 namespace Common {
@@ -34,7 +33,6 @@ private:
 	BandwidthCalculator* _bandwidthCalculator;
 	BandwidthCommunicator* _bandwidthCommunicator;
 	BandwidthValues* _bandwidthValues;
-	std::string _ipAddress;
 	WorkConservationFlowHandler* _workConservationFlowHandler;
 
 public:
@@ -56,20 +54,6 @@ public:
 	const BandwidthValues* const bandwidthValues() const;
 
 private:
-
-	/**
-	 * @brief	buildLogger method creates the appropriate logging handler and returns a pointer to it.
-	 * @param interface string of the interface
-	 * @param filename string of the filename
-	 * @return pointer to the logging handler
-	 */
-	static Common::LoggingHandler* buildLogger( const std::string& interface, const std::string& filename, bool isCSV );
-
-	/**
-	 * @brief getInterfaceName getter
-	 * @return the name of the interface
-	 */
-	std::string getInterfaceName();
 
 	/**
 	 * @brief setECNEnabled setter
