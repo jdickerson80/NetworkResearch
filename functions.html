@@ -30,7 +30,6 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="logo.svg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">NetworkResearch
    &#160;<span id="projectnumber">0.0.0</span>
@@ -191,6 +190,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>bps
 : <a class="el" href="structgnet__stats__rate__est.html#a06d6d21689b5a74c9dc5a931995b0d69">gnet_stats_rate_est</a>
 </li>
+<li>buildLogger()
+: <a class="el" href="classCommon_1_1LoggerFactory.html#a8edcb8fd5fabe1e88bf1c15b868e5bdd">Common::LoggerFactory</a>
+</li>
 <li>bytes
 : <a class="el" href="structgnet__stats__basic.html#a5b368d2631f715c56e15e4272df1734b">gnet_stats_basic</a>
 , <a class="el" href="structgnet__stats__basic__packed.html#a6984824df9b5e257729d278c23383335">gnet_stats_basic_packed</a>
@@ -287,6 +289,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
+<li>getInterfaceName()
+: <a class="el" href="classCommon_1_1HelperMethods.html#ac25baf3735415338e1f57cbfdc0890cb">Common::HelperMethods</a>
+</li>
 <li>GuaranteedBandwidthSufficient
 : <a class="el" href="structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba2b7d424286a44fa6a8e94e4fd5808dc0">WCEnabler::WorkConservationFlowHandler::FlowState</a>
 </li>
@@ -295,7 +300,7 @@ $(document).ready(function(){initNavTree('functions.html','');});
 
 <h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
 <li>HandleHostBandwidth()
-: <a class="el" href="classBGAdaptor_1_1HandleHostBandwidth.html#a795cc4c53c8a29e8c1c6e4dd0090c1d0">BGAdaptor::HandleHostBandwidth</a>
+: <a class="el" href="classBGAdaptor_1_1HandleHostBandwidth.html#af8e6a5d03b90da9fa56b15f5ef60aead">BGAdaptor::HandleHostBandwidth</a>
 </li>
 </ul>
 
@@ -325,8 +330,17 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>instance()
 : <a class="el" href="classWCEnabler_1_1MainObject.html#a7c4630a566ddf5bcf9b6764686917b15">WCEnabler::MainObject</a>
 </li>
+<li>InterfaceInfo()
+: <a class="el" href="structCommon_1_1HelperMethods_1_1InterfaceInfo.html#a8c5c5047166942a2738869d416921d38">Common::HelperMethods::InterfaceInfo</a>
+</li>
+<li>interfaceName
+: <a class="el" href="structCommon_1_1HelperMethods_1_1InterfaceInfo.html#a8fdbf19190faf4fde53ab7d8d1780e3b">Common::HelperMethods::InterfaceInfo</a>
+</li>
 <li>interval
 : <a class="el" href="structgnet__estimator.html#a97d52d2210e10632cb7c64229495c45a">gnet_estimator</a>
+</li>
+<li>ipAddress
+: <a class="el" href="structCommon_1_1HelperMethods_1_1InterfaceInfo.html#ad53876129d704acdbdf2fa663b945fae">Common::HelperMethods::InterfaceInfo</a>
 </li>
 </ul>
 
@@ -347,9 +361,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 </li>
 <li>log()
 : <a class="el" href="classCommon_1_1LoggingHandler.html#a16022708e185ca7fba2fa415521b2ba4">Common::LoggingHandler</a>
-</li>
-<li>logBandwidths()
-: <a class="el" href="classBGAdaptor_1_1HandleHostBandwidth.html#a0bd91d291729abdb12ac258eb00eb8d3">BGAdaptor::HandleHostBandwidth</a>
 </li>
 <li>LoggingHandler()
 : <a class="el" href="classCommon_1_1LoggingHandler.html#ab0c0218b39b546dc2e7e99b92ffe1f4c">Common::LoggingHandler</a>
@@ -540,9 +551,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
-<li>sendBandwidthRates()
-: <a class="el" href="classBGAdaptor_1_1HandleHostBandwidth.html#af412af774ed022f289976b3746b02878">BGAdaptor::HandleHostBandwidth</a>
-</li>
 <li>seq
 : <a class="el" href="structrtnl__handle.html#a3b423eb6125d051d774c8d8303b08cf9">rtnl_handle</a>
 </li>
@@ -550,13 +558,10 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="classCommon_1_1Math_1_1ExponentialSmoothing.html#af6422d0d4d52d48a948e8315b08eb29d">Common::Math::ExponentialSmoothing</a>
 </li>
 <li>setEgressBandwidth()
-: <a class="el" href="classCommon_1_1TCControl.html#a1b50fa70591a78c957a35bd67a459ce1">Common::TCControl</a>
+: <a class="el" href="classCommon_1_1TCControl.html#a9ccd692a49cab80cf296f527a08a7f55">Common::TCControl</a>
 </li>
 <li>setIgressBandwidth()
 : <a class="el" href="classCommon_1_1TCControl.html#a01a976f499a2b89e1dd63a5115093eb2">Common::TCControl</a>
-</li>
-<li>setRunning()
-: <a class="el" href="classBGAdaptor_1_1HandleHostBandwidth.html#a97e21ed6ef251eb62bd0550d8a8c7921">BGAdaptor::HandleHostBandwidth</a>
 </li>
 <li>SimpleRateCalculation()
 : <a class="el" href="classCommon_1_1Math_1_1SimpleRateCalculation.html#a752776df2c9af120cf27a6745cbb24ce">Common::Math::SimpleRateCalculation</a>
@@ -571,7 +576,7 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="structrta__session.html#a4ac2367637bff56734302d150e984d12">rta_session</a>
 </li>
 <li>startDetachedThread()
-: <a class="el" href="classCommon_1_1ThreadHelper.html#a3599a8d6bfb02717157989ee65190e89">Common::ThreadHelper</a>
+: <a class="el" href="classCommon_1_1ThreadHelper.html#ac08e2d5dcb09787954f11fd70cb2c919">Common::ThreadHelper</a>
 </li>
 <li>startJoinableThread()
 : <a class="el" href="classCommon_1_1ThreadHelper.html#ac7ff5bf160e8251bccefcf817b3f987c">Common::ThreadHelper</a>

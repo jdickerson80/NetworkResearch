@@ -29,7 +29,16 @@ var files =
     [ "HandleHostBandwidth.h", "HandleHostBandwidth_8h.html", [
       [ "HandleHostBandwidth", "classBGAdaptor_1_1HandleHostBandwidth.html", "classBGAdaptor_1_1HandleHostBandwidth" ]
     ] ],
+    [ "HelperMethods.cpp", "HelperMethods_8cpp.html", null ],
+    [ "HelperMethods.h", "HelperMethods_8h.html", [
+      [ "HelperMethods", "classCommon_1_1HelperMethods.html", "classCommon_1_1HelperMethods" ],
+      [ "InterfaceInfo", "structCommon_1_1HelperMethods_1_1InterfaceInfo.html", "structCommon_1_1HelperMethods_1_1InterfaceInfo" ]
+    ] ],
     [ "libnetlink.h", "libnetlink_8h.html", "libnetlink_8h" ],
+    [ "LoggerFactory.cpp", "LoggerFactory_8cpp.html", null ],
+    [ "LoggerFactory.h", "LoggerFactory_8h.html", [
+      [ "LoggerFactory", "classCommon_1_1LoggerFactory.html", null ]
+    ] ],
     [ "LoggingHandler.cpp", "LoggingHandler_8cpp.html", null ],
     [ "LoggingHandler.h", "LoggingHandler_8h.html", [
       [ "LoggingHandler", "classCommon_1_1LoggingHandler.html", "classCommon_1_1LoggingHandler" ]
@@ -58,7 +67,7 @@ var files =
     [ "ThreadHelper.h", "ThreadHelper_8h.html", [
       [ "ThreadHelper", "classCommon_1_1ThreadHelper.html", "classCommon_1_1ThreadHelper" ]
     ] ],
-    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", null ],
+    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", "WorkConservationFlowHandler_8cpp" ],
     [ "WorkConservationFlowHandler.h", "WorkConservationFlowHandler_8h.html", [
       [ "WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", "classWCEnabler_1_1WorkConservationFlowHandler" ],
       [ "FlowState", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState" ]

@@ -1,14 +1,12 @@
 var searchData=
 [
-  ['sendbandwidthrates',['sendBandwidthRates',['../classBGAdaptor_1_1HandleHostBandwidth.html#af412af774ed022f289976b3746b02878',1,'BGAdaptor::HandleHostBandwidth']]],
   ['seq',['seq',['../structrtnl__handle.html#a3b423eb6125d051d774c8d8303b08cf9',1,'rtnl_handle']]],
   ['setalpha',['setAlpha',['../classCommon_1_1Math_1_1ExponentialSmoothing.html#af6422d0d4d52d48a948e8315b08eb29d',1,'Common::Math::ExponentialSmoothing']]],
   ['setbit',['setbit',['../param_8h.html#ab07620b0f4646de0afd8cdac7e4ca074',1,'param.h']]],
   ['setegressbandwidth',['setEgressBandwidth',['../classCommon_1_1TCControl.html#a1b50fa70591a78c957a35bd67a459ce1',1,'Common::TCControl::setEgressBandwidth(const std::string &amp;interface, const std::string &amp;desiredBandwidth)'],['../classCommon_1_1TCControl.html#a9ccd692a49cab80cf296f527a08a7f55',1,'Common::TCControl::setEgressBandwidth(const std::string &amp;interface, const int desiredBandwidth)']]],
   ['setigressbandwidth',['setIgressBandwidth',['../classCommon_1_1TCControl.html#a01a976f499a2b89e1dd63a5115093eb2',1,'Common::TCControl::setIgressBandwidth(const std::string &amp;interface, const std::string &amp;desiredBandwidth)'],['../classCommon_1_1TCControl.html#a2feb3883780487cfec8ce8c8780e115e',1,'Common::TCControl::setIgressBandwidth(const std::string &amp;interface, const int desiredBandwidth)']]],
-  ['setrunning',['setRunning',['../classBGAdaptor_1_1HandleHostBandwidth.html#a97e21ed6ef251eb62bd0550d8a8c7921',1,'BGAdaptor::HandleHostBandwidth']]],
-  ['simpleratecalculation',['SimpleRateCalculation',['../classCommon_1_1Math_1_1SimpleRateCalculation.html',1,'Common::Math']]],
   ['simpleratecalculation',['SimpleRateCalculation',['../classCommon_1_1Math_1_1SimpleRateCalculation.html#a752776df2c9af120cf27a6745cbb24ce',1,'Common::Math::SimpleRateCalculation']]],
+  ['simpleratecalculation',['SimpleRateCalculation',['../classCommon_1_1Math_1_1SimpleRateCalculation.html',1,'Common::Math']]],
   ['simpleratecalculation_2ecpp',['SimpleRateCalculation.cpp',['../SimpleRateCalculation_8cpp.html',1,'']]],
   ['simpleratecalculation_2eh',['SimpleRateCalculation.h',['../SimpleRateCalculation_8h.html',1,'']]],
   ['simpleratecalculator',['SimpleRateCalculator',['../classCommon_1_1Math_1_1SimpleRateCalculator.html',1,'Common::Math']]],

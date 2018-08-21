@@ -10,7 +10,6 @@ var searchData=
   ['inet_5fecn_5fmask',['INET_ECN_MASK',['../Macros_8h.html#a1a636091ae61e50fa3c7ea1809457711',1,'Macros.h']]],
   ['inet_5fecn_5fnot_5fect',['INET_ECN_NOT_ECT',['../Macros_8h.html#a2afa6a74702a64a8b0f55966b666c61a',1,'Macros.h']]],
   ['ipaddresssize',['IPAddressSize',['../BandwidthCalculator_8cpp.html#a9afbe004a8fcd1fb2165a6e41efa58c8',1,'BandwidthCalculator.cpp']]],
-  ['ipbytes',['IPBytes',['../HandleHostBandwidth_8cpp.html#afb80d78de79d8235c2021842cb348fbd',1,'HandleHostBandwidth.cpp']]],
   ['isclr',['isclr',['../param_8h.html#aab0094c7138e084845aa274dd8b9a0e2',1,'param.h']]],
   ['isset',['isset',['../param_8h.html#a8a86f0e917c9c62dd630a5e35f16eaf9',1,'param.h']]]
 ];

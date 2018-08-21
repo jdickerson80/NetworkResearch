@@ -7,5 +7,7 @@ var searchData=
   ['ifi_5fflags',['ifi_flags',['../structifinfomsg.html#ab307fa542ef964c144bd6fce53e223a2',1,'ifinfomsg']]],
   ['ifi_5findex',['ifi_index',['../structifinfomsg.html#a61de5e202571e2ce389b0c6d4aa24a4a',1,'ifinfomsg']]],
   ['ifi_5ftype',['ifi_type',['../structifinfomsg.html#ab074b06e9f7b830efe57d7ebc830f19c',1,'ifinfomsg']]],
-  ['interval',['interval',['../structgnet__estimator.html#a97d52d2210e10632cb7c64229495c45a',1,'gnet_estimator']]]
+  ['interfacename',['interfaceName',['../structCommon_1_1HelperMethods_1_1InterfaceInfo.html#a8fdbf19190faf4fde53ab7d8d1780e3b',1,'Common::HelperMethods::InterfaceInfo']]],
+  ['interval',['interval',['../structgnet__estimator.html#a97d52d2210e10632cb7c64229495c45a',1,'gnet_estimator']]],
+  ['ipaddress',['ipAddress',['../structCommon_1_1HelperMethods_1_1InterfaceInfo.html#ad53876129d704acdbdf2fa663b945fae',1,'Common::HelperMethods::InterfaceInfo']]]
 ];

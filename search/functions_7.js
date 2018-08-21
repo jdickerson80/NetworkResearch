@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html#a795cc4c53c8a29e8c1c6e4dd0090c1d0',1,'BGAdaptor::HandleHostBandwidth']]]
+  ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html#af8e6a5d03b90da9fa56b15f5ef60aead',1,'BGAdaptor::HandleHostBandwidth']]]
 ];

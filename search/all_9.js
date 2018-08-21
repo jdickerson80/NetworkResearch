@@ -18,9 +18,12 @@ var searchData=
   ['inet_5fecn_5fmask',['INET_ECN_MASK',['../Macros_8h.html#a1a636091ae61e50fa3c7ea1809457711',1,'Macros.h']]],
   ['inet_5fecn_5fnot_5fect',['INET_ECN_NOT_ECT',['../Macros_8h.html#a2afa6a74702a64a8b0f55966b666c61a',1,'Macros.h']]],
   ['instance',['instance',['../classWCEnabler_1_1MainObject.html#a7c4630a566ddf5bcf9b6764686917b15',1,'WCEnabler::MainObject']]],
+  ['interfaceinfo',['InterfaceInfo',['../structCommon_1_1HelperMethods_1_1InterfaceInfo.html',1,'Common::HelperMethods']]],
+  ['interfaceinfo',['InterfaceInfo',['../structCommon_1_1HelperMethods_1_1InterfaceInfo.html#a8c5c5047166942a2738869d416921d38',1,'Common::HelperMethods::InterfaceInfo']]],
+  ['interfacename',['interfaceName',['../structCommon_1_1HelperMethods_1_1InterfaceInfo.html#a8fdbf19190faf4fde53ab7d8d1780e3b',1,'Common::HelperMethods::InterfaceInfo']]],
   ['interval',['interval',['../structgnet__estimator.html#a97d52d2210e10632cb7c64229495c45a',1,'gnet_estimator']]],
+  ['ipaddress',['ipAddress',['../structCommon_1_1HelperMethods_1_1InterfaceInfo.html#ad53876129d704acdbdf2fa663b945fae',1,'Common::HelperMethods::InterfaceInfo']]],
   ['ipaddresssize',['IPAddressSize',['../BandwidthCalculator_8cpp.html#a9afbe004a8fcd1fb2165a6e41efa58c8',1,'BandwidthCalculator.cpp']]],
-  ['ipbytes',['IPBytes',['../HandleHostBandwidth_8cpp.html#afb80d78de79d8235c2021842cb348fbd',1,'HandleHostBandwidth.cpp']]],
   ['isclr',['isclr',['../param_8h.html#aab0094c7138e084845aa274dd8b9a0e2',1,'param.h']]],
   ['isset',['isset',['../param_8h.html#a8a86f0e917c9c62dd630a5e35f16eaf9',1,'param.h']]]
 ];
