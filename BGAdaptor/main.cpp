@@ -23,13 +23,13 @@ int main( int argc, char* argv[] )
 {
     if ( getuid() != 0 )
 	{
-		printf("You must run this program as root. Exiting.\n");
+		perror("You must run this program as root. Exiting.\n");
 		exit( EXIT_FAILURE );
 	}
 
-	if ( argc < 3 )
+	if ( argc != 2 )
 	{
-		perror( "You must give the number of hosts and the tenant's total bandwidth in kilobytes the command line arguments. Exiting.\n" );
+		perror( "You must give the tenant's total bandwidth in kilobytes as a command line argument. Exiting.\n" );
 		exit( EXIT_FAILURE );
 	}
 
@@ -38,7 +38,7 @@ int main( int argc, char* argv[] )
 
 	setlocale( LC_ALL, "" );
 
-	BGAdaptor::HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) - 1, atoi( argv[ 2 ] ) );
+	BGAdaptor::HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) );
 
 	while ( isRunning )
 	{

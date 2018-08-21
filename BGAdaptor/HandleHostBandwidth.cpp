@@ -7,15 +7,15 @@
 #include "ThreadHelper.h"
 
 #define LogPackets ( 1 )
+
 namespace BGAdaptor {
 
-HandleHostBandwidth::HandleHostBandwidth( unsigned int numberOfHosts, unsigned int totalBandwidth )
+HandleHostBandwidth::HandleHostBandwidth( unsigned int totalBandwidth )
 	: _incomingBandwidthRunning( false )
 	, _outgoingBandwidthRunning( false )
 	, _incomingBandwidthlogger( "/tmp/h1/incoming.log" )
 	, _outgoingBandwidthlogger( "/tmp/h1/outgoing.log" )
 	, _totalBandwidth( totalBandwidth )
-	, _numberOfHosts( numberOfHosts )
 {
 	_socketFileDescriptor = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
 
@@ -61,6 +61,7 @@ void* HandleHostBandwidth::handleHostsIncomingBandwidth( void* input )
 #if defined( LogPackets )
 	Common::LoggingHandler* logger = &bandwidthManager->_incomingBandwidthlogger;
 #endif
+
 	while ( threadRunning.load() )
 	{
 		receiveLength = recvfrom( bandwidthManager->_socketFileDescriptor
@@ -154,7 +155,7 @@ void* HandleHostBandwidth::handleHostsOutgoingBandwidth( void* input )
 void HandleHostBandwidth::calculateHostBandwidth( HostBandwidthStatistics* hostStatistics )
 {
 	hostStatistics->lastGuarantee = hostStatistics->guarantee.load();
-	hostStatistics->guarantee = _totalBandwidth / _numberOfHosts;// / 2;
+	hostStatistics->guarantee = _totalBandwidth / _bandwidthMap.size();// / 2;
 }
 
 } // namespace BGAdaptor

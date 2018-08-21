@@ -48,7 +48,6 @@ private:
 	BandwidthMap _bandwidthMap;
 	int _socketFileDescriptor;
 	sockaddr_in _localAddresses;
-	unsigned int _numberOfHosts;
 	pthread_t _receiveThread;
 	pthread_t _sendThread;
 
@@ -56,10 +55,9 @@ public:
 
 	/**
 	 * @brief HandleHostBandwidth constructor
-	 * @param numberOfHosts number of hosts in the network
 	 * @param totalBandwidth total bandwidth of the tenant
 	 */
-	HandleHostBandwidth( unsigned int numberOfHosts, unsigned int totalBandwidth );
+	HandleHostBandwidth( unsigned int totalBandwidth );
 
 	~HandleHostBandwidth();
 
