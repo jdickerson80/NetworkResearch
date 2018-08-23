@@ -4,11 +4,17 @@ var NAVTREE =
     [ "NetworkResearch", "md__home_jd_Documents_Code_NetworkResearch_README.html", null ],
     [ "Todo List", "todo.html", null ],
     [ "Namespaces", null, [
-      [ "Namespace List", "namespaces.html", "namespaces" ]
+      [ "Namespace List", "namespaces.html", "namespaces" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ]
+      ] ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
+      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ],
@@ -36,9 +42,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BGAdaptor_2main_8cpp.html",
-"rtnetlink_8h.html#a063930b356d1795b5dcb64e5a934ad26",
-"rtnetlink_8h.html#ac4fb73b9e0bbdbc8a639619e800d8173ad1167c96c3c12801aa761bf3efeeb43a",
-"structrtnl__handle.html#a81dab3b60ac522e1b1809c4992288683"
+"namespacemembers_vars.html",
+"rtnetlink_8h.html#abc6126af1d45847bc59afa0aa3216b04ae103d6858df098ae16a4d368f68dabd7",
+"structrtmsg.html#a2295e2054ab275a89be3c681a630a8e9"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

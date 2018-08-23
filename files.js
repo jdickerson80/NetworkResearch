@@ -8,6 +8,7 @@ var files =
     [ "BandwidthCommunicator.h", "BandwidthCommunicator_8h.html", [
       [ "BandwidthCommunicator", "classWCEnabler_1_1BandwidthCommunicator.html", "classWCEnabler_1_1BandwidthCommunicator" ]
     ] ],
+    [ "BandwidthShare.py", "BandwidthShare_8py.html", "BandwidthShare_8py" ],
     [ "BandwidthValues.h", "BandwidthValues_8h.html", [
       [ "BandwidthValues", "structWCEnabler_1_1BandwidthValues.html", "structWCEnabler_1_1BandwidthValues" ]
     ] ],

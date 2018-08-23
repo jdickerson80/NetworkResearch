@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['lastvalue',['lastValue',['../structCommon_1_1CurrentAndLastValues.html#a706781ca6d98a9d04530144900fc6066',1,'Common::CurrentAndLastValues']]],
-  ['local',['local',['../structrtnl__handle.html#a81dab3b60ac522e1b1809c4992288683',1,'rtnl_handle']]]
+  ['junk',['junk',['../structrtnl__dump__filter__arg.html#ae20a73bd5ea01b5efa54312981740fe9',1,'rtnl_dump_filter_arg']]]
 ];

@@ -1,5 +1,6 @@
 var annotated_dup =
 [
+    [ "BandwidthShare", "namespaceBandwidthShare.html", "namespaceBandwidthShare" ],
     [ "BGAdaptor", "namespaceBGAdaptor.html", "namespaceBGAdaptor" ],
     [ "Common", "namespaceCommon.html", "namespaceCommon" ],
     [ "WCEnabler", "namespaceWCEnabler.html", "namespaceWCEnabler" ],
