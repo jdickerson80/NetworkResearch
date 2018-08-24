@@ -151,25 +151,22 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 				workConservingCounter += dataSize;
 				continue;
 			}
-//			else // the packet is from the bandwidth guarantee flow
-			{
-				//if ( ipHeader->tos == 0 ) // does the if need to be there??
-				// add the packet size to the counter
-				bandwidthGuaranteeCounter += dataSize;
-			}
+
+			//if ( ipHeader->tos == 0 ) // does the if need to be there??
+			// add the packet size to the counter
+			bandwidthGuaranteeCounter += dataSize;
+
 			continue;
 		}
-//		else // if the packet source is not this interface
-		{
-			// mask out the DSCP field and check if congestion has been encountered
-			localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
-			ecn = localECN;
 
-			if ( ecn.load() == true )
-			{
-				printf("GOT ECN!!!!!\n");
-			}
-		}
+		// mask out the DSCP field and check if congestion has been encountered
+		localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
+		ecn = localECN;
+
+//		if ( ecn.load() == true )
+//		{
+//			printf("GOT ECN!!!!!\n");
+//		}
 
 //		struct rtattr *tbs[TCA_STATS_MAX + 1];
 
@@ -235,7 +232,6 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 			   , tempBWGValue
 			   , tempWCValue
 			   , totalRate.load() );
-
 
 		sleep( 1 );
 	}
