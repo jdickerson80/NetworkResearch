@@ -77,19 +77,19 @@ std::string WorkConservationFlowHandler::stateToString( FlowState::Enum currentS
 	switch ( currentState )
 	{
 	case FlowState::ExistingFlowWithoutWorkConservation:
-		return std::string( "ExistingFlowWithoutWorkConservation" );
+		return std::string( "ExistingFlowWithoutWorkConservation\n" );
 		break;
 
 	case FlowState::ExistingFlowWithWorkConservation:
-		return std::string( "!!!!ExistingFlowWithWorkConservation" );
+		return std::string( "ExistingFlowWithWorkConservation\n" );
 		break;
 
 	case FlowState::GuaranteedBandwidthSufficient:
-		return std::string( "GuaranteedBandwidthSufficient" );
+		return std::string( "GuaranteedBandwidthSufficient\n" );
 		break;
 
 	case FlowState::NewWCFlow:
-		return std::string( "NewWCFlow" );
+		return std::string( "NewWCFlow\n" );
 		break;
 	}
 
@@ -128,7 +128,7 @@ void WorkConservationFlowHandler::setState( FlowState::Enum flowState )
 		break;
 	}
 
-	printf("%s\n", stateToString( _currentState ).c_str() );
+	_logger->log( stateToString( _currentState ) );
 }
 
 bool WorkConservationFlowHandler::vmLevelCheck( float bandwidthGuarantee )
@@ -164,13 +164,13 @@ void* WorkConservationFlowHandler::updateWorkConservation( void* input )
 			// if the previous time slot has an ECN,
 			if ( ecnValue.load() )
 			{
-				// start the WC flow
-				workConservationFlowHandler->setState( FlowState::ExistingFlowWithWorkConservation );
+				// set the state of GuaranteedBandwidthSufficient
+				workConservationFlowHandler->setState( FlowState::GuaranteedBandwidthSufficient );
 			}
 			else // there is no ECN
 			{
-				// set the state of GuaranteedBandwidthSufficient
-				workConservationFlowHandler->setState( FlowState::GuaranteedBandwidthSufficient );
+				// start the WC flow
+				workConservationFlowHandler->setState( FlowState::ExistingFlowWithWorkConservation );
 			}
 			break;
 
