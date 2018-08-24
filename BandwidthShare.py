@@ -169,9 +169,9 @@ def startBWShare( net ):
     print "Starting BG and WC"
     for host in net.hosts:
 	if host.name == 'h001':
-	    host.cmd( '/home/jd/Documents/Code/build/BGAdaptor/./BGAdaptor 10000 &> /dev/null &' )
+	    host.cmd( './BGAdaptor 10000 &> /dev/null &' )
 	else:
-	    host.cmd( '/home/jd/Documents/Code/build/WCEnabler/./WCEnabler &> /dev/null &' )
+	    host.cmd( './WCEnabler &> /dev/null &' )
 
 def setupSwitchQueues( net ):
     print "Setting up switch queues"
