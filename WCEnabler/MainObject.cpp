@@ -22,8 +22,6 @@ MainObject::MainObject()
 
 	_bandwidthValues = new BandwidthValues();
 
-	printf("iface %s ip %s\n", interface.interfaceName.c_str(), interface.ipAddress.c_str() );
-
 	// create the threads
 	_bandwidthCommunicator = new BandwidthCommunicator(
 				BGAdaptorIPAddress
