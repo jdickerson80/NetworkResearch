@@ -150,17 +150,17 @@ def setupTCCommand( interface, host ):
 
     # create a filter for root class that matches all tcp protocols with tos of 0, send it to flow 1:11
     # this filters all BwG tcp packets into class 1:11
-    command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 5:11" % interface
+    command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11" % interface
     commandReturns = host.cmd( command )
 
     # create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
     # this filters all WC tcp packets into class 1:12
-    command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 5:12" % interface
+    command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12" % interface
     commandReturns = host.cmd( command )
 
     # create a filter for root class that matches all udp protocols with tos of 0, send it to flow 1:11
     # this filters all BwG udp packets into class 1:11
-    command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 5:11" % interface
+    command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 1:11" % interface
     commandReturns = host.cmd( command )
 
     return commandReturns
@@ -177,7 +177,7 @@ def setupSwitchQueues( net ):
     print "Setting up switch queues"
     for switch in net.switches:
 	cmd = "ovs-vsctl set bridge %s protocols=OpenFlow13 stp_enable=true" % switch
-	os.system( cmd )
+	switch.cmd( cmd )
 
 	for name in switch.intfNames():
 	    if name == "lo":
@@ -230,4 +230,4 @@ if __name__ == '__main__':
 #   os.system( "echo 1 > /sys/module/mptcp_ndiffports/parameters/num_subflows >> commands.log" )
     os.system( "sysctl -w net.mptcp.mptcp_debug=1 >> commands.log" )
     os.system( "echo --------------------------------------- >> commands.log" )
-    createTopo( 4, 4 )
+    createTopo( 2, 4 )
