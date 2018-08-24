@@ -6,7 +6,10 @@
 #include <map>
 #include <pthread.h>
 
-#include "LoggingHandler.h"
+// Forward declarations
+namespace Common {
+class LoggingHandler;
+}
 
 namespace BGAdaptor {
 /**
@@ -42,8 +45,8 @@ private:
 
 	std::atomic_bool _incomingBandwidthRunning;
 	std::atomic_bool _outgoingBandwidthRunning;
-	Common::LoggingHandler _incomingBandwidthlogger;
-	Common::LoggingHandler _outgoingBandwidthlogger;
+	Common::LoggingHandler* _incomingBandwidthlogger;
+	Common::LoggingHandler* _outgoingBandwidthlogger;
 	unsigned int _totalBandwidth;
 	BandwidthMap _bandwidthMap;
 	int _socketFileDescriptor;

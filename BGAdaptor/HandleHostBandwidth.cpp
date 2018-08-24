@@ -4,6 +4,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "HelperMethods.h"
+#include "LoggingHandler.h"
+#include "LoggerFactory.h"
 #include "ThreadHelper.h"
 
 #define LogPackets ( 1 )
@@ -13,8 +16,6 @@ namespace BGAdaptor {
 HandleHostBandwidth::HandleHostBandwidth( unsigned int totalBandwidth )
 	: _incomingBandwidthRunning( false )
 	, _outgoingBandwidthRunning( false )
-	, _incomingBandwidthlogger( "/tmp/h1/incoming.log" )
-	, _outgoingBandwidthlogger( "/tmp/h1/outgoing.log" )
 	, _totalBandwidth( totalBandwidth )
 {
 	_socketFileDescriptor = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP );
@@ -23,6 +24,12 @@ HandleHostBandwidth::HandleHostBandwidth( unsigned int totalBandwidth )
 	{
 		printf( "socket failed\n" );
 	}
+
+	// get the interface's name
+	Common::HelperMethods::InterfaceInfo interface = Common::HelperMethods::getInterfaceName();
+
+	_incomingBandwidthlogger = Common::LoggerFactory::buildLogger( interface.interfaceName, "incoming", false );
+	_outgoingBandwidthlogger = Common::LoggerFactory::buildLogger( interface.interfaceName, "outgoing", false );
 
 	_localAddresses.sin_addr.s_addr = htonl( INADDR_ANY );
 	_localAddresses.sin_family = AF_INET;
@@ -59,7 +66,7 @@ void* HandleHostBandwidth::handleHostsIncomingBandwidth( void* input )
 	in_addr loopBack;
 	inet_aton( "127.0.0.1", &loopBack );
 #if defined( LogPackets )
-	Common::LoggingHandler* logger = &bandwidthManager->_incomingBandwidthlogger;
+	Common::LoggingHandler* logger = bandwidthManager->_incomingBandwidthlogger;
 #endif
 
 	while ( threadRunning.load() )
@@ -111,7 +118,7 @@ void* HandleHostBandwidth::handleHostsOutgoingBandwidth( void* input )
 	std::atomic_bool& threadRunning = bandwidthManager->_outgoingBandwidthRunning;
 
 #if defined( LogPackets )
-	Common::LoggingHandler* logger = &bandwidthManager->_outgoingBandwidthlogger;
+	Common::LoggingHandler* logger = bandwidthManager->_outgoingBandwidthlogger;
 #endif
 
 	unsigned int rate;
