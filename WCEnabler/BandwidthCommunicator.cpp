@@ -101,10 +101,14 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 			continue;
 		}
 
-		bandwidthGuarantee = localBandwidthGuarantee;
+		if ( bandwidthGuarantee.load() != localBandwidthGuarantee )
+		{
+			// set the values equal
+			bandwidthGuarantee = localBandwidthGuarantee;
 
-		// enforce the rate limit
-		Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, localBandwidthGuarantee );
+			// enforce the rate limit
+			Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, localBandwidthGuarantee );
+		}
 
 		// create the stream
 		std::ostringstream stream;
