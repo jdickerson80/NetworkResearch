@@ -10,15 +10,13 @@ namespace Common {
 
 Common::LoggingHandler* LoggerFactory::buildLogger( const std::string& interface, const std::string& filename, bool isCSV )
 {
-	// remove the -eth0 from the interface name
-	char removeInterface[] = "-eth0";
+	// copy the interface name
 	std::string newInterface( interface );
 
-	// loop through the string, removing appropriate characters
-	for ( unsigned int i = 0; i < strlen( removeInterface ); ++i )
-	{
-		newInterface.erase( remove( ++newInterface.begin(), newInterface.end(), removeInterface[ i ] ), newInterface.end()  );
-	}
+	/// @note if there are more than 1 '-' in the string, it will remove
+	/// EVERYTHING past the 1st '-'
+	// find the '-' in the string and erase it and everything past it
+	newInterface.erase( newInterface.begin() + newInterface.find( '-' ), newInterface.end() );
 
 	// stream the logging string, create and return the pointer to it
 	std::ostringstream stream;
