@@ -12,6 +12,7 @@
 *.obj
 *.mk
 *.opt
+*.pyc
 makefile
 .DS_Store
 html/
