@@ -29,4 +29,9 @@ void LoggingHandler::log( const char* const stringToLog)
 	_outputStream.close();
 }
 
+const std::string &LoggingHandler::loggingPath() const
+{
+	return _loggingPath;
+}
+
 } // namespace Common

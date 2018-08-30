@@ -44,6 +44,12 @@ public:
 	 * @param stringToLog string to log to the file
 	 */
 	void log( const char* const stringToLog );
+
+	/**
+	 * @brief loggingPath getter
+	 * @return logging path
+	 */
+	const std::string& loggingPath() const;
 };
 
 } // namespace Common
