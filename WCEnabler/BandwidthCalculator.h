@@ -45,6 +45,7 @@ private:
 	pthread_t _calculationThread;
 	Common::LoggingHandler* _logger;
 	const std::string _interfaceIPAddress;
+	const std::string _interfaceName;
 
 public:
 
@@ -52,10 +53,22 @@ public:
 	 * @brief BandwidthCalculator constructor
 	 * @param logger pointer to the logging handler
 	 */
-	BandwidthCalculator( Common::LoggingHandler* logger, const std::string& interfaceIPAddress, BandwidthValues* bandwidthValues );
+	BandwidthCalculator(
+			Common::LoggingHandler* logger
+			, const std::string& interfaceIPAddress
+			, BandwidthValues* bandwidthValues
+			, const std::string& interfaceName );
+
 	~BandwidthCalculator();
 
 private:
+
+	/**
+	 * @brief parseTCFile
+	 * @param buffer
+	 * @param bufferSize
+	 */
+	void parseTCFile( char* buffer, unsigned int bufferSize );
 
 	/**
 	 * @brief	handlePacketSniffing is the method that the packet sniffing thread runs.
@@ -79,6 +92,13 @@ private:
 	 * @return NULL
 	 */
 	static void* handleRateCalculation( void* input );
+
+	/**
+	 * @brief newHandleRateCalculation
+	 * @param input
+	 * @return
+	 */
+	static void* newHandleRateCalculation( void* input );
 };
 
 } // namespace WCEnabler

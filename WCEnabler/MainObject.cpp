@@ -38,9 +38,10 @@ MainObject::MainObject()
 				, _bandwidthValues  );
 
 	_bandwidthCalculator = new BandwidthCalculator(
-				Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthCalculator", true )
+				Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthCalculator", false )
 				, interface.ipAddress
-				, _bandwidthValues );
+				, _bandwidthValues
+				, interface.interfaceName );
 }
 
 MainObject::~MainObject()
