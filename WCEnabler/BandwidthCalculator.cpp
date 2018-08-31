@@ -174,11 +174,12 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
 		ecn = localECN;
 
-//		if ( ecn.load() == true )
-//		{
-//			printf("GOT ECN!!!!!\n");
-//		}
+		if ( ecn.load() == true )
+		{
+			printf("GOT ECN!!!!!\n");
+		}
 
+//		printf("\n");
 //		struct rtattr *tbs[TCA_STATS_MAX + 1];
 
 //		parse_rtattr_nested(tbs, TCA_STATS_MAX, rta);
@@ -258,6 +259,7 @@ void* BandwidthCalculator::newHandleRateCalculation( void* input )
 	std::atomic_bool& threadRunning = bandwidthCalculator->_calculationThreadRunning;
 
 	char buffer[ BufferSize ];
+	memset( buffer, 0, BufferSize );
 	const char* loggingFilePath = bandwidthCalculator->_logger->loggingPath().c_str();
 	int fileDescriptor;
 	int bytesRead;
@@ -266,10 +268,9 @@ void* BandwidthCalculator::newHandleRateCalculation( void* input )
 	std::ostringstream stream;
 	std::string tcCommand;
 
-	// stream the multipath off command
+	// stream the command
 	stream << StatisticTCCommand << bandwidthCalculator->_interfaceName << " > " << loggingFilePath;
 	tcCommand = stream.str();
-
 
 	// while the thread should run
 	while ( threadRunning.load() )
@@ -293,8 +294,10 @@ void* BandwidthCalculator::newHandleRateCalculation( void* input )
 			continue;
 		}
 
+		// parse the file
 		bandwidthCalculator->parseTCFile( buffer, bytesRead );
 
+		// sleep for a second
 		sleep( 1 );
 	}
 
@@ -304,60 +307,81 @@ void* BandwidthCalculator::newHandleRateCalculation( void* input )
 
 void BandwidthCalculator::parseTCFile( char* buffer, unsigned int bufferSize )
 {
+#define NewlineCharacter ( 1 )
+#define MovePastSent ( 6 )
+#define TotalOffset ( NewlineCharacter + MovePastSent )
+#define IntBufferSize ( 10 )
+	size_t bufferIndex;
+	char intBuffer[ IntBufferSize ];
 	unsigned int numberOfNewLines = 0;
 	unsigned int tempBandwidth = 0;
-	size_t beginningNumber;
-	size_t bufferIndex;
-	size_t endNumber = 0;
-	char intBuffer[ 10 ];
 
 	std::atomic_uint& bandwidthGuaranteeRate = _bandwidthValues->bandwidthGuaranteeRate;
-	std::atomic_uint& workConservingRate = _bandwidthValues->workConservingRate;
 	std::atomic_uint& totalRate = _bandwidthValues->totalRate;
+	std::atomic_uint& workConservingRate = _bandwidthValues->workConservingRate;
 
+	// loop through the buffer
 	for ( size_t loop = 0; loop < bufferSize; ++loop )
 	{
+		// if there is a new line
 		if ( buffer[ loop ] == '\n' )
 		{
+			// increment the variable
 			++numberOfNewLines;
 
+			// if this is the bandwidth guarantee or work conservation line
 			if ( numberOfNewLines == BandwidthGuaranteeLine || numberOfNewLines == WorkConservationLine )
 			{
-				// add the \n and
-				beginningNumber = endNumber = 7 + loop;
-				for ( ; endNumber < 15 + beginningNumber; ++endNumber )
-				{
-					if ( buffer[ endNumber ] == ' ' )
-					{
-						break;
-					}
-				}
-
+				// clear the index
 				bufferIndex = 0;
-				for ( size_t i = beginningNumber; i < endNumber; ++i )
+
+				// add the \n and offset to account for the sent
+				loop += TotalOffset;
+
+				// while the buffer does not contain a space
+				while ( buffer[ loop ] != ' ' )
 				{
-					intBuffer[ bufferIndex++ ] = buffer[ i ];
+					// add the character to the buffer
+					intBuffer[ bufferIndex++ ] = buffer[ loop ];
+
+					// increment the variable
+					loop++;
 				}
 
+				// convert the characters into an integer
 				tempBandwidth = (uint) atoi( intBuffer );
-				loop = endNumber;
 
+				// convert it from bytes to bits
+				tempBandwidth *= 8;
+
+				// if this is the bandwidth guarantee line
 				if ( numberOfNewLines == BandwidthGuaranteeLine )
 				{
+					// set the counter equal to the temp bandwidth
 					_bandwidthGuaranteeCounter = tempBandwidth;
 
+					// calculate the rate
 					tempBandwidth = _bandwidthGuaranteeRateCalculator.calculateRate( _bandwidthGuaranteeCounter.load( ) );
+
+					// set it equal to temp variable
 					bandwidthGuaranteeRate = tempBandwidth;
 				}
+				// if this is the work conservation line
 				else if ( numberOfNewLines == WorkConservationLine )
 				{
+					// set the counter equal to the temp bandwidth
 					_workConservingCounter = tempBandwidth;
 
+					// calculate the rate
 					tempBandwidth = _workConservingRateCalculator.calculateRate( _workConservingCounter.load( ) );
+
+					// set it equal to temp variable
 					workConservingRate = tempBandwidth;
 				}
 
-				totalRate = bandwidthGuaranteeRate.load() + workConservingRate.load();
+				// calculate total rate
+				tempBandwidth = bandwidthGuaranteeRate.load() + workConservingRate.load();
+				totalRate = tempBandwidth;
 			}
 		}
 	}

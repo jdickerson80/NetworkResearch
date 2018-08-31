@@ -64,9 +64,26 @@ public:
 private:
 
 	/**
-	 * @brief parseTCFile
-	 * @param buffer
-	 * @param bufferSize
+	 * @brief parseTCFile parses the file that TC outputs to find the rate of each flow
+	 * @param buffer that holds the contents of the TC file
+	 * @param bufferSize number of bytes in the file
+	 * @note the tc output looks like the below lines. The values that are imports are
+	 *		 surrounded by --> and <--
+	 * class htb 1:11 parent 1:1 prio 0 rate 166Mbit ceil 166Mbit burst 1577b cburst 1577b
+	 *  Sent -->105003970<-- bytes 69707 pkt (dropped 0, overlimits 0 requeues 0)
+	 *  backlog 0b 0p requeues 0
+	 *  lended: 1921 borrowed: 0 giants: 0
+	 *  tokens: 1135 ctokens: 1135
+	 * class htb 1:1 root rate 166Mbit ceil 166Mbit burst 1577b cburst 1577b
+	 *  Sent 105003970 bytes 69707 pkt (dropped 0, overlimits 0 requeues 0)
+	 *  backlog 0b 0p requeues 0
+	 *  lended: 0 borrowed: 0 giants: 0
+	 *  tokens: 1135 ctokens: 1135
+	 * class htb 1:12 parent 1:1 prio 1 rate 96bit ceil 166Mbit burst 1599b cburst 1577b
+	 *  Sent -->0<-- bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+	 *  backlog 0b 0p requeues 0
+	 *  lended: 0 borrowed: 0 giants: 0
+	 *  tokens: 2083333328 ctokens: 1203
 	 */
 	void parseTCFile( char* buffer, unsigned int bufferSize );
 
@@ -94,9 +111,9 @@ private:
 	static void* handleRateCalculation( void* input );
 
 	/**
-	 * @brief newHandleRateCalculation
-	 * @param input
-	 * @return
+	 * @brief newHandleRateCalculation method calculates the rate of each flow
+	 * @param input pointer to this class
+	 * @return NULL
 	 */
 	static void* newHandleRateCalculation( void* input );
 };
