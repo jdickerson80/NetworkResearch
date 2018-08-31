@@ -16,7 +16,7 @@ var NAVTREE =
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
@@ -33,7 +33,7 @@ var NAVTREE =
         [ "Typedefs", "globals_type.html", null ],
         [ "Enumerations", "globals_enum.html", null ],
         [ "Enumerator", "globals_eval.html", null ],
-        [ "Macros", "globals_defs.html", null ]
+        [ "Macros", "globals_defs.html", "globals_defs" ]
       ] ]
     ] ]
   ] ]
@@ -42,9 +42,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BGAdaptor_2main_8cpp.html",
-"namespacemembers_vars.html",
-"rtnetlink_8h.html#abc6126af1d45847bc59afa0aa3216b04ae103d6858df098ae16a4d368f68dabd7",
-"structrtmsg.html#a2295e2054ab275a89be3c681a630a8e9"
+"globals_defs_b.html",
+"rtnetlink_8h.html#a977507b853027f758d625719bdfaf2dba4023af8ec1409b543e62ec63c2ee5265",
+"rtnetlink_8h.html#af8b76216e5d3fe52dd8e9a8686d43817"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

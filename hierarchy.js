@@ -44,7 +44,11 @@ var hierarchy =
     [ "tcmsg", "structtcmsg.html", null ],
     [ "Common::ThreadHelper", "classCommon_1_1ThreadHelper.html", null ],
     [ "Topo", null, [
-      [ "BandwidthShare.Fattree", "classBandwidthShare_1_1Fattree.html", null ]
+      [ "FatTreeTopology.FatTree", "classFatTreeTopology_1_1FatTree.html", null ]
     ] ],
-    [ "WCEnabler::WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", null ]
+    [ "WCEnabler::WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", null ],
+    [ "EventMixin", null, [
+      [ "riplpox.riplpox.RipLController", "classriplpox_1_1riplpox_1_1RipLController.html", null ],
+      [ "riplpox.riplpox.Switch", "classriplpox_1_1riplpox_1_1Switch.html", null ]
+    ] ]
 ];

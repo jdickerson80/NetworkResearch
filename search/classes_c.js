@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['riplcontroller',['RipLController',['../classriplpox_1_1riplpox_1_1RipLController.html',1,'riplpox::riplpox']]],
   ['rta_5fcacheinfo',['rta_cacheinfo',['../structrta__cacheinfo.html',1,'']]],
   ['rta_5fsession',['rta_session',['../structrta__session.html',1,'']]],
   ['rtattr',['rtattr',['../structrtattr.html',1,'']]],

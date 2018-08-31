@@ -1,8 +1,4 @@
 var searchData=
 [
-  ['libnetlink_2eh',['libnetlink.h',['../libnetlink_8h.html',1,'']]],
-  ['loggerfactory_2ecpp',['LoggerFactory.cpp',['../LoggerFactory_8cpp.html',1,'']]],
-  ['loggerfactory_2eh',['LoggerFactory.h',['../LoggerFactory_8h.html',1,'']]],
-  ['logginghandler_2ecpp',['LoggingHandler.cpp',['../LoggingHandler_8cpp.html',1,'']]],
-  ['logginghandler_2eh',['LoggingHandler.h',['../LoggingHandler_8h.html',1,'']]]
+  ['gen_5fstats_2eh',['gen_stats.h',['../gen__stats_8h.html',1,'']]]
 ];

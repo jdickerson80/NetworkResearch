@@ -115,6 +115,7 @@ $(document).ready(function(){initNavTree('BandwidthCalculator_8cpp.html','');});
 <div class="textblock"><code>#include &quot;<a class="el" href="BandwidthCalculator_8h_source.html">BandwidthCalculator.h</a>&quot;</code><br />
 <code>#include &lt;arpa/inet.h&gt;</code><br />
 <code>#include &lt;errno.h&gt;</code><br />
+<code>#include &lt;fcntl.h&gt;</code><br />
 <code>#include &lt;netinet/if_ether.h&gt;</code><br />
 <code>#include &lt;netinet/ip.h&gt;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
@@ -131,7 +132,8 @@ $(document).ready(function(){initNavTree('BandwidthCalculator_8cpp.html','');});
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for BandwidthCalculator.cpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="BandwidthCalculator_8cpp__incl.svg" width="2755" height="336"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="BandwidthCalculator_8cpp__incl.svg" width="2838" height="336"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </div>
 <p><a href="BandwidthCalculator_8cpp_source.html">Go to the source code of this file.</a></p>
@@ -143,14 +145,70 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:aa362edf6db9662acf6ef958a6db19c35"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#aa362edf6db9662acf6ef958a6db19c35">BufferSize</a>&#160;&#160;&#160;( 1024 )</td></tr>
+<tr class="separator:aa362edf6db9662acf6ef958a6db19c35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9afbe004a8fcd1fb2165a6e41efa58c8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#a9afbe004a8fcd1fb2165a6e41efa58c8">IPAddressSize</a>&#160;&#160;&#160;( 20 )</td></tr>
+<tr class="separator:a9afbe004a8fcd1fb2165a6e41efa58c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9271048392100e473a18ac405ac15444"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#a9271048392100e473a18ac405ac15444">LogBufferSize</a>&#160;&#160;&#160;( 1024 )</td></tr>
 <tr class="separator:a9271048392100e473a18ac405ac15444"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adddef7424fe908b97e0da5957d15764a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#adddef7424fe908b97e0da5957d15764a">PacketBufferSize</a>&#160;&#160;&#160;( 65536 )</td></tr>
 <tr class="separator:adddef7424fe908b97e0da5957d15764a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9afbe004a8fcd1fb2165a6e41efa58c8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#a9afbe004a8fcd1fb2165a6e41efa58c8">IPAddressSize</a>&#160;&#160;&#160;( 20 )</td></tr>
-<tr class="separator:a9afbe004a8fcd1fb2165a6e41efa58c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6c09b6861083d11378b20409db9e12d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#aa6c09b6861083d11378b20409db9e12d">BandwidthGuaranteeLine</a>&#160;&#160;&#160;( 1 )</td></tr>
+<tr class="separator:aa6c09b6861083d11378b20409db9e12d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab50bdbd7788c699613de4ea5964bea6f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#ab50bdbd7788c699613de4ea5964bea6f">WorkConservationLine</a>&#160;&#160;&#160;( 12 )</td></tr>
+<tr class="separator:ab50bdbd7788c699613de4ea5964bea6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac02657504e2c8bb34554c96b06b3679a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#ac02657504e2c8bb34554c96b06b3679a">StatisticTCCommand</a>&#160;&#160;&#160;( &quot;tc -s class show dev &quot; )</td></tr>
+<tr class="separator:ac02657504e2c8bb34554c96b06b3679a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30b554fe986796a1adebbec9f32fe2de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#a30b554fe986796a1adebbec9f32fe2de">NewlineCharacter</a>&#160;&#160;&#160;( 1 )</td></tr>
+<tr class="separator:a30b554fe986796a1adebbec9f32fe2de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab644a8b257ec9c36ee670cf8b3fac545"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#ab644a8b257ec9c36ee670cf8b3fac545">MovePastSent</a>&#160;&#160;&#160;( 6 )</td></tr>
+<tr class="separator:ab644a8b257ec9c36ee670cf8b3fac545"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2308c7126b5efdc4ef9e5f900482990"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#ad2308c7126b5efdc4ef9e5f900482990">TotalOffset</a>&#160;&#160;&#160;( <a class="el" href="BandwidthCalculator_8cpp.html#a30b554fe986796a1adebbec9f32fe2de">NewlineCharacter</a> + <a class="el" href="BandwidthCalculator_8cpp.html#ab644a8b257ec9c36ee670cf8b3fac545">MovePastSent</a> )</td></tr>
+<tr class="separator:ad2308c7126b5efdc4ef9e5f900482990"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d752a3c3fb4062092d1ccf04003135b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BandwidthCalculator_8cpp.html#a3d752a3c3fb4062092d1ccf04003135b">IntBufferSize</a>&#160;&#160;&#160;( 10 )</td></tr>
+<tr class="separator:a3d752a3c3fb4062092d1ccf04003135b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="aa6c09b6861083d11378b20409db9e12d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BandwidthGuaranteeLine&#160;&#160;&#160;( 1 )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00023">23</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa362edf6db9662acf6ef958a6db19c35"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BufferSize&#160;&#160;&#160;( 1024 )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00018">18</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a3d752a3c3fb4062092d1ccf04003135b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define IntBufferSize&#160;&#160;&#160;( 10 )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a9afbe004a8fcd1fb2165a6e41efa58c8"></a>
 <div class="memitem">
 <div class="memproto">
@@ -175,7 +233,31 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00017">17</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
+<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00020">20</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab644a8b257ec9c36ee670cf8b3fac545"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MovePastSent&#160;&#160;&#160;( 6 )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a30b554fe986796a1adebbec9f32fe2de"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NewlineCharacter&#160;&#160;&#160;( 1 )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -189,7 +271,47 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00018">18</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
+<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00021">21</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ac02657504e2c8bb34554c96b06b3679a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define StatisticTCCommand&#160;&#160;&#160;( &quot;tc -s class show dev &quot; )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00026">26</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad2308c7126b5efdc4ef9e5f900482990"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TotalOffset&#160;&#160;&#160;( <a class="el" href="BandwidthCalculator_8cpp.html#a30b554fe986796a1adebbec9f32fe2de">NewlineCharacter</a> + <a class="el" href="BandwidthCalculator_8cpp.html#ab644a8b257ec9c36ee670cf8b3fac545">MovePastSent</a> )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab50bdbd7788c699613de4ea5964bea6f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define WorkConservationLine&#160;&#160;&#160;( 12 )</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="BandwidthCalculator_8cpp_source.html#l00024">24</a> of file <a class="el" href="BandwidthCalculator_8cpp_source.html">BandwidthCalculator.cpp</a>.</p>
 
 </div>
 </div>

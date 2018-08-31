@@ -1,8 +1,9 @@
 var annotated_dup =
 [
-    [ "BandwidthShare", "namespaceBandwidthShare.html", "namespaceBandwidthShare" ],
     [ "BGAdaptor", "namespaceBGAdaptor.html", "namespaceBGAdaptor" ],
     [ "Common", "namespaceCommon.html", "namespaceCommon" ],
+    [ "FatTreeTopology", "namespaceFatTreeTopology.html", "namespaceFatTreeTopology" ],
+    [ "riplpox", "namespaceriplpox.html", "namespaceriplpox" ],
     [ "WCEnabler", "namespaceWCEnabler.html", "namespaceWCEnabler" ],
     [ "gnet_estimator", "structgnet__estimator.html", "structgnet__estimator" ],
     [ "gnet_stats_basic", "structgnet__stats__basic.html", "structgnet__stats__basic" ],

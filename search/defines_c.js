@@ -7,5 +7,6 @@ var searchData=
   ['tca_5fpayload',['TCA_PAYLOAD',['../rtnetlink_8h.html#a8e0d1a921313e1c1642b8e7e25a1a590',1,'rtnetlink.h']]],
   ['tca_5frta',['TCA_RTA',['../rtnetlink_8h.html#a5e4aa0b6ba4966949f90d76a72b5d0d4',1,'rtnetlink.h']]],
   ['tca_5fstats_5fmax',['TCA_STATS_MAX',['../gen__stats_8h.html#a7a063443088aba26db6d7ae7e9550df3',1,'gen_stats.h']]],
-  ['tcaa_5fmax',['TCAA_MAX',['../rtnetlink_8h.html#ae7973f41fe49d4e8146ab8ad24326938',1,'rtnetlink.h']]]
+  ['tcaa_5fmax',['TCAA_MAX',['../rtnetlink_8h.html#ae7973f41fe49d4e8146ab8ad24326938',1,'rtnetlink.h']]],
+  ['totaloffset',['TotalOffset',['../BandwidthCalculator_8cpp.html#ad2308c7126b5efdc4ef9e5f900482990',1,'BandwidthCalculator.cpp']]]
 ];

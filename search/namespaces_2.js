@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wcenabler',['WCEnabler',['../namespaceWCEnabler.html',1,'']]]
+  ['fattreetopology',['FatTreeTopology',['../namespaceFatTreeTopology.html',1,'']]]
 ];
