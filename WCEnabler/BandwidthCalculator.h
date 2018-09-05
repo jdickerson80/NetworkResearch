@@ -109,13 +109,6 @@ private:
 	 * @return NULL
 	 */
 	static void* handleRateCalculation( void* input );
-
-	/**
-	 * @brief newHandleRateCalculation method calculates the rate of each flow
-	 * @param input pointer to this class
-	 * @return NULL
-	 */
-	static void* newHandleRateCalculation( void* input );
 };
 
 } // namespace WCEnabler
