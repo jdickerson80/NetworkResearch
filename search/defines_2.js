@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['clrbit',['clrbit',['../param_8h.html#afdcc6f67bfbd6aeeb042d5e7ab2be41d',1,'param.h']]]
+  ['logbuffersize',['LogBufferSize',['../BandwidthCalculator_8cpp.html#a9271048392100e473a18ac405ac15444',1,'BandwidthCalculator.cpp']]],
+  ['logpackets',['LogPackets',['../HandleHostBandwidth_8cpp.html#a5300a16c24d884fbeba3f954c4d7e0cf',1,'HandleHostBandwidth.cpp']]]
 ];

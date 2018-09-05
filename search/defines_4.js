@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['howmany',['howmany',['../param_8h.html#a5986a9a34b5ef2d56f42336b32ef85c7',1,'param.h']]]
+  ['newlinecharacter',['NewlineCharacter',['../BandwidthCalculator_8cpp.html#a30b554fe986796a1adebbec9f32fe2de',1,'BandwidthCalculator.cpp']]]
 ];

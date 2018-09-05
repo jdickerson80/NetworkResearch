@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['backlog',['backlog',['../structgnet__stats__queue.html#ac7684857eea6fba4da6008209a906226',1,'gnet_stats_queue']]],
   ['bandwidthcalculator',['BandwidthCalculator',['../classWCEnabler_1_1BandwidthCalculator.html',1,'WCEnabler']]],
   ['bandwidthcalculator',['BandwidthCalculator',['../classWCEnabler_1_1BandwidthCalculator.html#a7e3d2e7e3c43eb3499f70fe73005e361',1,'WCEnabler::BandwidthCalculator']]],
   ['bandwidthcalculator_2ecpp',['BandwidthCalculator.cpp',['../BandwidthCalculator_8cpp.html',1,'']]],
@@ -19,11 +18,9 @@ var searchData=
   ['bandwidthvalues_2eh',['BandwidthValues.h',['../BandwidthValues_8h.html',1,'']]],
   ['bgadaptor',['BGAdaptor',['../namespaceBGAdaptor.html',1,'']]],
   ['bgadaptoripaddress',['BGAdaptorIPAddress',['../Macros_8h.html#a964ce18b780a57310801832387f6a0dc',1,'Macros.h']]],
-  ['bps',['bps',['../structgnet__stats__rate__est.html#a06d6d21689b5a74c9dc5a931995b0d69',1,'gnet_stats_rate_est']]],
   ['buffersize',['BufferSize',['../BandwidthCalculator_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BandwidthCalculator.cpp']]],
   ['buildlogger',['buildLogger',['../classCommon_1_1LoggerFactory.html#a8edcb8fd5fabe1e88bf1c15b868e5bdd',1,'Common::LoggerFactory']]],
   ['buildtopo',['buildTopo',['../namespaceriplpox_1_1util.html#a20be21dfbdc27ec2a0441e39f987fdca',1,'riplpox::util']]],
   ['bw',['bw',['../classFatTreeTopology_1_1FatTree.html#a8cc9d55f408865e46034ca2664d517fe',1,'FatTreeTopology::FatTree']]],
-  ['bytes',['bytes',['../structgnet__stats__basic.html#a5b368d2631f715c56e15e4272df1734b',1,'gnet_stats_basic::bytes()'],['../structgnet__stats__basic__packed.html#a6984824df9b5e257729d278c23383335',1,'gnet_stats_basic_packed::bytes()'],['../gen__stats_8h.html#a2ffb5a7c3789766d2e60bd240894b2d3',1,'bytes():&#160;gen_stats.h']]],
   ['main_2ecpp',['main.cpp',['../BGAdaptor_2main_8cpp.html',1,'']]]
 ];

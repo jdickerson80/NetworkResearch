@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['ifinfomsg',['ifinfomsg',['../structifinfomsg.html',1,'']]],
-  ['interfaceinfo',['InterfaceInfo',['../structCommon_1_1HelperMethods_1_1InterfaceInfo.html',1,'Common::HelperMethods']]]
+  ['loggerfactory',['LoggerFactory',['../classCommon_1_1LoggerFactory.html',1,'Common']]],
+  ['logginghandler',['LoggingHandler',['../classCommon_1_1LoggingHandler.html',1,'Common']]]
 ];

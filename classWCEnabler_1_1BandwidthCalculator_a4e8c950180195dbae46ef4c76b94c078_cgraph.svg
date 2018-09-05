@@ -30,24 +30,24 @@
 </g>
 <!-- Node3 -->
 <g id="node3" class="node"><title>Node3</title>
-<g id="a_node3"><a xlink:href="classCommon_1_1Math_1_1SimpleRateCalculator.html#a45f717e9f919cbc3110685841c3a7baf" target="_top" xlink:title="calculateRate calculates the rate and returns it ">
-<polygon fill="white" stroke="black" points="203,-49.5 203,-79.5 344,-79.5 344,-49.5 203,-49.5"/>
-<text text-anchor="start" x="211" y="-67.5" font-family="Helvetica,sans-Serif" font-size="10.00">Common::Math::SimpleRate</text>
-<text text-anchor="middle" x="273.5" y="-56.5" font-family="Helvetica,sans-Serif" font-size="10.00">Calculator::calculateRate</text>
+<g id="a_node3"><a xlink:href="classCommon_1_1LoggingHandler.html#a72561fe6985c6070d7a50e6774e4f8ff" target="_top" xlink:title="loggingPath getter ">
+<polygon fill="white" stroke="black" points="208.5,-49.5 208.5,-79.5 338.5,-79.5 338.5,-49.5 208.5,-49.5"/>
+<text text-anchor="start" x="216.5" y="-67.5" font-family="Helvetica,sans-Serif" font-size="10.00">Common::LoggingHandler</text>
+<text text-anchor="middle" x="273.5" y="-56.5" font-family="Helvetica,sans-Serif" font-size="10.00">::loggingPath</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node3 -->
 <g id="edge2" class="edge"><title>Node1&#45;&gt;Node3</title>
-<path fill="none" stroke="midnightblue" d="M163.077,-64.5C172.911,-64.5 182.955,-64.5 192.777,-64.5"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="192.912,-68.0001 202.912,-64.5 192.912,-61.0001 192.912,-68.0001"/>
+<path fill="none" stroke="midnightblue" d="M163.077,-64.5C174.615,-64.5 186.444,-64.5 197.861,-64.5"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="198.21,-68.0001 208.21,-64.5 198.21,-61.0001 198.21,-68.0001"/>
 </g>
 <!-- Node4 -->
 <g id="node4" class="node"><title>Node4</title>
-<g id="a_node4"><a xlink:href="classCommon_1_1LoggingHandler.html#a72561fe6985c6070d7a50e6774e4f8ff" target="_top" xlink:title="loggingPath getter ">
-<polygon fill="white" stroke="black" points="208.5,-0.5 208.5,-30.5 338.5,-30.5 338.5,-0.5 208.5,-0.5"/>
-<text text-anchor="start" x="216.5" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">Common::LoggingHandler</text>
-<text text-anchor="middle" x="273.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">::loggingPath</text>
+<g id="a_node4"><a xlink:href="classCommon_1_1Math_1_1SimpleRateCalculator.html#a45f717e9f919cbc3110685841c3a7baf" target="_top" xlink:title="calculateRate calculates the rate and returns it ">
+<polygon fill="white" stroke="black" points="203,-0.5 203,-30.5 344,-30.5 344,-0.5 203,-0.5"/>
+<text text-anchor="start" x="211" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">Common::Math::SimpleRate</text>
+<text text-anchor="middle" x="273.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">Calculator::calculateRate</text>
 </a>
 </g>
 </g>

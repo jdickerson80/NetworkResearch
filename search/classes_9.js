@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mainobject',['MainObject',['../classWCEnabler_1_1MainObject.html',1,'WCEnabler']]]
+  ['riplcontroller',['RipLController',['../classriplpox_1_1riplpox_1_1RipLController.html',1,'riplpox::riplpox']]]
 ];
