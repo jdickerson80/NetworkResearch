@@ -140,10 +140,10 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
 		ecn = localECN;
 
-		if ( ecn.load() == true )
-		{
-			printf("GOT ECN!!!!!\n");
-		}
+//		if ( ecn.load() == true )
+//		{
+//			printf("GOT ECN!!!!!\n");
+//		}
 
 
 #if defined( LogPackets )
@@ -253,10 +253,13 @@ void BandwidthCalculator::parseTCFile( char* buffer, unsigned int bufferSize )
 				// while the buffer does not contain a space
 				while ( buffer[ loop ] != ' ' )
 				{
-					// add the character to the buffer
-					intBuffer[ bufferIndex ] = buffer[ loop ];
+					if ( bufferIndex >= IntBufferSize )
+					{
+						break;
+					}
 
-					bufferIndex++;
+					// add the character to the buffer
+					intBuffer[ bufferIndex++ ] = buffer[ loop ];
 
 					// increment the variable
 					loop++;
