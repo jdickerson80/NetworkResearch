@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['name',['name',['../namespacesetup.html#ab3a7a0638d76a01367c5bc3cc699447f',1,'setup']]],
-  ['net',['net',['../namespaceBandwidthShare.html#a8908e269bfa7882927b0faf8efd6722f',1,'BandwidthShare']]]
+  ['topology',['topology',['../namespaceBandwidthShare.html#ac2d35cad6b3b97a01f04bdc7d88c5d05',1,'BandwidthShare']]],
+  ['totalrate',['totalRate',['../structWCEnabler_1_1BandwidthValues.html#aa3a004d6f822e523b4a13e544463d311',1,'WCEnabler::BandwidthValues']]]
 ];

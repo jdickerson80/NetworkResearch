@@ -20,7 +20,6 @@ var searchData=
   ['bgadaptoripaddress',['BGAdaptorIPAddress',['../Macros_8h.html#a964ce18b780a57310801832387f6a0dc',1,'Macros.h']]],
   ['buffersize',['BufferSize',['../BandwidthCalculator_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BandwidthCalculator.cpp']]],
   ['buildlogger',['buildLogger',['../classCommon_1_1LoggerFactory.html#a8edcb8fd5fabe1e88bf1c15b868e5bdd',1,'Common::LoggerFactory']]],
-  ['buildtopo',['buildTopo',['../namespaceriplpox_1_1util.html#a20be21dfbdc27ec2a0441e39f987fdca',1,'riplpox::util']]],
   ['bw',['bw',['../classFatTreeTopology_1_1FatTree.html#a8cc9d55f408865e46034ca2664d517fe',1,'FatTreeTopology::FatTree']]],
   ['main_2ecpp',['main.cpp',['../BGAdaptor_2main_8cpp.html',1,'']]]
 ];

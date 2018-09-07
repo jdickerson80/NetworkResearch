@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['currentandlastvalues_2eh',['CurrentAndLastValues.h',['../CurrentAndLastValues_8h.html',1,'']]]
+  ['dataratecalculator_2eh',['DataRateCalculator.h',['../DataRateCalculator_8h.html',1,'']]]
 ];

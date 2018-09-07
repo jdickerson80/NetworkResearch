@@ -37,8 +37,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"BGAdaptor_2main_8cpp.html",
-"setup_8py.html#a4cda9dbfb952875376a0749fe08a5bde"
+"BGAdaptor_2main_8cpp.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

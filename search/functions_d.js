@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['send_5fpacket_5fbufid',['send_packet_bufid',['../classriplpox_1_1riplpox_1_1Switch.html#af3ab7eefe219f18d91dba6595b2d2f1c',1,'riplpox::riplpox::Switch']]],
-  ['send_5fpacket_5fdata',['send_packet_data',['../classriplpox_1_1riplpox_1_1Switch.html#a10740eee20ab2f07c9c5a62591d276f8',1,'riplpox::riplpox::Switch']]],
-  ['sep',['sep',['../namespaceriplpox_1_1riplpox.html#a4f9e521d369e44ba66d7be5775992079',1,'riplpox::riplpox']]],
   ['setalpha',['setAlpha',['../classCommon_1_1Math_1_1ExponentialSmoothing.html#af6422d0d4d52d48a948e8315b08eb29d',1,'Common::Math::ExponentialSmoothing']]],
   ['setegressbandwidth',['setEgressBandwidth',['../classCommon_1_1TCControl.html#a1b50fa70591a78c957a35bd67a459ce1',1,'Common::TCControl::setEgressBandwidth(const std::string &amp;interface, const std::string &amp;desiredBandwidth)'],['../classCommon_1_1TCControl.html#a9ccd692a49cab80cf296f527a08a7f55',1,'Common::TCControl::setEgressBandwidth(const std::string &amp;interface, const int desiredBandwidth)']]],
   ['setigressbandwidth',['setIgressBandwidth',['../classCommon_1_1TCControl.html#a01a976f499a2b89e1dd63a5115093eb2',1,'Common::TCControl::setIgressBandwidth(const std::string &amp;interface, const std::string &amp;desiredBandwidth)'],['../classCommon_1_1TCControl.html#a2feb3883780487cfec8ce8c8780e115e',1,'Common::TCControl::setIgressBandwidth(const std::string &amp;interface, const int desiredBandwidth)']]],

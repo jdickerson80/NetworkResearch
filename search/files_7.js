@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['loggerfactory_2ecpp',['LoggerFactory.cpp',['../LoggerFactory_8cpp.html',1,'']]],
-  ['loggerfactory_2eh',['LoggerFactory.h',['../LoggerFactory_8h.html',1,'']]],
-  ['logginghandler_2ecpp',['LoggingHandler.cpp',['../LoggingHandler_8cpp.html',1,'']]],
-  ['logginghandler_2eh',['LoggingHandler.h',['../LoggingHandler_8h.html',1,'']]]
+  ['macros_2eh',['Macros.h',['../Macros_8h.html',1,'']]],
+  ['mainobject_2ecpp',['MainObject.cpp',['../MainObject_8cpp.html',1,'']]],
+  ['mainobject_2eh',['MainObject.h',['../MainObject_8h.html',1,'']]]
 ];
