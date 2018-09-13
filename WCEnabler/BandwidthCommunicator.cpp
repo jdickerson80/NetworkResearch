@@ -151,6 +151,7 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 		}
 
 		// create the stream
+		/// @todo convert to C style
 		std::ostringstream stream;
 		stream << totalRate << "\n";
 
