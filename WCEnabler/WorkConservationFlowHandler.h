@@ -55,7 +55,7 @@ private:
 	float _beta;
 	float _safetyFactor;
 	std::atomic_bool _updateThreadRunning;
-	const BandwidthValues* const _bandwidthValues;
+	BandwidthValues* const _bandwidthValues;
 	pthread_t _updateThread;
 	FlowState::Enum _currentState;
 	RateCalculator _bandwidthGuaranteeAverage;
@@ -77,7 +77,7 @@ public:
 								 , float beta
 								 , float safetyFactor
 								 , Common::LoggingHandler* logger
-								 , const BandwidthValues* const bandwidthValues );
+								 , BandwidthValues* const bandwidthValues );
 
 	~WorkConservationFlowHandler();
 

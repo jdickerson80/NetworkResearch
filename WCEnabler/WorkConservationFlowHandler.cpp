@@ -16,7 +16,7 @@ WorkConservationFlowHandler::WorkConservationFlowHandler(const std::string& inte
 		, float beta
 		, float safetyFactor
 		, Common::LoggingHandler* logger
-		, const BandwidthValues * const bandwidthValues )
+		, BandwidthValues * const bandwidthValues )
 	: _beta( beta )
 	, _safetyFactor( safetyFactor )
 	, _updateThreadRunning( false )
@@ -148,7 +148,7 @@ void* WorkConservationFlowHandler::updateWorkConservation( void* input )
 	WorkConservationFlowHandler* workConservationFlowHandler = static_cast< WorkConservationFlowHandler* >( input );
 	const std::atomic_uint& bandwidthGuarantee = workConservationFlowHandler->_bandwidthValues->bandwidthGuarantee;
 	const std::atomic_uint& bandwidthGuaranteeRate = workConservationFlowHandler->_bandwidthValues->bandwidthGuaranteeRate;
-	const std::atomic_uint& ecnValue = workConservationFlowHandler->_bandwidthValues->ecnValue;
+	std::atomic_uint& ecnValue = workConservationFlowHandler->_bandwidthValues->ecnValue;
 	const std::atomic_uint& workConservingRate = workConservationFlowHandler->_bandwidthValues->workConservingRate;
 	const std::atomic_bool& threadRunning = workConservationFlowHandler->_updateThreadRunning;
 	FlowState::Enum* currentState = &workConservationFlowHandler->_currentState;
@@ -209,7 +209,7 @@ void* WorkConservationFlowHandler::updateWorkConservation( void* input )
 
 		bandwidthGuaranteeAverage->calculateRate( (float)bandwidthGuaranteeRate.load() );
 		workConservingAverage->calculateRate( (float)workConservingRate.load() );
-
+		ecnValue = false;
 		usleep( 250000 );
 	}
 

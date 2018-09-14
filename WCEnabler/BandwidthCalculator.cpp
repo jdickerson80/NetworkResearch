@@ -124,9 +124,12 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 			continue;
 		}
 
-		// mask out the DSCP field and check if congestion has been encountered
-		localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
-		ecn = localECN;
+		if ( !ecn.load() )
+		{
+			// mask out the DSCP field and check if congestion has been encountered
+			localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
+			ecn = localECN;
+		}
 
 //		if ( ecn.load() == true )
 //		{
