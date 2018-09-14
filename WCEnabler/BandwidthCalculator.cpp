@@ -45,8 +45,6 @@ BandwidthCalculator::BandwidthCalculator(
 {
 	// create the raw socket that intercepts ALL packets
 	_socketFileDescriptor = socket( AF_PACKET, SOCK_RAW, htons( ETH_P_IP ) );
-//	int results = setsockopt( _socketFileDescriptor, SOL_SOCKET, SO_BINDTODEVICE, interface.c_str(), strlen( interface.c_str() )+ 1 );
-//	printf("sock opt %i\n", results );
 
 	// check for socket fd error
 	if ( _socketFileDescriptor == -1 )
@@ -123,18 +121,8 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		{
 			// log the error and continue
 			logger->log( strerror( errno ) );
-//			printf("Err %s\n", strerror( errno ) );
 			continue;
 		}
-
-#if defined( LogPackets )
-		// put the addresses into the string
-		// @note This HAS to be done sequentially and stored because the inet_ntoa char* buffer
-		// will be overridden every time it is called. This will make both addresses the
-		// same.
-		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
-		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
-#endif
 
 		// mask out the DSCP field and check if congestion has been encountered
 		localECN = ( ipHeader->tos & INET_ECN_MASK ) == INET_ECN_CE;
@@ -147,6 +135,13 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 
 
 #if defined( LogPackets )
+		// put the addresses into the string
+		// @note This HAS to be done sequentially and stored because the inet_ntoa char* buffer
+		// will be overridden every time it is called. This will make both addresses the
+		// same.
+		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
+		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
+
 		// set up the logging string
 		ethernetHeader = (ethhdr*)packetBuffer;
 		snprintf( logBuffer, LogBufferSize, "%u, %s, %s, %u\n"
@@ -202,7 +197,6 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 		// error check
 		if ( bytesRead <= 300 )
 		{
-//			printf("cont\n");
 			continue;
 		}
 
@@ -294,11 +288,14 @@ void BandwidthCalculator::parseTCFile( char* buffer, unsigned int bufferSize )
 
 					// set it equal to temp variable
 					workConservingRate = tempBandwidth;
-				}
 
-				// calculate total rate
-				tempBandwidth = bandwidthGuaranteeRate.load() + workConservingRate.load();
-				totalRate = tempBandwidth;
+					// last value, so calculate total rate
+					tempBandwidth = bandwidthGuaranteeRate.load() + workConservingRate.load();
+					totalRate = tempBandwidth;
+
+					// we have what is necessary, so leave
+					break;
+				}
 			}
 		}
 	}

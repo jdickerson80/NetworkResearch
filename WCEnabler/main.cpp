@@ -33,7 +33,7 @@ int main( int argc, char* argv[] )
 	setlocale( LC_ALL, "" );
 
 	// create the main object
-	WCEnabler::MainObject& object = WCEnabler::MainObject::instance();
+	WCEnabler::MainObject::instance();
 
 	// do nothing loop to keep the app going
 	while ( isRunning )
