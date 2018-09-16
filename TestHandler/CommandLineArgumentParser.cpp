@@ -16,6 +16,7 @@ static struct option longOptions[] =
 	{ "help",		no_argument,		0, CommandLineArgumentParser::UsageArguments::Help },
 	{ "host-range",	required_argument,	0, CommandLineArgumentParser::UsageArguments::HostRange },
 	{ "logfile",	required_argument,	0, CommandLineArgumentParser::UsageArguments::LogFile },
+	{ "test",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Test },
 	{ 0,			0,					0,	0  }
 };
 
@@ -78,8 +79,14 @@ void CommandLineArgumentParser::parseCommandLineArguments( int argc, char*const*
 
 void CommandLineArgumentParser::printUsage()
 {
-	const char* usage = "-d duration, -h print this usage, -r range of hosts ex. 1 4" \
-						" -l log file, -t list of tests\n";
+	const char* const usage = \
+						"Usage: TestHandler [-d] [-h] [-l] [-r] [-t]\n" \
+						"-d, --duration\tduration of the test in seconds\n" \
+						"-h, --help\tprint this help message\n" \
+						"-l, --logfile\tpath and name of the file to log test results\n" \
+						"-r, --range\trange of ip addresses with a hyphen(-) being a range and a comma (,) inidividual IP address\n" \
+						"\t\te.g. ""10.0.0.1-10.0.0.4,10.0.0.18,10.0.0.19,10.0.0.20""\n" \
+						"-t, --test\tcomma separated list of test to run. tests are: todo\n";
 	fprintf( stderr, "%s", usage );
 }
 
