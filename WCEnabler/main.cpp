@@ -4,6 +4,7 @@
 #include <string>
 #include <unistd.h>
 
+#include "PrintHandler.h"
 #include "MainObject.h"
 #include "BandwidthValues.h"
 
@@ -23,7 +24,7 @@ int main( int argc, char* argv[] )
 	// check if the app is running as root
     if ( getuid() != 0 )
 	{
-		printf("You must run this program as root. Exiting.\n");
+		PRINT("You must run this program as root. Exiting.\n");
 		exit( EXIT_FAILURE );
 	}
 
@@ -49,17 +50,17 @@ void signalHandler( int signal )
 	switch ( signal )
 	{
 	case SIGINT:
-		printf( "Caught Ctrl + C\n" );
+		PRINT( "Caught Ctrl + C\n" );
 		isRunning = false;
 		break;
 
 	case SIGTERM:
-		printf( "Caught Terminate\n" );
+		PRINT( "Caught Terminate\n" );
 		isRunning = false;
 		break;
 
 	default:
-		printf( "In default signal\n" );
+		PRINT( "In default signal\n" );
 		break;
 	}
 }

@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "BandwidthValues.h"
+#include "PrintHandler.h"
 #include "LoggingHandler.h"
 #include "Macros.h"
 #include "ThreadHelper.h"
@@ -49,13 +50,13 @@ BandwidthCalculator::BandwidthCalculator(
 	// check for socket fd error
 	if ( _socketFileDescriptor == -1 )
 	{
-		printf( "socket sniffer failed\n" );
+		PRINT( "socket sniffer failed\n" );
 	}
 
 #if defined( LogPackets )
 	// add the header to the log
 	char buffer[ LogBufferSize ];
-	snprintf( buffer, LogBufferSize, "protocol, source, destination, ecn\n" );
+	snPRINT( buffer, LogBufferSize, "protocol, source, destination, ecn\n" );
 	_logger->log( buffer );
 #endif
 
@@ -136,7 +137,7 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 
 //		if ( ecn.load() == true )
 //		{
-//			printf("GOT ECN!!!!!\n");
+//			PRINT("GOT ECN!!!!!\n");
 //		}
 
 
@@ -145,12 +146,12 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		// @note This HAS to be done sequentially and stored because the inet_ntoa char* buffer
 		// will be overridden every time it is called. This will make both addresses the
 		// same.
-		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
-		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
+		snPRINT( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
+		snPRINT( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
 
 		// set up the logging string
 		ethernetHeader = (ethhdr*)packetBuffer;
-		snprintf( logBuffer, LogBufferSize, "%u, %s, %s, %u\n"
+		snPRINT( logBuffer, LogBufferSize, "%u, %s, %s, %u\n"
 				  , ethernetHeader->h_proto
 				  , sourceAddress
 				  , destinationAddress
@@ -306,7 +307,7 @@ void BandwidthCalculator::parseTCFile( char* buffer, unsigned int bufferSize )
 		}
 	}
 
-	printf("bwg %u wc %u tot %u\n"
+	PRINT("bwg %u wc %u tot %u\n"
 		   , bandwidthGuaranteeRate.load()
 		   , workConservingRate.load()
 		   , totalRate.load() );

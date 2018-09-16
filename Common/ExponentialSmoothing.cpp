@@ -36,7 +36,7 @@ float ExponentialSmoothing::calculate( const DataValues& dataValues, const TimeV
 	// bound the rate
 	_rate = _rate < 0 ? 0 : _rate;
 
-//	printf( "dd %u td %u\n"
+//	PRINT( "dd %u td %u\n"
 //			, dataDelta
 //			, timeDelta );
 

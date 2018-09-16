@@ -13,6 +13,7 @@
 #include "BandwidthCalculator.h"
 #include "BandwidthValues.h"
 #include "LoggingHandler.h"
+#include "PrintHandler.h"
 #include "TCControl.h"
 #include "ThreadHelper.h"
 
@@ -36,7 +37,7 @@ BandwidthCommunicator::BandwidthCommunicator(
 
 	if ( _socketFileDescriptor == -1 )
 	{
-		printf( "socket communcation failed\n" );
+		PRINT( "socket communcation failed\n" );
 	}
 
 	// set up the BGAdaptor's address
@@ -97,7 +98,7 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 		// check for error
 		if ( receiveLength != bandwidthLength )
 		{
-			printf("!!!!!receive error\n");
+			PRINT("!!!!!receive error\n");
 			continue;
 		}
 
@@ -147,7 +148,7 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 					 , (sockaddr*)&bandwidthCommunicator->_bGAdaptorAddress
 					 , length ) < 0 )
 		{
-			printf("Send failed with %s\n", strerror( errno ));
+			PRINT("Send failed with %s\n", strerror( errno ));
 		}
 
 		// create the stream

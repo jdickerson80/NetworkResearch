@@ -4,6 +4,8 @@
 #include <netdb.h>
 #include <string.h>
 
+#include "PrintHandler.h"
+
 namespace Common {
 
 HelperMethods::InterfaceInfo HelperMethods::getInterfaceName()
@@ -46,7 +48,7 @@ HelperMethods::InterfaceInfo HelperMethods::getInterfaceName()
 			// check the return value
 			if ( s != 0 )
 			{
-				printf( "getnameinfo() failed: %s\n", gai_strerror( s ) );
+				PRINT( "getnameinfo() failed: %s\n", gai_strerror( s ) );
 			}
 
 			// save the local ip address and interface name
