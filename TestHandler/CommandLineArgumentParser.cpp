@@ -31,6 +31,7 @@ void printVector( std::vector< std::string* >& ipVector )
 	PRINT( "\n" );
 }
 
+/// @todo think about converting it to a functor
 CommandLineArgumentParser::CommandLineArgumentParser()
 	: _start( 0 )
 	, _finish( 0 )
