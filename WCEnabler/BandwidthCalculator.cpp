@@ -56,7 +56,7 @@ BandwidthCalculator::BandwidthCalculator(
 #if defined( LogPackets )
 	// add the header to the log
 	char buffer[ LogBufferSize ];
-	snPRINT( buffer, LogBufferSize, "protocol, source, destination, ecn\n" );
+	snprintf( buffer, LogBufferSize, "protocol, source, destination, ecn\n" );
 	_logger->log( buffer );
 #endif
 
@@ -146,12 +146,12 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		// @note This HAS to be done sequentially and stored because the inet_ntoa char* buffer
 		// will be overridden every time it is called. This will make both addresses the
 		// same.
-		snPRINT( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
-		snPRINT( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
+		snprintf( destinationAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->daddr ) ) );
+		snprintf( sourceAddress, IPAddressSize, "%s", inet_ntoa( *( (in_addr*)&ipHeader->saddr ) ) );
 
 		// set up the logging string
 		ethernetHeader = (ethhdr*)packetBuffer;
-		snPRINT( logBuffer, LogBufferSize, "%u, %s, %s, %u\n"
+		snprintf( logBuffer, LogBufferSize, "%u, %s, %s, %u\n"
 				  , ethernetHeader->h_proto
 				  , sourceAddress
 				  , destinationAddress
