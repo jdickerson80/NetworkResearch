@@ -5,6 +5,9 @@
 #include <vector>
 
 namespace TestHandler {
+
+class TestBaseClass;
+
 class CommandLineArgumentParser
 {
 public:
@@ -23,6 +26,7 @@ public:
 
 private:
 #define BUFFERSIZE ( 1024 )
+	bool _goodParse;
 	unsigned int _start;
 	unsigned int _finish;
 
@@ -33,17 +37,23 @@ private:
 
 public:
 	CommandLineArgumentParser();
+	~CommandLineArgumentParser();
 
-
-	void parseCommandLineArguments( int argc, char*const* argv, std::vector< std::string* >& ipVector );
-
-	static void printUsage();
+	bool parseCommandLineArguments(
+			int argc
+			, char*const* argv
+			, std::vector< std::string* >& ipVector
+			, std::vector< TestBaseClass* >& test );
 
 private:
 
 	inline void parseIPRange( char* optarg, std::vector< std::string* >& ipVector );
 
 	inline void fillIPVector( std::vector< std::string* >& ipVector );
+
+	inline void parseTests( char* optarg, std::vector< TestBaseClass* >& test );
+
+	inline TestBaseClass* getTest( const char* const testString );
 
 };
 }

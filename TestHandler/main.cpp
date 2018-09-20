@@ -1,76 +1,42 @@
-#include <signal.h>
-#include <string>
+#include <stdio.h>
 #include <unistd.h>
 
-#include "CommandLineArgumentParser.h"
-
-#define PrintUsageAndExit ( {TestHandler::CommandLineArgumentParser::printUsage(); exit( EXIT_FAILURE );} )
-
-static bool isRunning = true;
+#include "MainObject.h"
+#include "PrintUsage.h"
 
 using namespace TestHandler;
-/**
- * @brief	signalHandler method handles all of the signals that come from Linux.
- *			For instance, this method catches when the user presses Ctrl + C or
- *			when the user presses X on the terminal window. This method sets the
- *			_isRunning flag to false, triggering main to exit the app.
- * @param	signal to be received from Linux
- */
-static void signalHandler( int signal );
 
 int main( int argc, char* argv[] )
 {
 	// check if the app is running as root
-//  if ( getuid() != 0 )
+//	if ( getuid() != 0 )
 //	{
 //		printf("You must run this program as root. Exiting.\n");
 //		exit( EXIT_FAILURE );
 //	}
 
-	// add the signal handlers
-	signal( SIGINT, signalHandler );
-	signal( SIGTERM, signalHandler );
-	setlocale( LC_ALL, "" );
-
 	if ( argc < 4 )
 	{
-		PrintUsageAndExit;
+		printUsage();
+		exit( EXIT_FAILURE );
 	}
 
-	std::vector< std::string* > ipVector;
-	CommandLineArgumentParser parser;
-	parser.parseCommandLineArguments( argc, argv, ipVector );
+	MainObject& object = MainObject::instance();
 
-	if ( ipVector.empty() )
+	if ( !object.parseCommandLineArguments( argc, argv ) )
 	{
-		PrintUsageAndExit;
+		printUsage();
+		exit( EXIT_FAILURE );
 	}
 
 //	// do nothing loop to keep the app going
-//	while ( isRunning )
+//	while ( object.isRunning() )
 //	{
 //		sleep( 1 );
 //	}
 
+	object.setRunning( false );
 	exit( EXIT_SUCCESS );
 }
 
-void signalHandler( int signal )
-{
-	switch ( signal )
-	{
-	case SIGINT:
-		printf( "Caught Ctrl + C\n" );
-		isRunning = false;
-		break;
 
-	case SIGTERM:
-		printf( "Caught Terminate\n" );
-		isRunning = false;
-		break;
-
-	default:
-		printf( "In default signal\n" );
-		break;
-	}
-}

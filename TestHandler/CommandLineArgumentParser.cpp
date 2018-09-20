@@ -5,6 +5,9 @@
 //#include <stdlib.h>
 
 #include "PrintHandler.h"
+#include "PrintUsage.h"
+
+#include "Tests/WCBandwidthUtilization.h"
 
 using namespace std;
 namespace TestHandler {
@@ -34,7 +37,8 @@ void printVector( std::vector< std::string* >& ipVector )
 
 /// @todo think about converting it to a functor
 CommandLineArgumentParser::CommandLineArgumentParser()
-	: _start( 0 )
+	: _goodParse( true )
+	, _start( 0 )
 	, _finish( 0 )
 {
 	memset( _startIP, 0, BUFFERSIZE );
@@ -42,12 +46,21 @@ CommandLineArgumentParser::CommandLineArgumentParser()
 	memset( _lastOctet, 0, BUFFERSIZE );
 }
 
-void CommandLineArgumentParser::parseCommandLineArguments( int argc, char*const* argv, std::vector< std::string* >& ipVector )
+CommandLineArgumentParser::~CommandLineArgumentParser()
+{
+
+}
+
+bool CommandLineArgumentParser::parseCommandLineArguments(
+		int argc
+		, char*const* argv
+		, std::vector< std::string* >& ipVector
+		, std::vector< TestBaseClass* >& test )
 {
 	int opt;
 
 	// parse the user's arguements
-	while ( ( opt = getopt_long( argc, argv, "hd:r:l:", longOptions, NULL ) ) != -1 )
+	while ( ( opt = getopt_long( argc, argv, "hd:r:l:t:", longOptions, NULL ) ) != -1 )
 	{
 		switch ( opt )
 		{
@@ -57,37 +70,30 @@ void CommandLineArgumentParser::parseCommandLineArguments( int argc, char*const*
 
 		case UsageArguments::HostRange:
 			parseIPRange( optarg, ipVector );
+			_goodParse = !ipVector.empty();
 			break;
 
 		case UsageArguments::Help:
 			printUsage();
+			_goodParse = false;
 			break;
 
 		case UsageArguments::LogFile:
-//			PRINT( "LogFile %s\n", optarg );
+			PRINT( "LogFile %s\n", optarg );
 			break;
 
 		case UsageArguments::Test:
+			parseTests( optarg, test );
 //			PRINT( "Test %s\n", optarg );
 			break;
 
 		default: /* '?' */
 			printUsage();
+			_goodParse = false;
 		}
 	}
-}
 
-void CommandLineArgumentParser::printUsage()
-{
-	const char* const usage = \
-						"Usage: TestHandler [-d] [-h] [-l] [-r] [-t]\n" \
-						"-d, --duration\tduration of the test in seconds\n" \
-						"-h, --help\tprint this help message\n" \
-						"-l, --logfile\tpath and name of the file to log test results\n" \
-						"-r, --range\trange of ip addresses with a hyphen(-) being a range and a comma (,) inidividual IP address\n" \
-						"\t\te.g. ""10.0.0.1-10.0.0.4,10.0.0.18,10.0.0.19,10.0.0.20""\n" \
-						"-t, --test\tcomma separated list of test to run. tests are: todo\n";
-	fprintf( stderr, "%s", usage );
+	return _goodParse;
 }
 
 void CommandLineArgumentParser::parseIPRange( char* optarg, std::vector<string *>& ipVector )
@@ -107,6 +113,11 @@ void CommandLineArgumentParser::parseIPRange( char* optarg, std::vector<string *
 
 	for ( size_t i = 0; i < stringLength; ++i )
 	{
+		if ( optarg[ i ] == ' ' )
+		{
+			continue;
+		}
+
 		if ( optarg[ i ] == '.' )
 		{
 			++dotCount;
@@ -187,4 +198,85 @@ void CommandLineArgumentParser::fillIPVector( std::vector<string *> &ipVector )
 		ipVector.push_back( new std::string( buffer ) );
 	}
 }
+
+void CommandLineArgumentParser::parseTests( char *optarg, std::vector<TestBaseClass *>& test )
+{
+	char buffer[ BUFFERSIZE ];
+	memset( buffer, 0, BUFFERSIZE );
+	size_t stringLength = strlen( optarg );
+	size_t end = stringLength - 1;
+	size_t bufferIndex = 0;
+	TestBaseClass* baseTest = NULL;
+
+	for ( size_t i = 0; i < stringLength; ++i )
+	{
+		if ( optarg[ i ] == ' ' )
+		{
+			continue;
+		}
+		if ( i == end )
+		{
+			buffer[ bufferIndex++ ] = optarg[ i ];
+			optarg[ i ] = ',';
+		}
+
+		if ( optarg[ i ] == ',' )
+		{
+			buffer[ bufferIndex++ ] = '\0';
+			baseTest = getTest( buffer );
+
+			if ( baseTest )
+			{
+				test.push_back( baseTest );
+			}
+
+			memset( buffer, 0, bufferIndex );
+			bufferIndex = 0;
+			baseTest = NULL;
+			continue;
+		}
+
+		buffer[ bufferIndex++ ] = optarg[ i ];
+	}
+}
+
+TestBaseClass* CommandLineArgumentParser::getTest( const char* const testString )
+{
+	TestBaseClass* ret = NULL;
+
+//	PRINT( "got: %s\n", testString );
+
+	if ( !strcmp( testString, "Efficiency" ) )
+	{
+//		ret = new WCBandwidthUtilization();
+		PRINT( "Efficiency\n" );
+	}
+	else if ( !strcmp( testString, "LongFlowHandling" ) )
+	{
+		PRINT( "LongFlowHandling\n" );
+	}
+	else if ( !strcmp( testString, "RandomFlowHandling" ) )
+	{
+		PRINT( "RandomFlowHandling\n" );
+	}
+	else if ( !strcmp( testString, "ShortFlowHandling" ) )
+	{
+		PRINT( "ShortFlowHandling\n" );
+	}
+	else if ( !strcmp( testString, "WCBandwidthUtilization" ) )
+	{
+		PRINT( "WCBandwidthUtilization\n" );
+	}
+	else if ( !strcmp( testString, "WCLogic" ) )
+	{
+		PRINT( "WCLogic\n" );
+	}
+	else
+	{
+		PRINT( "!!!!Default\n" );
+	}
+
+	return ret;
+}
+
 }
