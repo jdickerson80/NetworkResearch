@@ -1,0 +1,2 @@
+This folder would be the root folder for a test run. This would be the directory given as a mininet argument.
+This folder contains all of the hosts' temp folders to make sure have backups.

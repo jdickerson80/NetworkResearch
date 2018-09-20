@@ -1,0 +1,2 @@
+This folder contains EACH tests' output with a timestamp. The structure looks like this because there can be numerous tests run on a single main test run.
+

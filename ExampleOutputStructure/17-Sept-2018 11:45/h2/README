@@ -1,0 +1,2 @@
+This folder is created by mininet when the process starts. Mininet will create a folder like this for every host created. 
+Each test would create its own folder, which could contain the different types of tests.
