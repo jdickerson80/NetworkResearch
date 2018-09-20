@@ -3,6 +3,7 @@ var searchData=
   ['setalpha',['setAlpha',['../classCommon_1_1Math_1_1ExponentialSmoothing.html#af6422d0d4d52d48a948e8315b08eb29d',1,'Common::Math::ExponentialSmoothing']]],
   ['setegressbandwidth',['setEgressBandwidth',['../classCommon_1_1TCControl.html#a1b50fa70591a78c957a35bd67a459ce1',1,'Common::TCControl::setEgressBandwidth(const std::string &amp;interface, const std::string &amp;desiredBandwidth)'],['../classCommon_1_1TCControl.html#a9ccd692a49cab80cf296f527a08a7f55',1,'Common::TCControl::setEgressBandwidth(const std::string &amp;interface, const int desiredBandwidth)']]],
   ['setigressbandwidth',['setIgressBandwidth',['../classCommon_1_1TCControl.html#a01a976f499a2b89e1dd63a5115093eb2',1,'Common::TCControl::setIgressBandwidth(const std::string &amp;interface, const std::string &amp;desiredBandwidth)'],['../classCommon_1_1TCControl.html#a2feb3883780487cfec8ce8c8780e115e',1,'Common::TCControl::setIgressBandwidth(const std::string &amp;interface, const int desiredBandwidth)']]],
+  ['setrunning',['setRunning',['../classTestHandler_1_1MainObject.html#a81a12e922f241104764656eba62af770',1,'TestHandler::MainObject']]],
   ['setuphostmachine',['setupHostMachine',['../namespaceBandwidthShare.html#ad36305c38ff5fd90a331dd033f742603',1,'BandwidthShare']]],
   ['setupswitchqueues',['setupSwitchQueues',['../namespaceBandwidthShare.html#a8e4f3fb353d57c1bce1f33b638078f60',1,'BandwidthShare']]],
   ['setuptccommand',['setupTCCommand',['../namespaceBandwidthShare.html#a9d7f58bcba7109ba424e18f653d5087f',1,'BandwidthShare']]],

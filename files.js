@@ -12,6 +12,8 @@ var files =
     [ "BandwidthValues.h", "BandwidthValues_8h.html", [
       [ "BandwidthValues", "structWCEnabler_1_1BandwidthValues.html", "structWCEnabler_1_1BandwidthValues" ]
     ] ],
+    [ "CommandLineArgumentParser.cpp", "CommandLineArgumentParser_8cpp.html", "CommandLineArgumentParser_8cpp" ],
+    [ "CommandLineArgumentParser.h", "CommandLineArgumentParser_8h.html", "CommandLineArgumentParser_8h" ],
     [ "CurrentAndLastValues.h", "CurrentAndLastValues_8h.html", [
       [ "CurrentAndLastValues", "structCommon_1_1CurrentAndLastValues.html", "structCommon_1_1CurrentAndLastValues" ]
     ] ],
@@ -47,11 +49,19 @@ var files =
     ] ],
     [ "Macros.h", "Macros_8h.html", "Macros_8h" ],
     [ "BGAdaptor/main.cpp", "BGAdaptor_2main_8cpp.html", "BGAdaptor_2main_8cpp" ],
+    [ "TestHandler/main.cpp", "TestHandler_2main_8cpp.html", "TestHandler_2main_8cpp" ],
     [ "WCEnabler/main.cpp", "WCEnabler_2main_8cpp.html", "WCEnabler_2main_8cpp" ],
-    [ "MainObject.cpp", "MainObject_8cpp.html", null ],
-    [ "MainObject.h", "MainObject_8h.html", [
+    [ "TestHandler/MainObject.cpp", "TestHandler_2MainObject_8cpp.html", null ],
+    [ "WCEnabler/MainObject.cpp", "WCEnabler_2MainObject_8cpp.html", null ],
+    [ "TestHandler/MainObject.h", "TestHandler_2MainObject_8h.html", [
+      [ "MainObject", "classTestHandler_1_1MainObject.html", "classTestHandler_1_1MainObject" ]
+    ] ],
+    [ "WCEnabler/MainObject.h", "WCEnabler_2MainObject_8h.html", [
       [ "MainObject", "classWCEnabler_1_1MainObject.html", "classWCEnabler_1_1MainObject" ]
     ] ],
+    [ "PrintHandler.h", "PrintHandler_8h.html", "PrintHandler_8h" ],
+    [ "PrintUsage.cpp", "PrintUsage_8cpp.html", "PrintUsage_8cpp" ],
+    [ "PrintUsage.h", "PrintUsage_8h.html", "PrintUsage_8h" ],
     [ "SimpleRateCalculation.cpp", "SimpleRateCalculation_8cpp.html", null ],
     [ "SimpleRateCalculation.h", "SimpleRateCalculation_8h.html", [
       [ "SimpleRateCalculation", "classCommon_1_1Math_1_1SimpleRateCalculation.html", "classCommon_1_1Math_1_1SimpleRateCalculation" ]
@@ -63,9 +73,18 @@ var files =
     [ "TCControl.h", "TCControl_8h.html", [
       [ "TCControl", "classCommon_1_1TCControl.html", null ]
     ] ],
+    [ "TestBaseClass.h", "TestBaseClass_8h.html", [
+      [ "TestBaseClass", "classTestHandler_1_1TestBaseClass.html", "classTestHandler_1_1TestBaseClass" ],
+      [ "Tests", "structTestHandler_1_1TestBaseClass_1_1Tests.html", "structTestHandler_1_1TestBaseClass_1_1Tests" ]
+    ] ],
+    [ "Tests.py", "Tests_8py.html", "Tests_8py" ],
     [ "ThreadHelper.cpp", "ThreadHelper_8cpp.html", null ],
     [ "ThreadHelper.h", "ThreadHelper_8h.html", [
       [ "ThreadHelper", "classCommon_1_1ThreadHelper.html", "classCommon_1_1ThreadHelper" ]
+    ] ],
+    [ "WCBandwidthUtilization.cpp", "WCBandwidthUtilization_8cpp.html", null ],
+    [ "WCBandwidthUtilization.h", "WCBandwidthUtilization_8h.html", [
+      [ "WCBandwidthUtilization", "classTestHandler_1_1WCBandwidthUtilization.html", "classTestHandler_1_1WCBandwidthUtilization" ]
     ] ],
     [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", "WorkConservationFlowHandler_8cpp" ],
     [ "WorkConservationFlowHandler.h", "WorkConservationFlowHandler_8h.html", [

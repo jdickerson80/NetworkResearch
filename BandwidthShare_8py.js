@@ -15,6 +15,7 @@ var BandwidthShare_8py =
     [ "level", "BandwidthShare_8py.html#a384cac7394ec34c677b299f66364c9d2", null ],
     [ "logger", "BandwidthShare_8py.html#ab53818f8e7255c5760ca67321d149f8d", null ],
     [ "net", "BandwidthShare_8py.html#a8908e269bfa7882927b0faf8efd6722f", null ],
+    [ "number", "BandwidthShare_8py.html#ab326ddee300967d5db1be9ec648a944c", null ],
     [ "port", "BandwidthShare_8py.html#a336a56b760eddfb16ab450a504983b6c", null ],
     [ "privateDirs", "BandwidthShare_8py.html#a438f4f2a06aee8e9583d9ea7fa8d9c6e", null ],
     [ "topology", "BandwidthShare_8py.html#ac2d35cad6b3b97a01f04bdc7d88c5d05", null ]

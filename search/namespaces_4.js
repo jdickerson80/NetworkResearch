@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['setup',['setup',['../namespacesetup.html',1,'']]]
+  ['wcenabler',['WCEnabler',['../namespaceWCEnabler.html',1,'']]]
 ];

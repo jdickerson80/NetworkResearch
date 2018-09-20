@@ -37,7 +37,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"BGAdaptor_2main_8cpp.html"
+"BGAdaptor_2main_8cpp.html",
+"hierarchy.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

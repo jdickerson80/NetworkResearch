@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['networkresearch',['NetworkResearch',['../md__home_jd_Documents_Code_NetworkResearch_README.html',1,'']]],
-  ['net',['net',['../namespaceBandwidthShare.html#a8908e269bfa7882927b0faf8efd6722f',1,'BandwidthShare']]],
-  ['newlinecharacter',['NewlineCharacter',['../BandwidthCalculator_8cpp.html#a30b554fe986796a1adebbec9f32fe2de',1,'BandwidthCalculator.cpp']]],
-  ['newwcflow',['NewWCFlow',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba6d19b31f3b465f6da283e4c8daeeb175',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]]
+  ['macros_2eh',['Macros.h',['../Macros_8h.html',1,'']]],
+  ['main',['main',['../BGAdaptor_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../TestHandler_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../WCEnabler_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp']]],
+  ['mainobject',['MainObject',['../classWCEnabler_1_1MainObject.html',1,'WCEnabler']]],
+  ['mainobject',['MainObject',['../classTestHandler_1_1MainObject.html',1,'TestHandler']]],
+  ['modifyiplink',['ModifyIPLink',['../WorkConservationFlowHandler_8cpp.html#a7e42f121fcfd27f50844af9bcb673f8c',1,'WorkConservationFlowHandler.cpp']]],
+  ['movepastsent',['MovePastSent',['../BandwidthCalculator_8cpp.html#ab644a8b257ec9c36ee670cf8b3fac545',1,'BandwidthCalculator.cpp']]]
 ];
