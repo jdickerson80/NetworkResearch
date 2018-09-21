@@ -57,6 +57,15 @@ public:
 	 * @brief startJoinableThread
 	 * @param thread
 	 * @param startRoutine
+	 * @param objectPointer
+	 * @return
+	 */
+	static int startJoinableThread( pthread_t* thread, StartRoutine startRoutine, void* objectPointer );
+
+	/**
+	 * @brief startJoinableThread
+	 * @param thread
+	 * @param startRoutine
 	 * @param isRunningFlag
 	 * @param objectPointer
 	 * @return

@@ -69,11 +69,24 @@ int ThreadHelper::startDetachedThread( pthread_t* thread, StartRoutine startRout
 
 int ThreadHelper::startJoinableThread( pthread_t* thread, StartRoutine startRoutine, bool* isRunningFlag, void* objectPointer )
 {
+	int val;
 	if ( *isRunningFlag )
 	{
 		return -1;
 	}
 
+	val = startJoinableThread( thread, startRoutine, objectPointer );
+
+	if ( val != 0 )
+	{
+		*isRunningFlag = false;
+	}
+
+	return val;
+}
+
+int ThreadHelper::startJoinableThread( pthread_t* thread, StartRoutine startRoutine, void* objectPointer )
+{
 	int returnValue = 0;
 
 	pthread_attr_t attribute;
@@ -89,12 +102,10 @@ int ThreadHelper::startJoinableThread( pthread_t* thread, StartRoutine startRout
 	if ( returnValue )
 	{
 		perror( "startJoinableThread: Failed to create the thread" );
-		*isRunningFlag = false;
 		return -1;
 	}
 	else
 	{
-		*isRunningFlag = true;
 		return 0;
 	}
 }
