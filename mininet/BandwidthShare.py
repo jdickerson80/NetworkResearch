@@ -8,6 +8,7 @@ from mininet.node import *
 from mininet.topo import *
 from mininet.util import *
 from FatTreeTopology import FatTree
+from Tests import *
 
 import argparse
 import logging
@@ -124,7 +125,7 @@ def parseCommandLineArgument():
     parser.add_argument('--pod', '-P',
 			action="store",
 			help="Number of Pods",
-			default=4)
+			default=2)
 
     parser.add_argument('--density', '-D',
 			action="store",
@@ -202,6 +203,14 @@ if __name__ == '__main__':
 
     setupSwitchQueues( net, arguments.switchPortSpeed )
     startBWShare( net, arguments.bandwidthGuarantee )
+
+    net.pingAll()
+
+    number = 0
+#    while number < 2:
+#	print 'number = %s' % number
+    iperfTester( 2, net[ 'h002' ], net[ 'h003' ], 5, net )
+    number += 1
 
 #    net.pingAll()
 #    net.iperf()

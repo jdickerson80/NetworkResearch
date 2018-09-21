@@ -4,62 +4,54 @@ from mininet.net import *
 from mininet.node import *
 
 import multiprocessing
-import time
 import os
 import signal
+import time
 
 def iperfServerWrapper( host, port ):
     serverCommand = 'iperf3 -s -i 1 -p %s -1 >> /tmp/%s/%sServer.log &' % ( port, host.name, host.name )
     print serverCommand
     host.cmd( serverCommand )
 
-def iperfClientWrapper( host, port, time ):
-    clientCommand = 'iperf3 -c %s -i 1 -p %s -t %s >> /tmp/%s/%sClient.log &' % ( host.IP(), port, time, host.name, host.name )
+def iperfClientWrapper( host, port, time, logPath ):
+    clientCommand = 'iperf3 -c %s -i 1 -p %s -t %s >> /tmp/%s/%sClient.log &' % ( host.IP(), port, time, logPath, logPath )
     print clientCommand
     host.cmd( clientCommand )
 
-def iperfPair( hostOne, hostTwo, testDuration, net, port ):
-    jobs = []
-    pid = []
-    p = multiprocessing.Process( target=iperfServerWrapper, args=( hostOne, int( port ) ) )
-    jobs.append( p )
-    p.start()
-    pid.append( p.ident )
+class TestBaseClass( object ):
+     def __init__( self, hostOne, hostTwo, loggingDirectory, testDuration, network ):
+	 self.hostOne = hostOne
+	 self.hostTwo = hostTwo
+	 self.loggingDirectory = loggingDirectory
+	 self.testDuration = testDuration
+	 self.network = network
 
-    p = multiprocessing.Process( target=iperfServerWrapper, args=( hostTwo, int( port ) + 1 ) )
-    jobs.append( p )
-    p.start()
-    pid.append( p.ident )
+    def runTest( self ):
+	pass
 
-    p = multiprocessing.Process( target=iperfClientWrapper, args=( hostOne, int( port ), testDuration ) )
-    jobs.append( p )
-    p.start()
-    pid.append( p.ident )
+class iperfTester( TestBaseClass ):
 
-    p = multiprocessing.Process( target=iperfClientWrapper, args=( hostTwo, int( port ) + 1, testDuration ) )
-    jobs.append( p )
-    p.start()
-    pid.append( p.ident )
+    def __init__( self, hostOne, hostTwo, loggingDirectory, testDuration, network ):
+	TestBaseClass.__init__( self, hostOne, hostTwo, loggingDirectory, testDuration, network ):
 
-#    while jobs[ 2 ].is_alive() or jobs[ 3 ].is_alive():
-#        print 'sleeping'
-#        time.sleep( 0.5 )
+    def runTest( self ):
+	jobs = []
+	port = 5001
+	for i in range( numberOfLinks ):
+	    p = multiprocessing.Process( target=iperfPair, args=( hostOne, hostTwo, testDuration, net, port ) )
+	    jobs.append( p )
+	    p.start()
+	    port += 2
 
-    for j in jobs:
-#	print 'joining %s with %i' % ( pid[ j ], signal.SIGTERM )
-	j.join()
+	for j in jobs:
+	    j.join()
+	    print 'Tester %s.exitcode = %s' % (j.name, j.exitcode)
 
+    def iperfPair( self, port ):
+	iperfServerWrapper( self.hostOne, int( port ) )
+	iperfServerWrapper( self.hostTwo, int( port ) + 1 )
 
-def iperfTester( numberOfLinks, hostOne, hostTwo, testDuration, net ):
-    jobs = []
-    port = 5001
-    for i in range( numberOfLinks ):
-	print port
-	p = multiprocessing.Process( target=iperfPair, args=( hostOne, hostTwo, testDuration, net, port ) )
-        jobs.append( p )
-        p.start()
-	port += 2
+	time.sleep( 0.25 )
 
-    for j in jobs:
-        j.join()
-        print '%s.exitcode = %s' % (j.name, j.exitcode)
+	iperfClientWrapper( self.hostTwo, int( port ) + 1, self.testDuration, self.hostOne.name )
+	iperfClientWrapper( self.hostOne, int( port ), self.testDuration, self.hostTwo.name )
