@@ -7,6 +7,7 @@
 namespace TestHandler {
 
 class TestBaseClass;
+class TestData;
 
 class CommandLineArgumentParser
 {
@@ -16,11 +17,13 @@ public:
 	{
 		enum
 		{
-			Duration	= 'd',
-			Help		= 'h',
-			HostRange	= 'r',
-			LogFile		= 'l',
-			Test		= 't'
+			Bytes				= 'b',
+			Duration			= 'd',
+			Help				= 'h',
+			HostRange			= 'r',
+			LogFile				= 'l',
+			Targetbandwidth		= 'T',
+			Test				= 't'
 		};
 	};
 
@@ -29,6 +32,8 @@ private:
 	bool _goodParse;
 	unsigned int _start;
 	unsigned int _finish;
+
+	TestData* _testData;
 
 	char _startIP[ BUFFERSIZE ];
 	char _endIP[ BUFFERSIZE ];
@@ -42,6 +47,7 @@ public:
 	bool parseCommandLineArguments(
 			int argc
 			, char*const* argv
+			, TestData* testData
 			, std::vector< std::string* >& ipVector
 			, std::vector< TestBaseClass* >& test );
 

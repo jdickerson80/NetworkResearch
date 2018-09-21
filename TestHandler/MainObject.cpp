@@ -5,6 +5,7 @@
 #include <string>
 #include <unistd.h>
 
+#include "TestData.h"
 #include "CommandLineArgumentParser.h"
 #include "PrintHandler.h"
 #include "PrintUsage.h"
@@ -18,6 +19,7 @@ MainObject::MainObject()
 	: _ipVector()
 	, _testToRun()
 {
+	_testData = new TestData();
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
 	setlocale( LC_ALL, "" );
@@ -27,6 +29,7 @@ MainObject::~MainObject()
 {
 	deleteIPVector();
 	deleteTestVector();
+	delete _testData;
 }
 
 MainObject& MainObject::instance()
@@ -49,7 +52,7 @@ bool MainObject::parseCommandLineArguments( int argc, char* const* argv )
 {
 	CommandLineArgumentParser parser;
 
-	if ( !parser.parseCommandLineArguments( argc, argv, _ipVector, _testToRun ) )
+	if ( !parser.parseCommandLineArguments( argc, argv, _testData, _ipVector, _testToRun ) )
 	{
 		printUsage();
 		return false;

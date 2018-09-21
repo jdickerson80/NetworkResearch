@@ -7,6 +7,7 @@
 namespace TestHandler {
 
 class TestBaseClass;
+class TestData;
 
 class MainObject
 {
@@ -22,6 +23,7 @@ private:
 private:
 
 	IPVector _ipVector;
+	TestData* _testData;
 	TestVector _testToRun;
 
 public:

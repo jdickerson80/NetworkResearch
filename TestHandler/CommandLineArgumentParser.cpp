@@ -6,7 +6,9 @@
 
 #include "PrintHandler.h"
 #include "PrintUsage.h"
+#include "TestData.h"
 
+#include "Tests/SingleClientTest.h"
 #include "Tests/WCBandwidthUtilization.h"
 
 using namespace std;
@@ -15,10 +17,12 @@ namespace TestHandler {
 // setup the long options
 static struct option longOptions[] =
 {
+	{ "bytes",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Bytes },
 	{ "duration",	required_argument,	0, CommandLineArgumentParser::UsageArguments::Duration },
 	{ "help",		no_argument,		0, CommandLineArgumentParser::UsageArguments::Help },
 	{ "host-range",	required_argument,	0, CommandLineArgumentParser::UsageArguments::HostRange },
 	{ "logfile",	required_argument,	0, CommandLineArgumentParser::UsageArguments::LogFile },
+	{ "targetBW",	required_argument,	0, CommandLineArgumentParser::UsageArguments::Targetbandwidth },
 	{ "test",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Test },
 	{ 0,			0,					0,	0  }
 };
@@ -54,23 +58,30 @@ CommandLineArgumentParser::~CommandLineArgumentParser()
 bool CommandLineArgumentParser::parseCommandLineArguments(
 		int argc
 		, char*const* argv
+		, TestData* testData
 		, std::vector< std::string* >& ipVector
 		, std::vector< TestBaseClass* >& test )
 {
 	int opt;
 
-	// parse the user's arguements
-	while ( ( opt = getopt_long( argc, argv, "hd:r:l:t:", longOptions, NULL ) ) != -1 )
+	_testData = testData;
+	testData->bytesToBeTransmitted = 0;
+	testData->duration = 0;
+	testData->targetBandwidth = 0;
+
+	// parse the user's arguments
+	while ( ( opt = getopt_long( argc, argv, "hbd:r:l:T:t:", longOptions, NULL ) ) != -1 )
 	{
 		switch ( opt )
 		{
-		case UsageArguments::Duration:
-			PRINT( "Duration %i\n", atoi( optarg ) );
+		case UsageArguments::Bytes:
+			testData->bytesToBeTransmitted = atoi( optarg );
+			PRINT( "Bytes %i\n", atoi( optarg ) );
 			break;
 
-		case UsageArguments::HostRange:
-			parseIPRange( optarg, ipVector );
-			_goodParse = !ipVector.empty();
+		case UsageArguments::Duration:
+			testData->duration = atoi( optarg );
+			PRINT( "Duration %i\n", atoi( optarg ) );
 			break;
 
 		case UsageArguments::Help:
@@ -78,13 +89,24 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 			_goodParse = false;
 			break;
 
+		case UsageArguments::HostRange:
+			parseIPRange( optarg, ipVector );
+			_goodParse = !ipVector.empty();
+			break;
+
 		case UsageArguments::LogFile:
+			testData->logPath = optarg;
 			PRINT( "LogFile %s\n", optarg );
+			break;
+
+		case UsageArguments::Targetbandwidth:
+			testData->targetBandwidth = atoi( optarg );
+			PRINT( "TB %i\n", atoi( optarg ) );
 			break;
 
 		case UsageArguments::Test:
 			parseTests( optarg, test );
-//			PRINT( "Test %s\n", optarg );
+			PRINT( "Test %s\n", optarg );
 			break;
 
 		default: /* '?' */
@@ -246,7 +268,12 @@ TestBaseClass* CommandLineArgumentParser::getTest( const char* const testString 
 
 //	PRINT( "got: %s\n", testString );
 
-	if ( !strcmp( testString, "Efficiency" ) )
+	if ( !strcmp( testString, "ClientServer" ) )
+	{
+//		ret = new WCBandwidthUtilization();
+		PRINT( "ClientServer\n" );
+	}
+	else if ( !strcmp( testString, "Efficiency" ) )
 	{
 //		ret = new WCBandwidthUtilization();
 		PRINT( "Efficiency\n" );
@@ -262,6 +289,17 @@ TestBaseClass* CommandLineArgumentParser::getTest( const char* const testString 
 	else if ( !strcmp( testString, "ShortFlowHandling" ) )
 	{
 		PRINT( "ShortFlowHandling\n" );
+	}
+	else if ( !strcmp( testString, "SingleClient" ) )
+	{
+
+		ret = new SingleClientTest( _testData );
+		PRINT( "SingleClient\n" );
+	}
+	else if ( !strcmp( testString, "SingleServer" ) )
+	{
+//		ret = new WCBandwidthUtilization();
+		PRINT( "SingleServer\n" );
 	}
 	else if ( !strcmp( testString, "WCBandwidthUtilization" ) )
 	{
