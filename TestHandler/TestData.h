@@ -6,6 +6,7 @@
 namespace TestHandler {
 struct TestData
 {
+	bool runInParallel = 0;
     unsigned int bytesToBeTransmitted = 0;
     unsigned int duration;
     std::string logPath;

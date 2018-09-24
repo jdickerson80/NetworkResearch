@@ -8,14 +8,13 @@
 #include "TestData.h"
 #include "CommandLineArgumentParser.h"
 #include "PrintHandler.h"
-#include "PrintUsage.h"
 #include "Tests/TestBaseClass.h"
 
 static bool _isRunning = true;
 
 namespace TestHandler {
 
-MainObject::MainObject()
+MainObject::MainObject( int argc, char* const* argv )
 	: _ipVector()
 	, _testToRun()
 {
@@ -23,6 +22,8 @@ MainObject::MainObject()
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
 	setlocale( LC_ALL, "" );
+
+	_isRunning = parseCommandLineArguments( argc, argv );
 }
 
 MainObject::~MainObject()
@@ -30,12 +31,6 @@ MainObject::~MainObject()
 	deleteIPVector();
 	deleteTestVector();
 	delete _testData;
-}
-
-MainObject& MainObject::instance()
-{
-	static MainObject instance;
-	return instance;
 }
 
 void MainObject::setRunning( bool isRunning )
@@ -48,13 +43,24 @@ bool MainObject::isRunning() const
 	return _isRunning;
 }
 
+bool MainObject::runTests()
+{
+	bool allGood = true;
+	for ( TestVector::iterator it = _testToRun.begin(); it != _testToRun.end(); ++it )
+	{
+		allGood |= (*it)->runTest( &_ipVector );
+	}
+
+	_isRunning = false;
+	return allGood;
+}
+
 bool MainObject::parseCommandLineArguments( int argc, char* const* argv )
 {
 	CommandLineArgumentParser parser;
 
 	if ( !parser.parseCommandLineArguments( argc, argv, _testData, _ipVector, _testToRun ) )
 	{
-		printUsage();
 		return false;
 	}
 

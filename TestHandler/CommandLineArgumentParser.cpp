@@ -5,7 +5,6 @@
 //#include <stdlib.h>
 
 #include "PrintHandler.h"
-#include "PrintUsage.h"
 #include "TestData.h"
 
 #include "Tests/SingleClientTest.h"
@@ -22,6 +21,7 @@ static struct option longOptions[] =
 	{ "help",		no_argument,		0, CommandLineArgumentParser::UsageArguments::Help },
 	{ "host-range",	required_argument,	0, CommandLineArgumentParser::UsageArguments::HostRange },
 	{ "logfile",	required_argument,	0, CommandLineArgumentParser::UsageArguments::LogFile },
+	{ "parallel",	required_argument,	0, CommandLineArgumentParser::UsageArguments::ParallelTests },
 	{ "targetBW",	required_argument,	0, CommandLineArgumentParser::UsageArguments::Targetbandwidth },
 	{ "test",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Test },
 	{ 0,			0,					0,	0  }
@@ -70,23 +70,22 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 	testData->targetBandwidth = 0;
 
 	// parse the user's arguments
-	while ( ( opt = getopt_long( argc, argv, "hbd:r:l:T:t:", longOptions, NULL ) ) != -1 )
+	while ( ( opt = getopt_long( argc, argv, "hb:d:r:lpT:t:", longOptions, NULL ) ) != -1 )
 	{
 		switch ( opt )
 		{
 		case UsageArguments::Bytes:
 			testData->bytesToBeTransmitted = atoi( optarg );
-			PRINT( "Bytes %i\n", atoi( optarg ) );
+//			PRINT( "Bytes %i\n", atoi( optarg ) );
 			break;
 
 		case UsageArguments::Duration:
 			testData->duration = atoi( optarg );
-			PRINT( "Duration %i\n", atoi( optarg ) );
+//			PRINT( "Duration %i\n", atoi( optarg ) );
 			break;
 
 		case UsageArguments::Help:
-			printUsage();
-			_goodParse = false;
+			return false;
 			break;
 
 		case UsageArguments::HostRange:
@@ -99,19 +98,23 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 			PRINT( "LogFile %s\n", optarg );
 			break;
 
+		case UsageArguments::ParallelTests:
+			testData->runInParallel = true;
+			PRINT( "Parallel %u\n", testData->runInParallel );
+			break;
+
 		case UsageArguments::Targetbandwidth:
 			testData->targetBandwidth = atoi( optarg );
-			PRINT( "TB %i\n", atoi( optarg ) );
+//			PRINT( "TB %i\n", atoi( optarg ) );
 			break;
 
 		case UsageArguments::Test:
 			parseTests( optarg, test );
-			PRINT( "Test %s\n", optarg );
+//			PRINT( "Test %s\n", optarg );
 			break;
 
 		default: /* '?' */
-			printUsage();
-			_goodParse = false;
+			return false;
 		}
 	}
 
@@ -208,7 +211,7 @@ void CommandLineArgumentParser::parseIPRange( char* optarg, std::vector<string *
 		}
 	}
 
-	printVector( ipVector );
+//	printVector( ipVector );
 }
 
 void CommandLineArgumentParser::fillIPVector( std::vector<string *> &ipVector )
@@ -236,6 +239,7 @@ void CommandLineArgumentParser::parseTests( char *optarg, std::vector<TestBaseCl
 		{
 			continue;
 		}
+
 		if ( i == end )
 		{
 			buffer[ bufferIndex++ ] = optarg[ i ];
@@ -294,7 +298,7 @@ TestBaseClass* CommandLineArgumentParser::getTest( const char* const testString 
 	{
 
 		ret = new SingleClientTest( _testData );
-		PRINT( "SingleClient\n" );
+//		PRINT( "SingleClient\n" );
 	}
 	else if ( !strcmp( testString, "SingleServer" ) )
 	{

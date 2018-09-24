@@ -4,8 +4,6 @@
 #include "MainObject.h"
 #include "PrintUsage.h"
 
-using namespace TestHandler;
-
 int main( int argc, char* argv[] )
 {
 	// check if the app is running as root
@@ -17,23 +15,24 @@ int main( int argc, char* argv[] )
 
 	if ( argc < 4 )
 	{
-		printUsage();
+		TestHandler::printUsage();
 		exit( EXIT_FAILURE );
 	}
 
-	MainObject& object = MainObject::instance();
+	TestHandler::MainObject object( argc, argv );
 
-	if ( !object.parseCommandLineArguments( argc, argv ) )
+	if ( !object.isRunning() )
 	{
-		printUsage();
+		TestHandler::printUsage();
 		exit( EXIT_FAILURE );
 	}
 
-//	// do nothing loop to keep the app going
-//	while ( object.isRunning() )
-//	{
-//		sleep( 1 );
-//	}
+	object.runTests();
+	// do nothing loop to keep the app going
+	while ( object.isRunning() )
+	{
+		sleep( 1 );
+	}
 
 	object.setRunning( false );
 	exit( EXIT_SUCCESS );

@@ -18,32 +18,25 @@ public:
 
 private:
 
-	MainObject();
-
-private:
-
 	IPVector _ipVector;
 	TestData* _testData;
 	TestVector _testToRun;
 
 public:
 
+	MainObject( int argc, char* const* argv );
+
 	~MainObject();
-	/**
-	 * @brief instance instance method is the Singleton method of creating and accessing this
-	 *			class. This ensures there can only be ONE instance of this class.
-	 * @return reference to this class.
-	 * @note	https://en.wikipedia.org/wiki/Singleton_pattern
-	 */
-	static MainObject& instance();
 
 	void setRunning( bool isRunning );
 
 	bool isRunning() const;
 
-	bool parseCommandLineArguments( int argc, char*const* argv );
+	bool runTests();
 
 private:
+
+	bool parseCommandLineArguments( int argc, char*const* argv );
 
 	/**
 	 * @brief	signalHandler method handles all of the signals that come from Linux.
