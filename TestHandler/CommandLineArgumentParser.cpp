@@ -16,13 +16,13 @@ namespace TestHandler {
 // setup the long options
 static struct option longOptions[] =
 {
-	{ "bytes",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Bytes },
-	{ "duration",	required_argument,	0, CommandLineArgumentParser::UsageArguments::Duration },
+	{ "bytes",		optional_argument,	0, CommandLineArgumentParser::UsageArguments::Bytes },
+	{ "time",		optional_argument,	0, CommandLineArgumentParser::UsageArguments::Duration },
 	{ "help",		no_argument,		0, CommandLineArgumentParser::UsageArguments::Help },
-	{ "host-range",	required_argument,	0, CommandLineArgumentParser::UsageArguments::HostRange },
+	{ "range",		required_argument,	0, CommandLineArgumentParser::UsageArguments::HostRange },
 	{ "logfile",	required_argument,	0, CommandLineArgumentParser::UsageArguments::LogFile },
-	{ "parallel",	required_argument,	0, CommandLineArgumentParser::UsageArguments::ParallelTests },
-	{ "targetBW",	required_argument,	0, CommandLineArgumentParser::UsageArguments::Targetbandwidth },
+	{ "parallel",	no_argument,	0, CommandLineArgumentParser::UsageArguments::ParallelTests },
+	{ "bitrate",	optional_argument,	0, CommandLineArgumentParser::UsageArguments::Targetbandwidth },
 	{ "test",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Test },
 	{ 0,			0,					0,	0  }
 };
@@ -63,25 +63,29 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 		, std::vector< TestBaseClass* >& test )
 {
 	int opt;
+	size_t stringLength;
 
 	_testData = testData;
-	testData->bytesToBeTransmitted = 0;
-	testData->duration = 0;
-	testData->targetBandwidth = 0;
 
 	// parse the user's arguments
-	while ( ( opt = getopt_long( argc, argv, "hb:d:r:lpT:t:", longOptions, NULL ) ) != -1 )
+	while ( ( opt = getopt_long( argc, argv, "hb:l:n:pr:t:z:", longOptions, NULL ) ) != -1 )
 	{
+		if ( optarg )
+		{
+			stringLength = strlen( optarg );
+		}
+
+		PRINT("Got %c\n", opt );
 		switch ( opt )
 		{
 		case UsageArguments::Bytes:
-			testData->bytesToBeTransmitted = atoi( optarg );
-//			PRINT( "Bytes %i\n", atoi( optarg ) );
+			PRINT( "Bytes %s\n", testData->bytesToBeTransmitted );
+			memcpy( testData->bytesToBeTransmitted, optarg, stringLength );
 			break;
 
 		case UsageArguments::Duration:
-			testData->duration = atoi( optarg );
-//			PRINT( "Duration %i\n", atoi( optarg ) );
+			PRINT( "Duration %s\n", testData->duration );
+			memcpy( testData->duration, optarg, stringLength );
 			break;
 
 		case UsageArguments::Help:
@@ -89,31 +93,33 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 			break;
 
 		case UsageArguments::HostRange:
+			PRINT( "Range %s\n", optarg );
 			parseIPRange( optarg, ipVector );
 			_goodParse = !ipVector.empty();
 			break;
 
 		case UsageArguments::LogFile:
-			testData->logPath = optarg;
 			PRINT( "LogFile %s\n", optarg );
+			testData->logPath = optarg;
 			break;
 
 		case UsageArguments::ParallelTests:
 			testData->runInParallel = true;
-			PRINT( "Parallel %u\n", testData->runInParallel );
+//			PRINT( "Parallel %u\n", testData->runInParallel );
 			break;
 
 		case UsageArguments::Targetbandwidth:
-			testData->targetBandwidth = atoi( optarg );
-//			PRINT( "TB %i\n", atoi( optarg ) );
+			PRINT( "TB %i\n", atoi( optarg ) );
+			memcpy( testData->targetBandwidth, optarg, stringLength );
 			break;
 
 		case UsageArguments::Test:
+			PRINT( "Test %s\n", optarg );
 			parseTests( optarg, test );
-//			PRINT( "Test %s\n", optarg );
 			break;
 
 		default: /* '?' */
+			PRINT( "?????????\n" );
 			return false;
 		}
 	}

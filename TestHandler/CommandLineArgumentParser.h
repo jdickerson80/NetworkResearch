@@ -17,14 +17,14 @@ public:
 	{
 		enum
 		{
-			Bytes				= 'b',
-			Duration			= 'd',
+			Bytes				= 'n',
+			Duration			= 't',
 			Help				= 'h',
 			HostRange			= 'r',
 			LogFile				= 'l',
 			ParallelTests		= 'p',
-			Targetbandwidth		= 'T',
-			Test				= 't'
+			Targetbandwidth		= 'b',
+			Test				= 'z'
 		};
 	};
 
