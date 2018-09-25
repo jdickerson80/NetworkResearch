@@ -1,17 +1,33 @@
 #include "SingleClientTest.h"
 
+#include <sstream>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <time.h>
 #include <unistd.h>
 
+#include "HelperMethods.h"
 #include "PrintHandler.h"
 
 namespace TestHandler {
 SingleClientTest::SingleClientTest( const TestData* const testData )
 	: TestBaseClass( testData, Tests::SingleClient )
 {
-	PRINT("construct\n");
+	// stream the logging string, create and return the pointer to it
+	std::ostringstream logPath;
+	std::ostringstream logStatsCommand;
+	std::ostringstream removeBandwidthStatsFile;
+
+	logPath << "/tmp/" << Common::HelperMethods::getHostName() << "/";
+
+	removeBandwidthStatsFile << "rm " << logPath.str() << "BandwidthUsage.log";
+
+	logStatsCommand << "cp " << logPath.str() << "BandwidthUsage.log " << _testData->logPath << "\n";
+
+	_logStatsCommand = logStatsCommand.str();
+	_removeBandwidthStatsFile = removeBandwidthStatsFile.str();
+	PRINT("construct %s\n", _logStatsCommand.c_str() );
 }
 
 SingleClientTest::~SingleClientTest()
@@ -24,8 +40,26 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 	pid_t pid;
 	int status;
 	_ipVector = ipVector;
+//	char commandBuffer[ 512 ];
 
-	PRINT("running test\n");
+//	time_t localTime = time(NULL);
+//	tm timeStruct = *localtime( &localTime );
+
+//	snprintf( commandBuffer, 512, "%s ""%s%02d_%02d_%04d%02d_%02d_%02d""\n"
+//			  , _logStatsCommand.c_str()
+//			  , _testData->logPath.c_str()
+//			  , timeStruct.tm_mday
+//			  , timeStruct.tm_mon+1
+//			  , timeStruct.tm_year+1900
+//			  , timeStruct.tm_hour
+//			  , timeStruct.tm_min
+//			  , timeStruct.tm_sec );
+
+//	snprintf( commandBuffer, 512, "%s %s\n"
+//			  , _logStatsCommand.c_str()
+//			  , _testData->logPath.c_str() );
+
+	system( _removeBandwidthStatsFile.c_str() );
 
 	if ( _testData->runInParallel )
 	{
@@ -81,6 +115,8 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 			clientTest( *(*it) );
 		}
 	}
+
+	system( _logStatsCommand.c_str() );
 	return true;
 }
 
@@ -89,7 +125,7 @@ bool SingleClientTest::handleTerminatedSubprocess(int status, int pid)
 //	PRINT("EXIT %i\n", WEXITSTATUS( status ) );
 	if ( WIFEXITED( status) && WEXITSTATUS( status ) != EXIT_SUCCESS )
 	{
-		PRINT( "A process did not complete successfully\n" );
+//		PRINT( "A process did not complete successfully\n" );
 		return false;
 	}
 
@@ -124,11 +160,11 @@ bool SingleClientTest::clientTest( const std::string& ipAddress )
 				, strcmp( _testData->duration, "-" ) ? "-t" : ""
 				, strcmp( _testData->duration, "-" ) ? _testData->duration : "" );
 
-	PRINT( "%s", buffer);
+//	PRINT( "%s", buffer);
 
 	toReturn = system( buffer );
 
-//	sleep( 5 );
+	sleep( 20 );
 	switch ( toReturn )
 	{
 	case -1:

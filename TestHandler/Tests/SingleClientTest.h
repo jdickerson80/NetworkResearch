@@ -19,6 +19,10 @@ private:
 	IPVector* _ipVector;
 
 	PIDVector _pidVector;
+
+	std::string _removeBandwidthStatsFile;
+
+	std::string _logStatsCommand;
 public:
 
 	SingleClientTest( const TestData* const testData );
