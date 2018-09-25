@@ -21,7 +21,7 @@ static struct option longOptions[] =
 	{ "help",		no_argument,		0, CommandLineArgumentParser::UsageArguments::Help },
 	{ "range",		required_argument,	0, CommandLineArgumentParser::UsageArguments::HostRange },
 	{ "logfile",	required_argument,	0, CommandLineArgumentParser::UsageArguments::LogFile },
-	{ "parallel",	no_argument,	0, CommandLineArgumentParser::UsageArguments::ParallelTests },
+	{ "parallel",	no_argument,		0, CommandLineArgumentParser::UsageArguments::ParallelTests },
 	{ "bitrate",	optional_argument,	0, CommandLineArgumentParser::UsageArguments::Targetbandwidth },
 	{ "test",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Test },
 	{ 0,			0,					0,	0  }
@@ -75,16 +75,16 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 			stringLength = strlen( optarg );
 		}
 
-		PRINT("Got %c\n", opt );
+//		PRINT("Got %c\n", opt );
 		switch ( opt )
 		{
 		case UsageArguments::Bytes:
-			PRINT( "Bytes %s\n", testData->bytesToBeTransmitted );
+//			PRINT( "Bytes %s\n", testData->bytesToBeTransmitted );
 			memcpy( testData->bytesToBeTransmitted, optarg, stringLength );
 			break;
 
 		case UsageArguments::Duration:
-			PRINT( "Duration %s\n", testData->duration );
+//			PRINT( "Duration %s\n", testData->duration );
 			memcpy( testData->duration, optarg, stringLength );
 			break;
 
@@ -93,13 +93,13 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 			break;
 
 		case UsageArguments::HostRange:
-			PRINT( "Range %s\n", optarg );
+//			PRINT( "Range %s\n", optarg );
 			parseIPRange( optarg, ipVector );
 			_goodParse = !ipVector.empty();
 			break;
 
 		case UsageArguments::LogFile:
-			PRINT( "LogFile %s\n", optarg );
+//			PRINT( "LogFile %s\n", optarg );
 			testData->logPath = optarg;
 			break;
 
@@ -109,12 +109,12 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 			break;
 
 		case UsageArguments::Targetbandwidth:
-			PRINT( "TB %i\n", atoi( optarg ) );
+//			PRINT( "TB %i\n", atoi( optarg ) );
 			memcpy( testData->targetBandwidth, optarg, stringLength );
 			break;
 
 		case UsageArguments::Test:
-			PRINT( "Test %s\n", optarg );
+//			PRINT( "Test %s\n", optarg );
 			parseTests( optarg, test );
 			break;
 
