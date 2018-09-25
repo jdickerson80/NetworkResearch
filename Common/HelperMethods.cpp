@@ -63,4 +63,16 @@ HelperMethods::InterfaceInfo HelperMethods::getInterfaceName()
 	return interfaceInfo;
 }
 
+std::string HelperMethods::getHostName()
+{
+	std::string newInterface( getInterfaceName().interfaceName );
+
+	/// @note if there are more than 1 '-' in the string, it will remove
+	/// EVERYTHING past the 1st '-'
+	// find the '-' in the string and erase it and everything past it
+	newInterface.erase( newInterface.begin() + newInterface.find( '-' ), newInterface.end() );
+
+	return newInterface;
+}
+
 } // namespace Common

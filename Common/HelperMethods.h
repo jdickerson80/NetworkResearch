@@ -31,6 +31,12 @@ public:
 	 * @return the name of the interface
 	 */
 	static InterfaceInfo getInterfaceName();
+
+	/**
+	 * @brief getHostName getter
+	 * @return the host name. this is the interface name without the -eth0
+	 */
+	static std::string getHostName();
 };
 
 } // namespace Common
