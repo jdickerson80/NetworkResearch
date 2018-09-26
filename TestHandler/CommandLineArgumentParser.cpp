@@ -8,6 +8,7 @@
 #include "TestData.h"
 
 #include "Tests/SingleClientTest.h"
+#include "Tests/SingleServerTest.h"
 #include "Tests/WCBandwidthUtilization.h"
 
 using namespace std;
@@ -308,7 +309,7 @@ TestBaseClass* CommandLineArgumentParser::getTest( const char* const testString 
 	}
 	else if ( !strcmp( testString, "SingleServer" ) )
 	{
-//		ret = new WCBandwidthUtilization();
+		ret = new SingleServerTest( _testData );
 		PRINT( "SingleServer\n" );
 	}
 	else if ( !strcmp( testString, "WCBandwidthUtilization" ) )

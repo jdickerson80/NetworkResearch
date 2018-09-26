@@ -1,13 +1,10 @@
 #include "SingleClientTest.h"
 
-#include <sstream>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <time.h>
 #include <unistd.h>
 
-#include "HelperMethods.h"
 #include "PrintHandler.h"
 
 namespace TestHandler {
@@ -15,20 +12,6 @@ namespace TestHandler {
 SingleClientTest::SingleClientTest( const TestData* const testData )
 	: TestBaseClass( testData, Tests::SingleClient )
 {
-	// stream the logging string, create and return the pointer to it
-	std::ostringstream logPath;
-	std::ostringstream logStatsCommand;
-	std::ostringstream removeBandwidthStatsFile;
-
-	logPath << "/tmp/" << Common::HelperMethods::getHostName() << "/";
-
-	removeBandwidthStatsFile << "rm " << logPath.str() << "BandwidthUsage.log";
-
-	logStatsCommand << "cp " << logPath.str() << "BandwidthUsage.log " << _testData->logPath << "\n";
-
-	_logStatsCommand = logStatsCommand.str();
-	_removeBandwidthStatsFile = removeBandwidthStatsFile.str();
-	PRINT("construct %s\n", _logStatsCommand.c_str() );
 }
 
 SingleClientTest::~SingleClientTest()
@@ -39,25 +22,8 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 {
 	pid_t pid;
 	int status;
+	unsigned int port = 5001;
 	_ipVector = ipVector;
-//	char commandBuffer[ 512 ];
-
-//	time_t localTime = time(NULL);
-//	tm timeStruct = *localtime( &localTime );
-
-//	snprintf( commandBuffer, 512, "%s ""%s%02d_%02d_%04d%02d_%02d_%02d""\n"
-//			  , _logStatsCommand.c_str()
-//			  , _testData->logPath.c_str()
-//			  , timeStruct.tm_mday
-//			  , timeStruct.tm_mon+1
-//			  , timeStruct.tm_year+1900
-//			  , timeStruct.tm_hour
-//			  , timeStruct.tm_min
-//			  , timeStruct.tm_sec );
-
-//	snprintf( commandBuffer, 512, "%s %s\n"
-//			  , _logStatsCommand.c_str()
-//			  , _testData->logPath.c_str() );
 
 	system( _removeBandwidthStatsFile.c_str() );
 
@@ -75,13 +41,15 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 			// is this the child
 			if ( pid == 0 )
 			{
-				return clientTest( *(*it) );
+				return clientTest( *(*it), port );
 			}
 			else
 			{
 				PRINT("Pushing pid %i\n", pid );
 				_pidVector.push_back( pid );
 			}
+
+			++port;
 		}
 
 		// done forking processes, time to collect them
@@ -105,7 +73,8 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 	{
 		for ( IPVector::iterator it = ipVector->begin(); it != ipVector->end(); ++it )
 		{
-			clientTest( *(*it) );
+			clientTest( *(*it), port );
+			++port;
 		}
 	}
 
@@ -113,27 +82,7 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 	return true;
 }
 
-bool SingleClientTest::handleTerminatedSubprocess(int status, int pid)
-{
-//	PRINT("EXIT %i\n", WEXITSTATUS( status ) );
-	if ( WIFEXITED( status) && WEXITSTATUS( status ) != EXIT_SUCCESS )
-	{
-//		PRINT( "A process did not complete successfully\n" );
-		return false;
-	}
-
-//	PRINT("Got pid %i\n", pid );
-	// if this pid has been collected
-	if ( pid <= 0 )
-	{
-		// just return
-		return false;
-	}
-
-	return true;
-}
-
-bool SingleClientTest::clientTest( const std::string& ipAddress )
+bool SingleClientTest::clientTest( const std::string& ipAddress, unsigned int port )
 {
 #define BufferSize ( 512 )
 	char buffer[ BufferSize ];
@@ -142,7 +91,7 @@ bool SingleClientTest::clientTest( const std::string& ipAddress )
 	snprintf(
 				buffer
 				, 150
-				, "iperf3 -i 1 -c %s %s %s %s %s %s %s 2>&1 > /dev/null\n"
+				, "iperf3 -i 1 -c %s %s %s %s %s %s %s -p %u 2>&1 > /dev/null\n"
 				, ipAddress.c_str()
 				, strcmp( _testData->targetBandwidth, "-" ) ? "-b" : ""
 				, strcmp( _testData->targetBandwidth, "-" ) ? _testData->targetBandwidth : ""
@@ -151,9 +100,10 @@ bool SingleClientTest::clientTest( const std::string& ipAddress )
 				, strcmp( _testData->bytesToBeTransmitted, "-" ) ? _testData->bytesToBeTransmitted : ""
 
 				, strcmp( _testData->duration, "-" ) ? "-t" : ""
-				, strcmp( _testData->duration, "-" ) ? _testData->duration : "" );
+				, strcmp( _testData->duration, "-" ) ? _testData->duration : ""
+				, port );
 
-
+	PRINT("%s", buffer );
 	toReturn = system( buffer );
 
 //	sleep( 2 );

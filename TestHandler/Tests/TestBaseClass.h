@@ -32,8 +32,15 @@ public:
 
 protected:
 
-//	const IPVector* ipVector;
+	typedef std::vector< pid_t > PIDVector;
+
 	const TestData* const _testData;
+	IPVector* _ipVector;
+	PIDVector _pidVector;
+	std::string _removeBandwidthStatsFile;
+	std::string _logStatsCommand;
+
+	bool handleTerminatedSubprocess( int status, int pid );
 
 private:
 
@@ -43,24 +50,13 @@ public:
 
 	virtual ~TestBaseClass() {}
 
-	bool runTest( IPVector* ipVector )
-	{
-		return impl_runTest( ipVector );
-	}
+	bool runTest( IPVector* ipVector );
 
-//	bool runTest( const std::string& logPath )
-//	{
-//		logPath = logPath;
-
-//		return impl_runTest();
-//	}
+	Tests::Enum test() const;
 
 protected:
 
-	TestBaseClass( const TestData* const data, const Tests::Enum test )
-		: _testData( data )
-		, _test( test )
-		{}
+	TestBaseClass( const TestData* const data, const Tests::Enum test );
 
 	virtual bool impl_runTest( IPVector* ipVector ) = 0;
 };

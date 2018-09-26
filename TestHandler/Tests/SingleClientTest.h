@@ -7,19 +7,6 @@ namespace TestHandler {
 
 class SingleClientTest : public TestBaseClass
 {
-private:
-
-	typedef std::vector< pid_t > PIDVector;
-
-private:
-
-	IPVector* _ipVector;
-
-	PIDVector _pidVector;
-
-	std::string _removeBandwidthStatsFile;
-
-	std::string _logStatsCommand;
 public:
 
 	SingleClientTest( const TestData* const testData );
@@ -28,11 +15,9 @@ public:
 
 private:
 
-	bool clientTest( const std::string& ipAddress );
+	bool clientTest( const std::string& ipAddress, unsigned int port );
 
 	bool impl_runTest( IPVector* ipVector );
-
-	bool handleTerminatedSubprocess( int status, int pid );
 };
 }
 #endif // SINGLECLIENTTEST_H
