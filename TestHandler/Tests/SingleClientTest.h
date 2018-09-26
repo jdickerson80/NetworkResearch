@@ -1,7 +1,6 @@
 #ifndef SINGLECLIENTTEST_H
 #define SINGLECLIENTTEST_H
 
-#include "ThreadHelper.h"
 #include "TestBaseClass.h"
 
 namespace TestHandler {
@@ -13,8 +12,6 @@ private:
 	typedef std::vector< pid_t > PIDVector;
 
 private:
-
-	pthread_t _thread;
 
 	IPVector* _ipVector;
 

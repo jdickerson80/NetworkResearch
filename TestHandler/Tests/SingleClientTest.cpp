@@ -11,6 +11,7 @@
 #include "PrintHandler.h"
 
 namespace TestHandler {
+
 SingleClientTest::SingleClientTest( const TestData* const testData )
 	: TestBaseClass( testData, Tests::SingleClient )
 {
@@ -32,7 +33,6 @@ SingleClientTest::SingleClientTest( const TestData* const testData )
 
 SingleClientTest::~SingleClientTest()
 {
-
 }
 
 bool SingleClientTest::impl_runTest( IPVector* ipVector )
@@ -75,14 +75,7 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 			// is this the child
 			if ( pid == 0 )
 			{
-				if ( clientTest( *(*it) ) )
-				{
-					exit( EXIT_FAILURE );
-				}
-				else
-				{
-					exit( EXIT_SUCCESS );
-				}
+				return clientTest( *(*it) );
 			}
 			else
 			{
@@ -160,11 +153,10 @@ bool SingleClientTest::clientTest( const std::string& ipAddress )
 				, strcmp( _testData->duration, "-" ) ? "-t" : ""
 				, strcmp( _testData->duration, "-" ) ? _testData->duration : "" );
 
-//	PRINT( "%s", buffer);
 
 	toReturn = system( buffer );
 
-	sleep( 20 );
+//	sleep( 2 );
 	switch ( toReturn )
 	{
 	case -1:

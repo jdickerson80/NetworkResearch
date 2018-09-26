@@ -89,7 +89,7 @@ void MainObject::signalHandler( int signal )
 
 void MainObject::deleteIPVector()
 {
-	for ( size_t i = _ipVector.size(); i > 0; --i )
+	for ( size_t i = 0; i < _ipVector.size(); ++i )
 	{
 		delete _ipVector[ i ];
 	}
@@ -97,7 +97,7 @@ void MainObject::deleteIPVector()
 
 void MainObject::deleteTestVector()
 {
-	for ( size_t i = _testToRun.size(); i > 0; --i )
+	for ( size_t i = 0; i < _testToRun.size(); ++i )
 	{
 		delete _testToRun[ i ];
 	}
