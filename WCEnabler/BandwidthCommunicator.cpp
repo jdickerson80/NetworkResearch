@@ -128,17 +128,23 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 	// init the variables
 	BandwidthCommunicator* bandwidthCommunicator = static_cast< BandwidthCommunicator* >( input );
 	std::atomic_bool& threadRunning = bandwidthCommunicator->_outgoingBandwidthThreadRunning;
+	std::atomic_uint& bwgRate = bandwidthCommunicator->_bandwidthValues->bandwidthGuaranteeRate;
 	std::atomic_uint& totalRate = bandwidthCommunicator->_bandwidthValues->totalRate;
+	std::atomic_uint& wcRate  = bandwidthCommunicator->_bandwidthValues->workConservingRate;
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthUsageLogger;
 	size_t bandwidthSize = sizeof( unsigned int );
 	socklen_t length = sizeof( bandwidthCommunicator->_bGAdaptorAddress );
+	unsigned int localBWGRate;
 	unsigned int localTotalRate;
+	unsigned int localWCRate;
 
 	// while the thread should run
 	while ( threadRunning.load() )
 	{
 		// get the total rate
-		localTotalRate = totalRate.load();
+		localBWGRate	= bwgRate.load();
+		localTotalRate	= totalRate.load();
+		localWCRate		= wcRate.load();
 
 		// send the current rate
 		if ( sendto( bandwidthCommunicator->_socketFileDescriptor
@@ -154,7 +160,7 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 		// create the stream
 		/// @todo convert to C style
 		std::ostringstream stream;
-		stream << totalRate << "\n";
+		stream << localBWGRate << ", " << localWCRate << ", " << localTotalRate << "\n";
 
 		// log the bandwidth limit
 		logger->log( stream.str() );
