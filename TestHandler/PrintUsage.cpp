@@ -15,7 +15,9 @@ void printUsage()
 			"-r, --range\trange of ip addresses with a hyphen(-) being a range and a comma (,) inidividual IP address\n" \
 			"\t\te.g. ""10.0.0.1-10.0.0.4,10.0.0.18,10.0.0.19,10.0.0.20""\n" \
 			"-t, --time\tduration of the test in seconds\n" \
-			"-z, --test\tcomma separated list of test to run. tests are: todo\n";
+			"-z, --test\tcomma separated list of test to run. tests are:\n"  \
+			"\t\te.g. ""SingleClient: Runs a single client with the given settings on the range of IPs""\n" \
+			"\t\te.g. ""SingleServer: Runs a single server with the given settings""\n";
 	fprintf( stderr, "%s", usage );
 }
 }

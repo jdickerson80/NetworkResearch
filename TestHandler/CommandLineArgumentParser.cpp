@@ -9,7 +9,6 @@
 
 #include "Tests/SingleClientTest.h"
 #include "Tests/SingleServerTest.h"
-#include "Tests/WCBandwidthUtilization.h"
 
 using namespace std;
 namespace TestHandler {
@@ -279,46 +278,15 @@ TestBaseClass* CommandLineArgumentParser::getTest( const char* const testString 
 
 //	PRINT( "got: %s\n", testString );
 
-	if ( !strcmp( testString, "ClientServer" ) )
+	if ( !strcmp( testString, "SingleClient" ) )
 	{
-//		ret = new WCBandwidthUtilization();
-		PRINT( "ClientServer\n" );
-	}
-	else if ( !strcmp( testString, "Efficiency" ) )
-	{
-//		ret = new WCBandwidthUtilization();
-		PRINT( "Efficiency\n" );
-	}
-	else if ( !strcmp( testString, "LongFlowHandling" ) )
-	{
-		PRINT( "LongFlowHandling\n" );
-	}
-	else if ( !strcmp( testString, "RandomFlowHandling" ) )
-	{
-		PRINT( "RandomFlowHandling\n" );
-	}
-	else if ( !strcmp( testString, "ShortFlowHandling" ) )
-	{
-		PRINT( "ShortFlowHandling\n" );
-	}
-	else if ( !strcmp( testString, "SingleClient" ) )
-	{
-
 		ret = new SingleClientTest( _testData );
-//		PRINT( "SingleClient\n" );
+		PRINT( "SingleClient\n" );
 	}
 	else if ( !strcmp( testString, "SingleServer" ) )
 	{
 		ret = new SingleServerTest( _testData );
 		PRINT( "SingleServer\n" );
-	}
-	else if ( !strcmp( testString, "WCBandwidthUtilization" ) )
-	{
-		PRINT( "WCBandwidthUtilization\n" );
-	}
-	else if ( !strcmp( testString, "WCLogic" ) )
-	{
-		PRINT( "WCLogic\n" );
 	}
 	else
 	{

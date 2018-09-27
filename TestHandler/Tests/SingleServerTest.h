@@ -4,9 +4,11 @@
 #include "TestBaseClass.h"
 
 namespace TestHandler {
+
 class SingleServerTest : public TestBaseClass
 {
 public:
+
 	SingleServerTest( const TestData* const testData );
 
 	~SingleServerTest();

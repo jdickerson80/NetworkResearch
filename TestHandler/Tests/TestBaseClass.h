@@ -18,15 +18,8 @@ public:
 	{
 		enum Enum
 		{
-			ClientServer = 0,
-			Efficiency,
-			LongFlowHandling,
-			RandomFlowHandling,
 			SingleClient,
-			SingleServer,
-			ShortFlowHandling,
-			WCBandwidthUtilization,
-			WCLogic
+			SingleServer
 		};
 	};
 
