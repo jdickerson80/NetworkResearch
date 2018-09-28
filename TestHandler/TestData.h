@@ -12,6 +12,7 @@ struct TestData
 	char bytesToBeTransmitted[ THISBUFFERSIZE ];
 	char duration[ THISBUFFERSIZE ];
     std::string logPath;
+	std::string port;
 	char targetBandwidth[ THISBUFFERSIZE ];
 
 	TestData()

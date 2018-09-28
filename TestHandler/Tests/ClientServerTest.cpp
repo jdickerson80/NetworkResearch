@@ -1,4 +1,4 @@
-#include "SingleClientTest.h"
+#include "ClientServerTest.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -9,21 +9,24 @@
 
 namespace TestHandler {
 
-SingleClientTest::SingleClientTest( const TestData* const testData )
-	: TestBaseClass( testData, Tests::SingleClient )
+ClientServerTest::ClientServerTest( const TestData* const testData )
+	: TestBaseClass( testData, Tests::ClientServer )
 {
+
 }
 
-SingleClientTest::~SingleClientTest()
+ClientServerTest::~ClientServerTest()
 {
+
 }
 
-bool SingleClientTest::impl_runTest( IPVector* ipVector )
+bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 {
 	pid_t pid;
 	int status;
 	unsigned int port = 5001;
 	_ipVector = ipVector;
+	bool toReturn = true;
 
 	if ( _testData->runInParallel )
 	{
@@ -39,7 +42,8 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 			// is this the child
 			if ( pid == 0 )
 			{
-				return clientTest( *(*it), port );
+				toReturn |= clientTest( *(*it), port );
+				toReturn |= serverTest( *(*it), port );
 			}
 			else
 			{
@@ -71,15 +75,16 @@ bool SingleClientTest::impl_runTest( IPVector* ipVector )
 	{
 		for ( IPVector::iterator it = ipVector->begin(); it != ipVector->end(); ++it )
 		{
-			clientTest( *(*it), port );
+			toReturn |= serverTest( *(*it), port );
+			toReturn |= clientTest( *(*it), port );
 			++port;
 		}
 	}
 
-	return true;
+	return toReturn;
 }
 
-bool SingleClientTest::clientTest( const std::string& ipAddress, unsigned int port )
+bool ClientServerTest::clientTest( const std::string& ipAddress, unsigned int port )
 {
 #define BufferSize ( 512 )
 	char buffer[ BufferSize ];
@@ -113,4 +118,30 @@ bool SingleClientTest::clientTest( const std::string& ipAddress, unsigned int po
 		return toReturn;
 	}
 }
+
+bool ClientServerTest::serverTest( const std::string& /*ipAddress*/, unsigned int port )
+{
+#define BufferSize ( 512 )
+	char buffer[ BufferSize ];
+	int toReturn = false;
+
+	snprintf(
+				buffer
+				, 150
+				, "iperf3 -i 1 -s -1 -p %i\n", port );
+
+	PRINT("%s", buffer );
+	toReturn = system( buffer );
+
+//	sleep( 2 );
+	switch ( toReturn )
+	{
+	case -1:
+	case 127:
+		return true;
+	default:
+		return toReturn;
+	}
+}
+
 }

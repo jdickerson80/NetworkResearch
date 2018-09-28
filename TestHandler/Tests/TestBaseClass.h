@@ -1,7 +1,6 @@
 #ifndef TESTBASECLASS_H
 #define TESTBASECLASS_H
 
-#include <string>
 #include <vector>
 
 #include "TestData.h"
@@ -18,6 +17,7 @@ public:
 	{
 		enum Enum
 		{
+			ClientServer,
 			SingleClient,
 			SingleServer
 		};
@@ -30,8 +30,6 @@ protected:
 	const TestData* const _testData;
 	IPVector* _ipVector;
 	PIDVector _pidVector;
-	std::string _removeBandwidthStatsFile;
-	std::string _logStatsCommand;
 
 	bool handleTerminatedSubprocess( int status, int pid );
 

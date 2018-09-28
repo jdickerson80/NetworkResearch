@@ -27,7 +27,7 @@ bool SingleServerTest::serverTest( const std::string& /*ipAddress*/, unsigned in
 	snprintf(
 				buffer
 				, 150
-				, "iperf3 -i 1 -s -1 -p %i 2>&1 > /dev/null\n", port );
+				, "iperf3 -i 1 -s -1 -p %i\n", port );
 
 	PRINT("%s", buffer );
 	toReturn = system( buffer );
@@ -49,8 +49,6 @@ bool SingleServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 	int status;
 	_ipVector = ipVector;
 	unsigned int port = 5001;
-
-	system( _removeBandwidthStatsFile.c_str() );
 
 	if ( _testData->runInParallel )
 	{
@@ -103,7 +101,6 @@ bool SingleServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 		}
 	}
 
-	system( _logStatsCommand.c_str() );
 	return true;
 }
 }

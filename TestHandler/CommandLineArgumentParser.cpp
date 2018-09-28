@@ -7,6 +7,7 @@
 #include "PrintHandler.h"
 #include "TestData.h"
 
+#include "Tests/ClientServerTest.h"
 #include "Tests/SingleClientTest.h"
 #include "Tests/SingleServerTest.h"
 
@@ -21,6 +22,7 @@ static struct option longOptions[] =
 	{ "help",		no_argument,		0, CommandLineArgumentParser::UsageArguments::Help },
 	{ "range",		required_argument,	0, CommandLineArgumentParser::UsageArguments::HostRange },
 	{ "logfile",	required_argument,	0, CommandLineArgumentParser::UsageArguments::LogFile },
+	{ "port",		optional_argument,	0, CommandLineArgumentParser::UsageArguments::Port },
 	{ "parallel",	no_argument,		0, CommandLineArgumentParser::UsageArguments::ParallelTests },
 	{ "bitrate",	optional_argument,	0, CommandLineArgumentParser::UsageArguments::Targetbandwidth },
 	{ "test",		required_argument,	0, CommandLineArgumentParser::UsageArguments::Test },
@@ -105,6 +107,11 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 
 		case UsageArguments::ParallelTests:
 			testData->runInParallel = true;
+//			PRINT( "Parallel %u\n", testData->runInParallel );
+			break;
+
+		case UsageArguments::Port:
+			testData->port = optarg;
 //			PRINT( "Parallel %u\n", testData->runInParallel );
 			break;
 
@@ -287,6 +294,10 @@ TestBaseClass* CommandLineArgumentParser::getTest( const char* const testString 
 	{
 		ret = new SingleServerTest( _testData );
 		PRINT( "SingleServer\n" );
+	}
+	else if ( !strcmp( testString, "ClientServer" ) )
+	{
+		ret = new ClientServerTest( _testData );
 	}
 	else
 	{

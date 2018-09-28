@@ -21,6 +21,8 @@ private:
 	IPVector _ipVector;
 	TestData* _testData;
 	TestVector _testToRun;
+	std::string _removeBandwidthStatsFile;
+	std::string _logStatsCommand;
 
 public:
 

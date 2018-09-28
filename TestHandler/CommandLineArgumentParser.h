@@ -22,7 +22,8 @@ public:
 			Help				= 'h',
 			HostRange			= 'r',
 			LogFile				= 'l',
-			ParallelTests		= 'p',
+			Port				= 'p',
+			ParallelTests		= 'q',
 			Targetbandwidth		= 'b',
 			Test				= 'z'
 		};
