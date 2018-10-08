@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "PrintHandler.h"
+#include "ThreadHelper.h"
 
 namespace TestHandler {
 
@@ -42,8 +43,16 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 			// is this the child
 			if ( pid == 0 )
 			{
-				toReturn |= clientTest( *(*it), port );
-				toReturn |= serverTest( *(*it), port );
+				pthread_t clientThread;
+				pthread_t serverThread;
+				ServerClientData serverClientData( _testData );
+				serverClientData.port = port;
+				serverClientData.ipAddress = *(*it);
+				Common::ThreadHelper::startJoinableThread( &clientThread, clientTest, static_cast< void* >( &serverClientData ) );
+				Common::ThreadHelper::startJoinableThread( &serverThread, serverTest, static_cast< void* >( &serverClientData ) );
+				pthread_join( clientThread, NULL );
+				pthread_join( serverThread, NULL );
+				return toReturn;
 			}
 			else
 			{
@@ -75,8 +84,11 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 	{
 		for ( IPVector::iterator it = ipVector->begin(); it != ipVector->end(); ++it )
 		{
-			toReturn |= serverTest( *(*it), port );
-			toReturn |= clientTest( *(*it), port );
+			ServerClientData serverClientData( _testData );
+			serverClientData.port = port;
+			serverClientData.ipAddress = *(*it);
+			serverTest( &serverClientData );
+			clientTest( &serverClientData );
 			++port;
 		}
 	}
@@ -84,8 +96,9 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 	return toReturn;
 }
 
-bool ClientServerTest::clientTest( const std::string& ipAddress, unsigned int port )
+void* ClientServerTest::clientTest( void* input )
 {
+	ServerClientData* serverClientData = static_cast< ServerClientData* >( input );
 #define BufferSize ( 512 )
 	char buffer[ BufferSize ];
 	int toReturn = false;
@@ -94,33 +107,35 @@ bool ClientServerTest::clientTest( const std::string& ipAddress, unsigned int po
 				buffer
 				, 150
 				, "iperf3 -i 1 -c %s %s %s %s %s %s %s -p %u\n"
-				, ipAddress.c_str()
-				, strcmp( _testData->targetBandwidth, "-" ) ? "-b" : ""
-				, strcmp( _testData->targetBandwidth, "-" ) ? _testData->targetBandwidth : ""
+				, serverClientData->ipAddress.c_str()
+				, strcmp( serverClientData->testData->targetBandwidth, "-" ) ? "-b" : ""
+				, strcmp( serverClientData->testData->targetBandwidth, "-" ) ? serverClientData->testData->targetBandwidth : ""
 
-				, strcmp( _testData->bytesToBeTransmitted, "-" ) ? "-n" : ""
-				, strcmp( _testData->bytesToBeTransmitted, "-" ) ? _testData->bytesToBeTransmitted : ""
+				, strcmp( serverClientData->testData->bytesToBeTransmitted, "-" ) ? "-n" : ""
+				, strcmp( serverClientData->testData->bytesToBeTransmitted, "-" ) ? serverClientData->testData->bytesToBeTransmitted : ""
 
-				, strcmp( _testData->duration, "-" ) ? "-t" : ""
-				, strcmp( _testData->duration, "-" ) ? _testData->duration : ""
-				, port );
+				, strcmp( serverClientData->testData->duration, "-" ) ? "-t" : ""
+				, strcmp( serverClientData->testData->duration, "-" ) ? serverClientData->testData->duration : ""
+				, serverClientData->port );
 
-	PRINT("%s", buffer );
-	toReturn = system( buffer );
+//	toReturn = system( buffer );
 
-//	sleep( 2 );
+	sleep( 4 );
 	switch ( toReturn )
 	{
 	case -1:
 	case 127:
-		return true;
+		pthread_exit( NULL );
+		return NULL;
 	default:
-		return toReturn;
+		pthread_exit( NULL );
+		return NULL;
 	}
 }
 
-bool ClientServerTest::serverTest( const std::string& /*ipAddress*/, unsigned int port )
+void* ClientServerTest::serverTest( void* input )
 {
+	ServerClientData* serverClientData = static_cast< ServerClientData* >( input );
 #define BufferSize ( 512 )
 	char buffer[ BufferSize ];
 	int toReturn = false;
@@ -128,19 +143,20 @@ bool ClientServerTest::serverTest( const std::string& /*ipAddress*/, unsigned in
 	snprintf(
 				buffer
 				, 150
-				, "iperf3 -i 1 -s -1 -p %i\n", port );
+				, "iperf3 -i 1 -s -1 -p %i\n", serverClientData->port );
 
-	PRINT("%s", buffer );
-	toReturn = system( buffer );
+//	toReturn = system( buffer );
 
-//	sleep( 2 );
+	sleep( 4 );
 	switch ( toReturn )
 	{
 	case -1:
 	case 127:
-		return true;
+		pthread_exit( NULL );
+		return NULL;
 	default:
-		return toReturn;
+		pthread_exit( NULL );
+		return NULL;
 	}
 }
 
