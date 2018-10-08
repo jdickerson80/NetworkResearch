@@ -70,7 +70,7 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 	_testData = testData;
 
 	// parse the user's arguments
-	while ( ( opt = getopt_long( argc, argv, "hb:l:n:pr:t:z:", longOptions, NULL ) ) != -1 )
+	while ( ( opt = getopt_long( argc, argv, "hb:l:n:p:qr:t:z:", longOptions, NULL ) ) != -1 )
 	{
 		if ( optarg )
 		{
@@ -111,7 +111,7 @@ bool CommandLineArgumentParser::parseCommandLineArguments(
 			break;
 
 		case UsageArguments::Port:
-			testData->port = optarg;
+			testData->port = atoi( optarg );
 //			PRINT( "Parallel %u\n", testData->runInParallel );
 			break;
 

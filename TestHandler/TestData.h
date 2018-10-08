@@ -12,10 +12,11 @@ struct TestData
 	char bytesToBeTransmitted[ THISBUFFERSIZE ];
 	char duration[ THISBUFFERSIZE ];
     std::string logPath;
-	std::string port;
+	unsigned int port;
 	char targetBandwidth[ THISBUFFERSIZE ];
 
 	TestData()
+		: port( 0 )
 	{
 		memset( bytesToBeTransmitted, 0, THISBUFFERSIZE );
 		memset( duration, 0, THISBUFFERSIZE );

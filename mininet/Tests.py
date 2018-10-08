@@ -9,35 +9,36 @@ import signal
 import time
 
 class TestBaseClass( object ):
-	def __init__( self, loggingDirectory, testDuration, network ):
+    def __init__( self, loggingDirectory, testDuration, network ):
 		self.loggingDirectory = loggingDirectory
 		self.testDuration = testDuration
 		self.network = network
 
-	def runTest( self ):
-		pass
+    def runTest( self ):
+        pass
 
 class Efficiency( TestBaseClass ):
-	def __init__( self, loggingDirectory, testDuration, network ):
-		TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
+    def __init__( self, loggingDirectory, testDuration, network ):
+        TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
 
 class LongFlowHandling( TestBaseClass ):
-	def __init__( self, loggingDirectory, testDuration, network ):
-		TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
+    def __init__( self, loggingDirectory, testDuration, network ):
+        TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
 
 class RandomFlowHandling( TestBaseClass ):
-	def __init__( self, loggingDirectory, testDuration, network ):
-		TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
+    def __init__( self, loggingDirectory, testDuration, network ):
+        TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
 
 class ShortFlowHandling( TestBaseClass ):
-	def __init__( self, loggingDirectory, testDuration, network ):
-		TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
+    def __init__( self, loggingDirectory, testDuration, network ):
+        TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
 
 class WCBandwidthUtilization( TestBaseClass ):
-	def __init__( self, loggingDirectory, testDuration, network ):
-		TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
+    def __init__( self, loggingDirectory, testDuration, network ):
+        TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
 
 class WCLogic( TestBaseClass ):
-	def __init__( self, loggingDirectory, testDuration, network ):
-		TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
+    def __init__( self, loggingDirectory, testDuration, network ):
+        TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
+
 

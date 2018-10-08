@@ -18,7 +18,8 @@ void printUsage()
 			"-t, --time\tduration of the test in seconds\n" \
 			"-z, --test\tcomma separated list of test to run. tests are:\n"  \
 			"\t\te.g. ""SingleClient: Runs a single client with the given settings on the range of IPs""\n" \
-			"\t\te.g. ""SingleServer: Runs a single server with the given settings""\n";
+			"\t\te.g. ""SingleServer: Runs a single server with the given settings""\n" \
+			"\t\te.g. ""ClientServer: Runs a single client AND a single server with the given settings""\n";
 	fprintf( stderr, "%s", usage );
 }
 }

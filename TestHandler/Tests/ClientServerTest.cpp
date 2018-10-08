@@ -24,7 +24,7 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 {
 	pid_t pid;
 	int status;
-	unsigned int port = 5001;
+	unsigned int port = _testData->port ? _testData->port : 5001;
 	_ipVector = ipVector;
 	bool toReturn = true;
 
