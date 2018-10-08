@@ -85,9 +85,9 @@ def startBWShare( net, bandwidthGuarantee ):
     print "Starting BG and WC"
     for host in net.hosts:
 	if host.name == 'h001' or host.name == 'h1':
-	    host.cmd( './BGAdaptor %s &> /dev/null &' % bandwidthGuarantee )
+	    host.cmd( './BGAdaptor %s 2>&1 > /dev/null &' % bandwidthGuarantee )
 	else:
-	    host.cmd( './WCEnabler &> /dev/null &' )
+	    host.cmd( './WCEnabler 2>&1 > /dev/null &' )
 
 def setupSwitchQueues( net, switchPortSpeed ):
     print "Setting up switch queues"
@@ -137,7 +137,7 @@ def parseCommandLineArgument():
 			help="Congestion control algorithm",
 			default=2)
 
-    parser.add_argument('--bandwidthGuarantee',
+    parser.add_argument('--bandwidthGuarantee', '-B',
 			action="store",
 			help="Congestion control algorithm",
 			default=1000)
@@ -209,7 +209,7 @@ if __name__ == '__main__':
     number = 0
 #    while number < 2:
 #	print 'number = %s' % number
-    iperfTester( 2, net[ 'h002' ], net[ 'h003' ], 5, net )
+    WCLogic( loggingDirectory="~/Desktop", testDuration=10, network=net ).runTest()
     number += 1
 
 #    net.pingAll()

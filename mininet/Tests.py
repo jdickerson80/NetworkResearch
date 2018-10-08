@@ -41,4 +41,13 @@ class WCLogic( TestBaseClass ):
     def __init__( self, loggingDirectory, testDuration, network ):
         TestBaseClass.__init__( self, loggingDirectory, testDuration, network )
 
+    def runTest( self ):
+	numberOfHosts = len( self.network.hosts )
+	host = 1
+	while host <= numberOfHosts:
+	    print host
+	    host = host + 1
+
+
+
 
