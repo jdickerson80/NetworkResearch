@@ -20,7 +20,7 @@ private:
 
 private:
 
-	// remove
+
 	struct ServerClientData
 	{
 		std::string ipAddress;

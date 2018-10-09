@@ -33,7 +33,7 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 	{
 		for ( IPVector::iterator it = ipVector->begin(); it < ipVector->end(); ++it )
 		{
-			// fork and check for error
+			// use threads???
 			if ( ( pid = fork() ) == -1 )
 			{
 				PRINT("BAD FORK!!!!\n");
