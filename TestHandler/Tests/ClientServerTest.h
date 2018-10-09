@@ -20,6 +20,7 @@ private:
 
 private:
 
+	// remove
 	struct ServerClientData
 	{
 		std::string ipAddress;
@@ -53,7 +54,7 @@ private:
 
 	static void* clientTest( void* input );
 
-	static void* serverTest( void* input );
+	bool serverTest( unsigned int port = 5001 );
 };
 
 }

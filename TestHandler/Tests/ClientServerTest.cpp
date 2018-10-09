@@ -43,15 +43,10 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 			// is this the child
 			if ( pid == 0 )
 			{
-				pthread_t clientThread;
-				pthread_t serverThread;
 				ServerClientData serverClientData( _testData );
 				serverClientData.port = port;
 				serverClientData.ipAddress = *(*it);
-				Common::ThreadHelper::startJoinableThread( &clientThread, clientTest, static_cast< void* >( &serverClientData ) );
-				Common::ThreadHelper::startJoinableThread( &serverThread, serverTest, static_cast< void* >( &serverClientData ) );
-				pthread_join( clientThread, NULL );
-				pthread_join( serverThread, NULL );
+				clientTest( static_cast< void* >( &serverClientData ) );
 				return toReturn;
 			}
 			else
@@ -62,6 +57,9 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 
 			++port;
 		}
+
+		// good idea to collect after server is done?
+		serverTest();
 
 		// done forking processes, time to collect them
 		for ( PIDVector::iterator it = _pidVector.begin(); it < _pidVector.end(); ++it )
@@ -82,15 +80,16 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 	}
 	else
 	{
+		ServerClientData serverClientData( _testData );
 		for ( IPVector::iterator it = ipVector->begin(); it != ipVector->end(); ++it )
 		{
-			ServerClientData serverClientData( _testData );
 			serverClientData.port = port;
 			serverClientData.ipAddress = *(*it);
-			serverTest( &serverClientData );
 			clientTest( &serverClientData );
 			++port;
 		}
+
+		serverTest();
 	}
 
 	return toReturn;
@@ -133,9 +132,8 @@ void* ClientServerTest::clientTest( void* input )
 	}
 }
 
-void* ClientServerTest::serverTest( void* input )
+bool ClientServerTest::serverTest( unsigned int port )
 {
-	ServerClientData* serverClientData = static_cast< ServerClientData* >( input );
 #define BufferSize ( 512 )
 	char buffer[ BufferSize ];
 	int toReturn = false;
@@ -143,20 +141,18 @@ void* ClientServerTest::serverTest( void* input )
 	snprintf(
 				buffer
 				, 150
-				, "iperf3 -i 1 -s -1 -p %i\n", serverClientData->port );
-
-//	toReturn = system( buffer );
-
+				, "iperf3 -i 1 -s -1 -p %i\n", port );
 	sleep( 4 );
+
+	toReturn = system( buffer );
+
 	switch ( toReturn )
 	{
 	case -1:
 	case 127:
-		pthread_exit( NULL );
-		return NULL;
+		return false;
 	default:
-		pthread_exit( NULL );
-		return NULL;
+		return true;
 	}
 }
 
