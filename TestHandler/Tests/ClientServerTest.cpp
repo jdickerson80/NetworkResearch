@@ -1,8 +1,5 @@
 #include "ClientServerTest.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 #include "PrintHandler.h"
@@ -23,60 +20,37 @@ ClientServerTest::~ClientServerTest()
 
 bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 {
-	pid_t pid;
-	int status;
 	unsigned int port = _testData->port ? _testData->port : 5001;
 	_ipVector = ipVector;
 	bool toReturn = true;
+	pthread_t serverThread;
+
+	Common::ThreadHelper::startJoinableThread( &serverThread, serverTest, static_cast< void* >( &port ) );
 
 	if ( _testData->runInParallel )
 	{
-		for ( IPVector::iterator it = ipVector->begin(); it < ipVector->end(); ++it )
+		size_t ipSize = ipVector->size();
+		pthread_t threadPool[ ipSize ];
+		ServerClientData serverClientData( _testData );
+		size_t i = 0;
+
+		for ( IPVector::iterator it = ipVector->begin(); it != ipVector->end(); ++it, ++i )
 		{
-			// use threads???
-			if ( ( pid = fork() ) == -1 )
-			{
-				PRINT("BAD FORK!!!!\n");
-				break;
-			}
-
-			// is this the child
-			if ( pid == 0 )
-			{
-				ServerClientData serverClientData( _testData );
-				serverClientData.port = port;
-				serverClientData.ipAddress = *(*it);
-				clientTest( static_cast< void* >( &serverClientData ) );
-				return toReturn;
-			}
-			else
-			{
-				PRINT("Pushing pid %i\n", pid );
-				_pidVector.push_back( pid );
-			}
-
+			serverClientData.port = port;
+			serverClientData.ipAddress = *(*it);
+			Common::ThreadHelper::startJoinableThread( &threadPool[ i ], clientTest, static_cast< void* >( &serverClientData ) );
 			++port;
+			usleep( 125000 );
 		}
 
-		// good idea to collect after server is done?
-		serverTest();
 
 		// done forking processes, time to collect them
-		for ( PIDVector::iterator it = _pidVector.begin(); it < _pidVector.end(); ++it )
+		for ( size_t i = 0; i < ipSize; ++i )
 		{
-			// wait for a subprocess to complete
-			pid_t pid = wait( &status );
-
-			// close down the subprocess
-			if ( handleTerminatedSubprocess( status, pid ) )
-			{
-				PRINT("PID %i\n", (*it) );
-			}
-			else
-			{
-				PRINT("BAD PID %i\n", (*it) );
-			}
+			pthread_join( threadPool[ i ], NULL );
 		}
+
+		pthread_join( serverThread, NULL );
 	}
 	else
 	{
@@ -88,8 +62,6 @@ bool ClientServerTest::impl_runTest( TestBaseClass::IPVector* ipVector )
 			clientTest( &serverClientData );
 			++port;
 		}
-
-		serverTest();
 	}
 
 	return toReturn;
@@ -117,9 +89,9 @@ void* ClientServerTest::clientTest( void* input )
 				, strcmp( serverClientData->testData->duration, "-" ) ? serverClientData->testData->duration : ""
 				, serverClientData->port );
 
+	PRINT("%s", buffer );
+	sleep( 2 );
 //	toReturn = system( buffer );
-
-	sleep( 4 );
 	switch ( toReturn )
 	{
 	case -1:
@@ -132,8 +104,9 @@ void* ClientServerTest::clientTest( void* input )
 	}
 }
 
-bool ClientServerTest::serverTest( unsigned int port )
+void* ClientServerTest::serverTest( void* input )
 {
+//	unsigned int* port = static_cast< unsigned int* >( input );
 #define BufferSize ( 512 )
 	char buffer[ BufferSize ];
 	int toReturn = false;
@@ -141,18 +114,17 @@ bool ClientServerTest::serverTest( unsigned int port )
 	snprintf(
 				buffer
 				, 150
-				, "iperf3 -i 1 -s -1 -p %i\n", port );
-	sleep( 4 );
-
-	toReturn = system( buffer );
+				, "iperf3 -i 1 -s -1 -p 5001\n" );
+	PRINT( "%s", buffer );
+//	toReturn = system( buffer );
 
 	switch ( toReturn )
 	{
 	case -1:
 	case 127:
-		return false;
+		return NULL;
 	default:
-		return true;
+		return NULL;
 	}
 }
 

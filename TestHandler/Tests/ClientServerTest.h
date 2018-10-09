@@ -17,17 +17,13 @@ public:
 private:
 
 
-
-private:
-
-
 	struct ServerClientData
 	{
 		std::string ipAddress;
 		unsigned int port;
 		const TestData* const testData;
 
-		ServerClientData( const std::string& ipAddress, unsigned int port, const TestData* const testData )
+		ServerClientData( std::string& ipAddress, unsigned int port, const TestData* const testData )
 			: ipAddress( ipAddress )
 			, port( port )
 			, testData( testData )
@@ -54,7 +50,7 @@ private:
 
 	static void* clientTest( void* input );
 
-	bool serverTest( unsigned int port = 5001 );
+	static void* serverTest( void* input );
 };
 
 }
