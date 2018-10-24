@@ -10,7 +10,7 @@
 #include "Macros.h"
 #include "ThreadHelper.h"
 
-#define ModifyIPLink ( 1 )
+//#define ModifyIPLink ( 1 )
 namespace WCEnabler {
 WorkConservationFlowHandler::WorkConservationFlowHandler(const std::string& interface
 		, float beta
