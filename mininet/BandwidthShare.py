@@ -103,7 +103,7 @@ def setupSwitchQueues( net, switchPortSpeed ):
 	    setupTCCommand( interface, switch, switchPortSpeed )
 
 def setupHostMachine():
-    os.system( "sysctl -w net.mptcp.mptcp_enabled=1 >> commands.log" )
+    os.system( "sysctl -w net.mptcp.mptcp_enabled=0 >> commands.log" )
     os.system( "sysctl -w net.ipv4.tcp_congestion_control=reno >> commands.log" )
     os.system( "sysctl -w net.ipv4.tcp_ecn=1 >> commands.log" )
     os.system( "sysctl -w net.mptcp.mptcp_scheduler=default >> commands.log" )
@@ -209,7 +209,7 @@ if __name__ == '__main__':
     number = 0
 #    while number < 2:
 #	print 'number = %s' % number
-    WCLogic( loggingDirectory="~/Desktop", testDuration=10, network=net ).runTest()
+#    WCLogic( loggingDirectory="~/Desktop", testDuration=10, network=net ).runTest()
     number += 1
 
 #    net.pingAll()
