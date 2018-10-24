@@ -6,6 +6,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <stdio.h>
@@ -160,7 +161,8 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 		// create the stream
 		/// @todo convert to C style
 		std::ostringstream stream;
-		stream << localBWGRate << ", " << localWCRate << ", " << localTotalRate << "\n";
+
+		stream << clock() << ", " << localBWGRate << ", " << localWCRate << ", " << localTotalRate << "\n";
 
 		// log the bandwidth limit
 		logger->log( stream.str() );
