@@ -30,11 +30,11 @@ WorkConservationFlowHandler::WorkConservationFlowHandler(const std::string& inte
 	std::ostringstream stream2;
 
 	// stream the multipath off command
-	stream1 << "ip link set dev " << interface << " multipath off > /dev/null";
+	stream1 << "ip link set dev " << interface << " multipath off &> /dev/null";
 	_multipathBackupCommand = stream1.str();
 
 	// stream the multipath on command
-	stream2 << "ip link set dev " << interface << " multipath on > /dev/null";
+	stream2 << "ip link set dev " << interface << " multipath on &> /dev/null";
 	_multipathNonBackupCommand = stream2.str();
 
 	// set the state to GuaranteedBandwidthSufficient
