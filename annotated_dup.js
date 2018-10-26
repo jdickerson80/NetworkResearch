@@ -1,5 +1,6 @@
 var annotated_dup =
 [
+    [ "AnotherFatTreeTopology", "namespaceAnotherFatTreeTopology.html", "namespaceAnotherFatTreeTopology" ],
     [ "BGAdaptor", "namespaceBGAdaptor.html", "namespaceBGAdaptor" ],
     [ "Common", "namespaceCommon.html", "namespaceCommon" ],
     [ "FatTreeTopology", "namespaceFatTreeTopology.html", "namespaceFatTreeTopology" ],

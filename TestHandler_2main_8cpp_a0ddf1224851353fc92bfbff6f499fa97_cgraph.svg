@@ -29,10 +29,10 @@
 </g>
 <!-- Node3 -->
 <g id="node3" class="node"><title>Node3</title>
-<g id="a_node3"><a xlink:href="classTestHandler_1_1MainObject.html#afc3235d3bd3511abc005293727ebc06b" target="_top" xlink:title="instance instance method is the Singleton method of creating and accessing this class. This ensures there can only be ONE instance of this class. ">
+<g id="a_node3"><a xlink:href="classTestHandler_1_1MainObject.html#a60c42acae93439849fa35f764d26a729" target="_top" xlink:title="TestHandler::MainObject\l::isRunning">
 <polygon fill="white" stroke="black" points="74,-0.5 74,-30.5 199,-30.5 199,-0.5 74,-0.5"/>
 <text text-anchor="start" x="82" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">TestHandler::MainObject</text>
-<text text-anchor="middle" x="136.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">::instance</text>
+<text text-anchor="middle" x="136.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">::isRunning</text>
 </a>
 </g>
 </g>

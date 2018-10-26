@@ -109,8 +109,11 @@ $(document).ready(function(){initNavTree('classTestHandler_1_1TestBaseClass.html
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classTestHandler_1_1TestBaseClass-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">TestHandler::TestBaseClass Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -121,7 +124,14 @@ $(document).ready(function(){initNavTree('classTestHandler_1_1TestBaseClass.html
 <div class="dynheader">
 Inheritance diagram for TestHandler::TestBaseClass:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass__inherit__graph.svg" width="202" height="127"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass__inherit__graph.svg" width="451" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<div class="dynheader">
+Collaboration diagram for TestHandler::TestBaseClass:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass__coll__graph.svg" width="202" height="127"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
@@ -129,24 +139,84 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTestHandler_1_1TestBaseClass_1_1Tests.html">Tests</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ac02df121dcbf8f2e7c6476ab86b47736"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::string * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">IPVector</a></td></tr>
+<tr class="separator:ac02df121dcbf8f2e7c6476ab86b47736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9271d8e640bf545f54f998156dcd90b0"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a9271d8e640bf545f54f998156dcd90b0">~TestBaseClass</a> ()</td></tr>
 <tr class="separator:a9271d8e640bf545f54f998156dcd90b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab54a2ecf1214469c336310d30cd7041e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ab54a2ecf1214469c336310d30cd7041e">runTest</a> (const std::string &amp;logPath)</td></tr>
-<tr class="separator:ab54a2ecf1214469c336310d30cd7041e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec41f0f6fb28166c4e39455d6c7ba2e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#aec41f0f6fb28166c4e39455d6c7ba2e6">runTest</a> (<a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">IPVector</a> *ipVector)</td></tr>
+<tr class="separator:aec41f0f6fb28166c4e39455d6c7ba2e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b2df07c6d82ff378f3cbec496eaaa54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTestHandler_1_1TestBaseClass_1_1Tests.html#ae329054154afac28f1cb71a27a4b01b5">Tests::Enum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a4b2df07c6d82ff378f3cbec496eaaa54">test</a> () const </td></tr>
+<tr class="separator:a4b2df07c6d82ff378f3cbec496eaaa54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a427b58969207abb114af74b76d573ff5"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; pid_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a427b58969207abb114af74b76d573ff5">PIDVector</a></td></tr>
+<tr class="separator:a427b58969207abb114af74b76d573ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a12d7c07a7603f0f651469d8d5c531e49"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a12d7c07a7603f0f651469d8d5c531e49">TestBaseClass</a> (const <a class="el" href="structTestHandler_1_1TestBaseClass_1_1Tests.html#ae329054154afac28f1cb71a27a4b01b5">Tests::Enum</a> test)</td></tr>
-<tr class="separator:a12d7c07a7603f0f651469d8d5c531e49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0261a97d40dbda1fe18452a504281eaa"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a0261a97d40dbda1fe18452a504281eaa">impl_runTest</a> ()=0</td></tr>
-<tr class="separator:a0261a97d40dbda1fe18452a504281eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad55708ad5efaed3c9200eafd6e5d38eb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ad55708ad5efaed3c9200eafd6e5d38eb">handleTerminatedSubprocess</a> (int status, int pid)</td></tr>
+<tr class="separator:ad55708ad5efaed3c9200eafd6e5d38eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54d370ca811e2fb95a69503bd22e9147"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a54d370ca811e2fb95a69503bd22e9147">TestBaseClass</a> (const <a class="el" href="structTestHandler_1_1TestData.html">TestData</a> *const data, const <a class="el" href="structTestHandler_1_1TestBaseClass_1_1Tests.html#ae329054154afac28f1cb71a27a4b01b5">Tests::Enum</a> <a class="el" href="classTestHandler_1_1TestBaseClass.html#a4b2df07c6d82ff378f3cbec496eaaa54">test</a>)</td></tr>
+<tr class="separator:a54d370ca811e2fb95a69503bd22e9147"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c0911f05366d91a57c90d4465eaaddc"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a2c0911f05366d91a57c90d4465eaaddc">impl_runTest</a> (<a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">IPVector</a> *ipVector)=0</td></tr>
+<tr class="separator:a2c0911f05366d91a57c90d4465eaaddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:ab2bcc7d2ff820edd06b94e6645857cec"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structTestHandler_1_1TestData.html">TestData</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ab2bcc7d2ff820edd06b94e6645857cec">_testData</a></td></tr>
+<tr class="separator:ab2bcc7d2ff820edd06b94e6645857cec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf87f4ee00000bfe8147e15ea6ce56d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">IPVector</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#adf87f4ee00000bfe8147e15ea6ce56d2">_ipVector</a></td></tr>
+<tr class="separator:adf87f4ee00000bfe8147e15ea6ce56d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e4f560f93f4211e068df9a3cf148b1d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a427b58969207abb114af74b76d573ff5">PIDVector</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a9e4f560f93f4211e068df9a3cf148b1d">_pidVector</a></td></tr>
+<tr class="separator:a9e4f560f93f4211e068df9a3cf148b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00008">8</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00010">10</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="ac02df121dcbf8f2e7c6476ab86b47736"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt; std::string* &gt; <a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">TestHandler::TestBaseClass::IPVector</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00014">14</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a427b58969207abb114af74b76d573ff5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt; pid_t &gt; <a class="el" href="classTestHandler_1_1TestBaseClass.html#a427b58969207abb114af74b76d573ff5">TestHandler::TestBaseClass::PIDVector</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00028">28</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a9271d8e640bf545f54f998156dcd90b0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -168,11 +238,19 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00032">32</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00042">42</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_a9271d8e640bf545f54f998156dcd90b0_cgraph.svg" width="679" height="235"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
 
 </div>
 </div>
-<a class="anchor" id="a12d7c07a7603f0f651469d8d5c531e49"></a>
+<a class="anchor" id="a54d370ca811e2fb95a69503bd22e9147"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -182,31 +260,86 @@ Protected Member Functions</h2></td></tr>
         <tr>
           <td class="memname">TestHandler::TestBaseClass::TestBaseClass </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structTestHandler_1_1TestBaseClass_1_1Tests.html#ae329054154afac28f1cb71a27a4b01b5">Tests::Enum</a>&#160;</td>
-          <td class="paramname"><em>test</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structTestHandler_1_1TestData.html">TestData</a> *const&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="structTestHandler_1_1TestBaseClass_1_1Tests.html#ae329054154afac28f1cb71a27a4b01b5">Tests::Enum</a>&#160;</td>
+          <td class="paramname"><em>test</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00042">42</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+<p>Definition at line <a class="el" href="TestBaseClass_8cpp_source.html#l00007">7</a> of file <a class="el" href="TestBaseClass_8cpp_source.html">TestBaseClass.cpp</a>.</p>
 
 <p><div class="dynheader">
-Here is the call graph for this function:</div>
+Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_a12d7c07a7603f0f651469d8d5c531e49_cgraph.svg" width="440" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_a54d370ca811e2fb95a69503bd22e9147_icgraph.svg" width="440" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a0261a97d40dbda1fe18452a504281eaa"></a>
+<a class="anchor" id="ad55708ad5efaed3c9200eafd6e5d38eb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TestHandler::TestBaseClass::handleTerminatedSubprocess </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>status</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>pid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="TestBaseClass_8cpp_source.html#l00024">24</a> of file <a class="el" href="TestBaseClass_8cpp_source.html">TestBaseClass.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_ad55708ad5efaed3c9200eafd6e5d38eb_icgraph.svg" width="436" height="118"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a2c0911f05366d91a57c90d4465eaaddc"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -216,7 +349,8 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">virtual bool TestHandler::TestBaseClass::impl_runTest </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">IPVector</a> *&#160;</td>
+          <td class="paramname"><em>ipVector</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -227,18 +361,77 @@ Here is the call graph for this function:</div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classTestHandler_1_1WCBandwidthUtilization.html#a7d2361b4fa175998deb1a1944ba81b42">TestHandler::WCBandwidthUtilization</a>.</p>
-
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_a0261a97d40dbda1fe18452a504281eaa_icgraph.svg" width="440" height="118"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_a2c0911f05366d91a57c90d4465eaaddc_icgraph.svg" width="679" height="82"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </p>
 
 </div>
 </div>
-<a class="anchor" id="ab54a2ecf1214469c336310d30cd7041e"></a>
+<a class="anchor" id="aec41f0f6fb28166c4e39455d6c7ba2e6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TestHandler::TestBaseClass::runTest </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">TestBaseClass::IPVector</a> *&#160;</td>
+          <td class="paramname"><em>ipVector</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="TestBaseClass_8cpp_source.html#l00014">14</a> of file <a class="el" href="TestBaseClass_8cpp_source.html">TestBaseClass.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_aec41f0f6fb28166c4e39455d6c7ba2e6_cgraph.svg" width="440" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_aec41f0f6fb28166c4e39455d6c7ba2e6_icgraph.svg" width="440" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a4b2df07c6d82ff378f3cbec496eaaa54"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTestHandler_1_1TestBaseClass_1_1Tests.html#ae329054154afac28f1cb71a27a4b01b5">TestBaseClass::Tests::Enum</a> TestHandler::TestBaseClass::test </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="TestBaseClass_8cpp_source.html#l00019">19</a> of file <a class="el" href="TestBaseClass_8cpp_source.html">TestBaseClass.cpp</a>.</p>
+
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_a4b2df07c6d82ff378f3cbec496eaaa54_icgraph.svg" width="440" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="adf87f4ee00000bfe8147e15ea6ce56d2"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -246,28 +439,61 @@ Here is the caller graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool TestHandler::TestBaseClass::runTest </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>logPath</em></td><td>)</td>
-          <td></td>
+          <td class="memname"><a class="el" href="classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736">IPVector</a>* TestHandler::TestBaseClass::_ipVector</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00033">33</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00031">31</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
 
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1TestBaseClass_ab54a2ecf1214469c336310d30cd7041e_cgraph.svg" width="440" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
-</p>
+</div>
+<a class="anchor" id="a9e4f560f93f4211e068df9a3cf148b1d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classTestHandler_1_1TestBaseClass.html#a427b58969207abb114af74b76d573ff5">PIDVector</a> TestHandler::TestBaseClass::_pidVector</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00032">32</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab2bcc7d2ff820edd06b94e6645857cec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structTestHandler_1_1TestData.html">TestData</a>* const TestHandler::TestBaseClass::_testData</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="TestBaseClass_8h_source.html#l00030">30</a> of file <a class="el" href="TestBaseClass_8h_source.html">TestBaseClass.h</a>.</p>
 
 </div>
 </div>

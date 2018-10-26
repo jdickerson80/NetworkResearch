@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['help',['Help',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883a38c59921541962d5fc367a64bd098d9b',1,'TestHandler::CommandLineArgumentParser::UsageArguments']]],
-  ['hostrange',['HostRange',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883afa4054ff07b5d8ef8dcf7ff7bcc6b687',1,'TestHandler::CommandLineArgumentParser::UsageArguments']]]
+  ['existingflowwithoutworkconservation',['ExistingFlowWithoutWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55aba51bdd2382c8aaf8ed22c2e54cf74aaf0',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]],
+  ['existingflowwithworkconservation',['ExistingFlowWithWorkConservation',['../structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html#aa270f4db34753a0ed1587a55981a55abaa866e2d7e8c98ab16f924961543cdd70',1,'WCEnabler::WorkConservationFlowHandler::FlowState']]]
 ];

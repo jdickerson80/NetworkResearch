@@ -137,6 +137,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac7ff5bf160e8251bccefcf817b3f987c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCommon_1_1ThreadHelper.html#ac7ff5bf160e8251bccefcf817b3f987c">startJoinableThread</a> (pthread_t *thread, <a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a> startRoutine, bool *isRunningFlag, void *objectPointer)</td></tr>
 <tr class="memdesc:ac7ff5bf160e8251bccefcf817b3f987c"><td class="mdescLeft">&#160;</td><td class="mdescRight">startJoinableThread  <a href="#ac7ff5bf160e8251bccefcf817b3f987c">More...</a><br /></td></tr>
 <tr class="separator:ac7ff5bf160e8251bccefcf817b3f987c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab22276a3aaa1e769891ac307380207c"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCommon_1_1ThreadHelper.html#aab22276a3aaa1e769891ac307380207c">startJoinableThread</a> (pthread_t *thread, <a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a> startRoutine, void *objectPointer)</td></tr>
+<tr class="memdesc:aab22276a3aaa1e769891ac307380207c"><td class="mdescLeft">&#160;</td><td class="mdescRight">startJoinableThread  <a href="#aab22276a3aaa1e769891ac307380207c">More...</a><br /></td></tr>
+<tr class="separator:aab22276a3aaa1e769891ac307380207c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae20b71b39bf5862b32aa602604e51a74"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCommon_1_1ThreadHelper.html#ae20b71b39bf5862b32aa602604e51a74">startJoinableThread</a> (pthread_t *thread, <a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a> startRoutine, std::atomic_bool &amp;isRunningFlag, void *objectPointer)</td></tr>
 <tr class="memdesc:ae20b71b39bf5862b32aa602604e51a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">startJoinableThread  <a href="#ae20b71b39bf5862b32aa602604e51a74">More...</a><br /></td></tr>
 <tr class="separator:ae20b71b39bf5862b32aa602604e51a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -223,7 +226,8 @@ Static Public Member Functions</h2></td></tr>
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classCommon_1_1ThreadHelper_ac08e2d5dcb09787954f11fd70cb2c919_icgraph.svg" width="463" height="263"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classCommon_1_1ThreadHelper_ac08e2d5dcb09787954f11fd70cb2c919_icgraph.svg" width="463" height="183"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </p>
 
@@ -347,6 +351,67 @@ Here is the caller graph for this function:</div>
 
 <p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00070">70</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
 
+<p><div class="dynheader">
+Here is the caller graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="classCommon_1_1ThreadHelper_ac7ff5bf160e8251bccefcf817b3f987c_icgraph.svg" width="394" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="aab22276a3aaa1e769891ac307380207c"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Common::ThreadHelper::startJoinableThread </td>
+          <td>(</td>
+          <td class="paramtype">pthread_t *&#160;</td>
+          <td class="paramname"><em>thread</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCommon_1_1ThreadHelper.html#ab2839a17e1c2ccb5425c7a3c25c2a2e9">StartRoutine</a>&#160;</td>
+          <td class="paramname"><em>startRoutine</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>objectPointer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>startJoinableThread </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">thread</td><td></td></tr>
+    <tr><td class="paramname">startRoutine</td><td></td></tr>
+    <tr><td class="paramname">objectPointer</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00088">88</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="ae20b71b39bf5862b32aa602604e51a74"></a>
@@ -405,7 +470,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
-<p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00102">102</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
+<p>Definition at line <a class="el" href="ThreadHelper_8cpp_source.html#l00113">113</a> of file <a class="el" href="ThreadHelper_8cpp_source.html">ThreadHelper.cpp</a>.</p>
 
 </div>
 </div>

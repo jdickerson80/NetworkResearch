@@ -1,5 +1,6 @@
 var namespaces =
 [
+    [ "AnotherFatTreeTopology", "namespaceAnotherFatTreeTopology.html", null ],
     [ "BandwidthShare", "namespaceBandwidthShare.html", null ],
     [ "BGAdaptor", "namespaceBGAdaptor.html", null ],
     [ "Common", "namespaceCommon.html", "namespaceCommon" ],

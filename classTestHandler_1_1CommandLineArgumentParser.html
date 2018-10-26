@@ -129,12 +129,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac05d450874629e5f8f16b22619add30c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d7b983517be1edf1b650bab9bb25c4e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1CommandLineArgumentParser.html#a7d7b983517be1edf1b650bab9bb25c4e">~CommandLineArgumentParser</a> ()</td></tr>
 <tr class="separator:a7d7b983517be1edf1b650bab9bb25c4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9e3ca8df421fb38db39b3ca98869dc3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1CommandLineArgumentParser.html#af9e3ca8df421fb38db39b3ca98869dc3">parseCommandLineArguments</a> (int argc, char *const *argv, std::vector&lt; std::string * &gt; &amp;ipVector, std::vector&lt; <a class="el" href="classTestHandler_1_1TestBaseClass.html">TestBaseClass</a> * &gt; &amp;test)</td></tr>
-<tr class="separator:af9e3ca8df421fb38db39b3ca98869dc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dde38d3188fa7552bddc671049a358a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestHandler_1_1CommandLineArgumentParser.html#a3dde38d3188fa7552bddc671049a358a">parseCommandLineArguments</a> (int argc, char *const *argv, <a class="el" href="structTestHandler_1_1TestData.html">TestData</a> *testData, std::vector&lt; std::string * &gt; &amp;ipVector, std::vector&lt; <a class="el" href="classTestHandler_1_1TestBaseClass.html">TestBaseClass</a> * &gt; &amp;test)</td></tr>
+<tr class="separator:a3dde38d3188fa7552bddc671049a358a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="CommandLineArgumentParser_8h_source.html#l00011">11</a> of file <a class="el" href="CommandLineArgumentParser_8h_source.html">CommandLineArgumentParser.h</a>.</p>
+<p>Definition at line <a class="el" href="CommandLineArgumentParser_8h_source.html#l00012">12</a> of file <a class="el" href="CommandLineArgumentParser_8h_source.html">CommandLineArgumentParser.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ac05d450874629e5f8f16b22619add30c"></a>
 <div class="memitem">
@@ -150,7 +150,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>think about converting it to a functor </dd></dl>
 
-<p>Definition at line <a class="el" href="CommandLineArgumentParser_8cpp_source.html#l00039">39</a> of file <a class="el" href="CommandLineArgumentParser_8cpp_source.html">CommandLineArgumentParser.cpp</a>.</p>
+<p>Definition at line <a class="el" href="CommandLineArgumentParser_8cpp_source.html#l00045">45</a> of file <a class="el" href="CommandLineArgumentParser_8cpp_source.html">CommandLineArgumentParser.cpp</a>.</p>
 
 </div>
 </div>
@@ -167,12 +167,12 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="CommandLineArgumentParser_8cpp_source.html#l00049">49</a> of file <a class="el" href="CommandLineArgumentParser_8cpp_source.html">CommandLineArgumentParser.cpp</a>.</p>
+<p>Definition at line <a class="el" href="CommandLineArgumentParser_8cpp_source.html#l00055">55</a> of file <a class="el" href="CommandLineArgumentParser_8cpp_source.html">CommandLineArgumentParser.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="af9e3ca8df421fb38db39b3ca98869dc3"></a>
+<a class="anchor" id="a3dde38d3188fa7552bddc671049a358a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -187,6 +187,12 @@ Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype">char *const *&#160;</td>
           <td class="paramname"><em>argv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structTestHandler_1_1TestData.html">TestData</a> *&#160;</td>
+          <td class="paramname"><em>testData</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -208,19 +214,13 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="CommandLineArgumentParser_8cpp_source.html#l00054">54</a> of file <a class="el" href="CommandLineArgumentParser_8cpp_source.html">CommandLineArgumentParser.cpp</a>.</p>
-
-<p><div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1CommandLineArgumentParser_af9e3ca8df421fb38db39b3ca98869dc3_cgraph.svg" width="439" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-</p>
+<p>Definition at line <a class="el" href="CommandLineArgumentParser_8cpp_source.html#l00060">60</a> of file <a class="el" href="CommandLineArgumentParser_8cpp_source.html">CommandLineArgumentParser.cpp</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1CommandLineArgumentParser_af9e3ca8df421fb38db39b3ca98869dc3_icgraph.svg" width="484" height="67"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="classTestHandler_1_1CommandLineArgumentParser_a3dde38d3188fa7552bddc671049a358a_icgraph.svg" width="442" height="67"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
 </div>
 </p>
 

@@ -13,13 +13,16 @@ var searchData=
   ['bandwidthguaranteerate',['bandwidthGuaranteeRate',['../structWCEnabler_1_1BandwidthValues.html#ae03b89b15ab7d966b66f72ca12e3037b',1,'WCEnabler::BandwidthValues']]],
   ['bandwidthshare',['BandwidthShare',['../namespaceBandwidthShare.html',1,'']]],
   ['bandwidthshare_2epy',['BandwidthShare.py',['../BandwidthShare_8py.html',1,'']]],
-  ['bandwidthvalues',['bandwidthValues',['../classWCEnabler_1_1MainObject.html#ae333261280e59645b07098cbbf66a2ce',1,'WCEnabler::MainObject::bandwidthValues()'],['../structWCEnabler_1_1BandwidthValues.html#acb8e424f38ef54ae23e073eef5be7251',1,'WCEnabler::BandwidthValues::BandwidthValues()']]],
+  ['bandwidthvalue',['bandwidthValue',['../classTests_1_1WCLogic.html#aed163a244b2056581dbd316cf8f2e6b0',1,'Tests::WCLogic']]],
+  ['bandwidthvalues',['BandwidthValues',['../structWCEnabler_1_1BandwidthValues.html#acb8e424f38ef54ae23e073eef5be7251',1,'WCEnabler::BandwidthValues::BandwidthValues()'],['../classWCEnabler_1_1MainObject.html#ae333261280e59645b07098cbbf66a2ce',1,'WCEnabler::MainObject::bandwidthValues()']]],
   ['bandwidthvalues',['BandwidthValues',['../structWCEnabler_1_1BandwidthValues.html',1,'WCEnabler']]],
   ['bandwidthvalues_2eh',['BandwidthValues.h',['../BandwidthValues_8h.html',1,'']]],
   ['bgadaptor',['BGAdaptor',['../namespaceBGAdaptor.html',1,'']]],
   ['bgadaptoripaddress',['BGAdaptorIPAddress',['../Macros_8h.html#a964ce18b780a57310801832387f6a0dc',1,'Macros.h']]],
-  ['buffersize',['BUFFERSIZE',['../CommandLineArgumentParser_8h.html#ac3146f1e9227301bb4aa518f4d336cee',1,'BUFFERSIZE():&#160;CommandLineArgumentParser.h'],['../BandwidthCalculator_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;BandwidthCalculator.cpp']]],
+  ['buffersize',['BUFFERSIZE',['../CommandLineArgumentParser_8h.html#ac3146f1e9227301bb4aa518f4d336cee',1,'BUFFERSIZE():&#160;CommandLineArgumentParser.h'],['../ClientServerTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;ClientServerTest.cpp'],['../ClientServerTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;ClientServerTest.cpp'],['../SingleClientTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;SingleClientTest.cpp'],['../SingleServerTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;SingleServerTest.cpp'],['../BandwidthCalculator_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;BandwidthCalculator.cpp']]],
   ['buildlogger',['buildLogger',['../classCommon_1_1LoggerFactory.html#a8edcb8fd5fabe1e88bf1c15b868e5bdd',1,'Common::LoggerFactory']]],
   ['bw',['bw',['../classFatTreeTopology_1_1FatTree.html#a8cc9d55f408865e46034ca2664d517fe',1,'FatTreeTopology::FatTree']]],
+  ['bytes',['Bytes',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883a8f5de70c49ae3d005160e82cd06221ed',1,'TestHandler::CommandLineArgumentParser::UsageArguments']]],
+  ['bytestobetransmitted',['bytesToBeTransmitted',['../structTestHandler_1_1TestData.html#a10b2c008859775f17ec847b345b33c30',1,'TestHandler::TestData']]],
   ['main_2ecpp',['main.cpp',['../BGAdaptor_2main_8cpp.html',1,'']]]
 ];
