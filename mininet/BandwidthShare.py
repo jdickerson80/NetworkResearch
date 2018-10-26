@@ -7,7 +7,7 @@ from mininet.net import Mininet
 from mininet.node import *
 from mininet.topo import *
 from mininet.util import *
-from FatTreeTopology import FatTree
+from AnotherFatTreeTopology import FatTree
 from Tests import *
 
 import argparse
@@ -113,9 +113,10 @@ def setupHostMachine():
     os.system( "echo --------------------------------------- >> commands.log" )
 
 def createTopo( pod, density, bw_c2a=0.2, bw_a2e=0.1, bw_h2a=0.05 ):
-    topo = FatTree( pod, density, logger )
-    topo.createTopo()
-    topo.createLink( bw_c2a=bw_c2a, bw_a2e=bw_a2e, bw_h2a=bw_h2a )
+#    topo = FatTree( pod, density, logger )
+    topo = FatTree( hpr = 20, racks = 2 )
+#    topo.createTopo()
+#    topo.createLink( bw_c2a=bw_c2a, bw_a2e=bw_a2e, bw_h2a=bw_h2a )
     return topo
 
 
@@ -217,3 +218,6 @@ if __name__ == '__main__':
 
     CLI( net )
     net.stop()
+
+#   Ryu command
+#   ryu-manager ryu.app.rest_qos ryu.app.qos_simple_switch_13 ryu.app.rest_conf_switch
