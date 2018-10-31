@@ -304,6 +304,7 @@ class FatTreeTopo(StructuredTopo):
         agg_sws = range(k / 2, k)
         edge_sws = range(0, k / 2)
         hosts = range(2, k / 2 + 2)
+	hostsNumber = 0
 
         for p in pods:
             for e in edge_sws:
@@ -316,6 +317,7 @@ class FatTreeTopo(StructuredTopo):
                     host_opts = self.def_nopts(self.LAYER_HOST, host_id)
                     self.addHost(host_id, **host_opts)
                     self.addLink(host_id, edge_id)
+		    hostsNumber = hostsNumber + 1
 
                 for a in agg_sws:
                     agg_id = self.id_gen(p, a, 1).name_str()
@@ -331,7 +333,7 @@ class FatTreeTopo(StructuredTopo):
                     core_opts = self.def_nopts(self.LAYER_CORE, core_id)
                     self.addSwitch(core_id, **core_opts)
                     self.addLink(core_id, agg_id)
-
+        print "Number of hosts created is %i" % hostsNumber
 
     def port(self, src, dst):
         '''Get port number (optional)
