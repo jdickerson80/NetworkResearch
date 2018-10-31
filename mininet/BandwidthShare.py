@@ -7,7 +7,7 @@ from mininet.net import Mininet
 from mininet.node import *
 from mininet.topo import *
 from mininet.util import *
-from AnotherFatTreeTopology import FatTree
+from FatTreeTopology import FatTreeTopo
 from Tests import *
 
 import argparse
@@ -84,7 +84,7 @@ def setupTCCommand( interface, host, switchPortSpeed ):
 def startBWShare( net, bandwidthGuarantee ):
     print "Starting BG and WC"
     for host in net.hosts:
-	if host.name == 'h001' or host.name == 'h1':
+	if host.name == 'h001' or host.name == 'h1' or host.name == '10.0.0.2':
 	    host.cmd( './BGAdaptor %s 2>&1 > /dev/null &' % bandwidthGuarantee )
 	else:
 	    host.cmd( './WCEnabler 2>&1 > /dev/null &' )
@@ -114,7 +114,9 @@ def setupHostMachine():
 
 def createTopo( pod, density, bw_c2a=0.2, bw_a2e=0.1, bw_h2a=0.05 ):
 #    topo = FatTree( pod, density, logger )
-    topo = FatTree( hpr = 20, racks = 2 )
+#    topo = FatTree( hpr = 20, racks = 2 )
+    topo = FatTreeTopo( k = 4, speed = 1.0 )
+#    topo.draw()
 #    topo.createTopo()
 #    topo.createLink( bw_c2a=bw_c2a, bw_a2e=bw_a2e, bw_h2a=bw_h2a )
     return topo
