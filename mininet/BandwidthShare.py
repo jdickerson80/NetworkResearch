@@ -103,7 +103,7 @@ def setupSwitchQueues( net, switchPortSpeed ):
 	    setupTCCommand( interface, switch, switchPortSpeed )
 
 def setupHostMachine():
-    os.system( "sysctl -w net.mptcp.mptcp_enabled=0 >> commands.log" )
+    os.system( "sysctl -w net.mptcp.mptcp_enabled=1 >> commands.log" )
     os.system( "sysctl -w net.ipv4.tcp_congestion_control=reno >> commands.log" )
     os.system( "sysctl -w net.ipv4.tcp_ecn=1 >> commands.log" )
     os.system( "sysctl -w net.mptcp.mptcp_scheduler=default >> commands.log" )
@@ -112,66 +112,55 @@ def setupHostMachine():
     os.system( "sysctl -w net.mptcp.mptcp_debug=1 >> commands.log" )
     os.system( "echo --------------------------------------- >> commands.log" )
 
-def createTopo( pod, density, bw_c2a=0.2, bw_a2e=0.1, bw_h2a=0.05 ):
-#    topo = FatTree( pod, density, logger )
-#    topo = FatTree( hpr = 20, racks = 2 )
-    topo = FatTreeTopo( k = 4, speed = 1.0 )
-#    topo.draw()
-#    topo.createTopo()
-#    topo.createLink( bw_c2a=bw_c2a, bw_a2e=bw_a2e, bw_h2a=bw_h2a )
+def createTopo( k = 4, speed = 1.0 ):
+#   ENABLE ECN!!
+#   k = 8 for > 100 hosts
+    topo = FatTreeTopo( k, speed )
+    
+#   topo.draw(filename = "test")
     return topo
 
 
 def parseCommandLineArgument():
     parser = argparse.ArgumentParser( description="Bandwidth Share Test Script" )
 
-    parser.add_argument('--pod', '-P',
+    parser.add_argument('--pod', '-k',
 			action="store",
 			help="Number of Pods",
-			default=2)
+			default=4)
 
-    parser.add_argument('--density', '-D',
-			action="store",
-			help="Density of pods",
-			default=2)
-
-    parser.add_argument('--congestion', '-C',
+    parser.add_argument('--congestion', '-c',
 			action="store",
 			help="Congestion control algorithm",
 			default=2)
 
-    parser.add_argument('--bandwidthGuarantee', '-B',
+    parser.add_argument('--bandwidthGuarantee', '-b',
 			action="store",
 			help="Congestion control algorithm",
 			default=1000)
 
-    parser.add_argument('--ae',
+    parser.add_argument('--linkSpeed', '-s',
 			action="store",
-			help="Bandwidth Aggregate to Edge",
-			default=0.1)
+			help="Link Speed in Gbs",
+			default=1.0)
 
-    parser.add_argument('--ca',
-			action="store",
-			help="Bandwidth Core to Aggregate",
-			default=0.2)
-
-    parser.add_argument('--ha',
-			action="store",
-			help="Bandwidth Host to Aggregate",
-			default=0.05)
-
-    parser.add_argument('--switchPortSpeed',
+    parser.add_argument('--switchPortSpeed', '-p',
 			action="store",
 			help="Per Switch Port Speed",
 			default=1)
 
+
+    parser.add_argument('--traceFile', '-t',
+			action="store",
+			help="Trace file to generate traffic",
+			default=None)
+
     args = parser.parse_args()
-    args.ae = float( args.ae )
-    args.ca = float( args.ca )
-    args.ha = float( args.ha )
-    args.density = int( args.density )
     args.pod = int( args.pod )
+    args.congestionAlgorithm = args.congestion
+    args.linkSpeed = float( args.linkSpeed )
     args.bandwidthGuarantee = int( args.bandwidthGuarantee )
+    args.traceFile = args.traceFile 
 
     return args
 
@@ -184,7 +173,7 @@ if __name__ == '__main__':
     arguments = parseCommandLineArgument()
     setLogLevel( 'info' )
     setupHostMachine()
-    topology = createTopo( pod=arguments.pod, density=arguments.density, bw_c2a=arguments.ca, bw_a2e=arguments.ae, bw_h2a=arguments.ha )
+    topology = createTopo( k=arguments.pod, speed = arguments.linkSpeed )
     privateDirs = [ ( '/var/log', '/tmp/%(name)s/var/log' ),
 		    ( '/var/run', '/tmp/%(name)s/var/run' ),
 			'/var/mn' ]
@@ -207,7 +196,7 @@ if __name__ == '__main__':
     setupSwitchQueues( net, arguments.switchPortSpeed )
     startBWShare( net, arguments.bandwidthGuarantee )
 
-    net.pingAll()
+ #   net.pingAll()
 
     number = 0
 #    while number < 2:
