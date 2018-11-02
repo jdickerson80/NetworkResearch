@@ -9,6 +9,7 @@ enumerate up, down, and layer edges.
 '''
 
 from mininet.topo import Topo
+from mininet.link import *
 
 
 PORT_BASE = 1  # starting index for OpenFlow switch ports
@@ -100,7 +101,7 @@ class StructuredTopo(Topo):
         @param name name of switch
         @return layer layer of switch
         '''
-        return self.node_specs[int(name)]['layer']
+	return self.g.node[name]['layer']
 
     def isPortUp(self, port):
         ''' Returns whether port is facing up or down
@@ -166,6 +167,7 @@ class StructuredTopo(Topo):
         @param edge_color edge color
         '''
         import matplotlib.pyplot as plt
+	import networkx as nx
 
         pos = {} # pos[vertex] = (x, y), where x, y in [0, 1]
         for layer in range(len(self.node_specs)):
@@ -181,12 +183,11 @@ class StructuredTopo(Topo):
         fig.clf()
         ax = fig.add_axes([0, 0, 1, 1], frameon = False)
 
-        draw_networkx_nodes(self.g, pos, ax = ax, node_size = node_size,
-                               node_color = node_color, with_labels = False)
+        nx.draw_networkx_nodes(self.g.node, pos, ax = ax, node_size = node_size, node_color = node_color, with_labels = False)
         # Work around networkx bug; does not handle color arrays properly
-        for edge in self.edges(False):
-            draw_networkx_edges(self.g, pos, [edge], ax = ax,
-                                edge_color = edge_color, width = edge_width)
+        for edge in self.g.edges(False):
+            print edge
+            nx.draw_networkx_edges(self.g.edge, pos, [edge], ax = ax, edge_color = edge_color, width = edge_width)
 
         # Work around networkx modifying axis limits
         ax.set_xlim(0, 1.0)
@@ -316,14 +317,14 @@ class FatTreeTopo(StructuredTopo):
                     host_id = self.id_gen(p, e, h).name_str()
                     host_opts = self.def_nopts(self.LAYER_HOST, host_id)
                     self.addHost(host_id, **host_opts)
-                    self.addLink(host_id, edge_id)
+                    self.addLink(host_id, edge_id, cls=TCLink, enable_ecn=True )
 		    hostsNumber = hostsNumber + 1
 
                 for a in agg_sws:
                     agg_id = self.id_gen(p, a, 1).name_str()
                     agg_opts = self.def_nopts(self.LAYER_AGG, agg_id)
                     self.addSwitch(agg_id, **agg_opts)
-                    self.addLink(edge_id, agg_id)
+                    self.addLink(edge_id, agg_id, cls=TCLink, enable_ecn=True )
 
             for a in agg_sws:
                 agg_id = self.id_gen(p, a, 1).name_str()
@@ -332,7 +333,8 @@ class FatTreeTopo(StructuredTopo):
                     core_id = self.id_gen(k, c_index, c).name_str()
                     core_opts = self.def_nopts(self.LAYER_CORE, core_id)
                     self.addSwitch(core_id, **core_opts)
-                    self.addLink(core_id, agg_id)
+                    self.addLink(core_id, agg_id, cls=TCLink, enable_ecn=True )
+
         print "Number of hosts created is %i" % hostsNumber
 
     def port(self, src, dst):
