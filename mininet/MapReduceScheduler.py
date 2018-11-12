@@ -48,6 +48,7 @@ class MapReduceScheduler( object ):
             self.mapWorkers  = []
 	    self.reduceWorkers = []
 
+            self.availableList = []
 
 	    for i in self.mapPipes:
 		i.parentConnection, i.childConnection = Pipe()
@@ -77,7 +78,7 @@ class MapReduceScheduler( object ):
 #		receiveMessage = connection.recv()
 #		runReducer( receiveMessage, host )
                 connection.send( "ready" )
-                time.sleep( 0.25 )
+                time.sleep( 0.125 )
 
         @staticmethod
         def runMapper( connection, host ):
@@ -86,27 +87,37 @@ class MapReduceScheduler( object ):
 #		receiveMessage = connection.recv()
 #		runReducer( receiveMessage, host )
                 connection.send( "ready" )
-                time.sleep( 0.25 )
+                time.sleep( 0.125 )
 
         def handleHostProcesses( self ):
             while True:
+                count = 0
                 self.availableList = []
                 for i in self.mapPipes:
                     poll = i.parentConnection.poll()
 
                     if poll == True:
                         message = i.parentConnection.recv()
+#                        print message
 
                         if message == "ready":
+                            self.availableList.append( count )
+                    count = count + 1
 
-                    print poll
-
+                count = 2
                 for i in self.reducePipes:
                     poll = i.parentConnection.poll()
-                    print poll
+                    if poll == True:
+                        message = i.parentConnection.recv()
+#                        print message
 
-                print "--------------------"
-                time.sleep( 0.5 )
+                        if message == "ready":
+                            self.availableList.append( count )
+                    count = count + 1
+#                print "--------------------"
+#                print self.availableList
+                self.schedularPipe.send( self.availableList )
+                time.sleep( 0.125 )
 
 	def terminate( self ):
 	    for p in self.mapWorkers:
@@ -125,7 +136,6 @@ class MapReduceScheduler( object ):
             self.handler.join()
 
     def __init__( self, hostList, communicator ):
-         print (sys.version)
          self.communicator = communicator
 	 self.numberOfHosts = len( hostList )
 	 self.hostMapReduceList = []
@@ -140,8 +150,8 @@ class MapReduceScheduler( object ):
 	     self.hostMapReduceList.append( self.HostMapReduce( host = i, schedularPipe = self.pipeList[ counter ].childConnection ) )
 	     counter = counter + 1
 
-#         self.handler = Process( target=self.handleHostMapReducers )
-#         self.handler.start()
+         self.handler = Process( target=self.handleHostMapReducers )
+         self.handler.start()
 
     def terminate( self ):
 	for i in self.hostMapReduceList:
@@ -155,11 +165,12 @@ class MapReduceScheduler( object ):
         while True:
             self.availableList = []
             for i in self.pipeList:
-                poll = i.childConnection.poll( 0.25 )
-                print poll
-
-            print "NEXT"
-            time.sleep( 0.25 )
+                poll = i.parentConnection.poll()
+                if poll == True:
+                    message = i.parentConnection.recv()
+                    self.availableList.append( message )
+            print self.availableList
+            time.sleep( 0.125 )
 #	    print count
 """class MapReduce( object ):
     queue = None
