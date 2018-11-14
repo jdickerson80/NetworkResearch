@@ -16,7 +16,7 @@ var NAVTREE =
       [ "Class Index", "classes.html", null ],
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
-        [ "All", "functions.html", null ],
+        [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
@@ -37,8 +37,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"AnotherFatTreeTopology_8py.html",
-"classTestHandler_1_1TestBaseClass.html#ac02df121dcbf8f2e7c6476ab86b47736"
+"BGAdaptor_2main_8cpp.html",
+"classFatTreeTopology_1_1StructuredTopo.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

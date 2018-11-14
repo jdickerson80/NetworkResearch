@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['modifyiplink',['ModifyIPLink',['../WorkConservationFlowHandler_8cpp.html#a7e42f121fcfd27f50844af9bcb673f8c',1,'WorkConservationFlowHandler.cpp']]],
-  ['movepastsent',['MovePastSent',['../BandwidthCalculator_8cpp.html#ab644a8b257ec9c36ee670cf8b3fac545',1,'BandwidthCalculator.cpp']]]
+  ['lastpass',['LastPass',['../CommandLineArgumentParser_8cpp.html#acffeb3301f3d492a22d8846ee9054cca',1,'CommandLineArgumentParser.cpp']]],
+  ['logbuffersize',['LogBufferSize',['../BandwidthCalculator_8cpp.html#a9271048392100e473a18ac405ac15444',1,'BandwidthCalculator.cpp']]],
+  ['logpackets',['LogPackets',['../HandleHostBandwidth_8cpp.html#a5300a16c24d884fbeba3f954c4d7e0cf',1,'HandleHostBandwidth.cpp']]]
 ];

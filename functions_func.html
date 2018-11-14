@@ -100,10 +100,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_i"><span>i</span></a></li>
       <li><a href="#index_l"><span>l</span></a></li>
       <li><a href="#index_m"><span>m</span></a></li>
+      <li><a href="#index_n"><span>n</span></a></li>
       <li><a href="#index_p"><span>p</span></a></li>
       <li><a href="#index_r"><span>r</span></a></li>
       <li><a href="#index_s"><span>s</span></a></li>
       <li><a href="#index_t"><span>t</span></a></li>
+      <li><a href="#index_u"><span>u</span></a></li>
       <li><a href="#index_w"><span>w</span></a></li>
       <li class="current"><a href="#index_0x7e"><span>~</span></a></li>
     </ul>
@@ -142,8 +144,16 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 <h3><a class="anchor" id="index__"></a>- _ -</h3><ul>
 <li>__init__()
-: <a class="el" href="classAnotherFatTreeTopology_1_1FatTree.html#a8e1a6b5d87e3b1fd2a11337c14cf612a">AnotherFatTreeTopology.FatTree</a>
-, <a class="el" href="classFatTreeTopology_1_1FatTree.html#a778d19b94d4a6422711c0d4f1f5f3b48">FatTreeTopology.FatTree</a>
+: <a class="el" href="classFatTreeTopology_1_1FatTreeTopo.html#a2cbf58d53e4ec4312e9ddfad2bc71c43">FatTreeTopology.FatTreeTopo</a>
+, <a class="el" href="classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#ab8ecfce4f8aa2d1a2745f39c01c81d56">FatTreeTopology.FatTreeTopo.FatTreeNodeID</a>
+, <a class="el" href="classFatTreeTopology_1_1NodeID.html#aa021b5c22e844a8cdf76f0d7f4d49d88">FatTreeTopology.NodeID</a>
+, <a class="el" href="classFatTreeTopology_1_1StructuredEdgeSpec.html#af0bd72756ba62d4ffce2da54b874e0b3">FatTreeTopology.StructuredEdgeSpec</a>
+, <a class="el" href="classFatTreeTopology_1_1StructuredNodeSpec.html#adf082579d231c87061519e1d15a637df">FatTreeTopology.StructuredNodeSpec</a>
+, <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#a2d93ac716b07a19a4219d5c7f047506e">FatTreeTopology.StructuredTopo</a>
+, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#afb808d77923136d27a633f209468417e">MapReduceHost.HostMapReduce</a>
+, <a class="el" href="classMapReduceHost_1_1PerProcessPipes.html#a1e0fba4484dda791ee32f8de6b52bd36">MapReduceHost.PerProcessPipes</a>
+, <a class="el" href="classMapReduceManager_1_1MapReduceManager.html#a5dc9e7fc6845ce3976def470e65206f1">MapReduceManager.MapReduceManager</a>
+, <a class="el" href="classMapReduceScheduler_1_1MapReduceScheduler.html#a9b2b2ac14b7d06042989771a20be7392">MapReduceScheduler.MapReduceScheduler</a>
 , <a class="el" href="classTests_1_1Efficiency.html#ad8f595353f18d56e46e2cc762cfd1bda">Tests.Efficiency</a>
 , <a class="el" href="classTests_1_1LongFlowHandling.html#af6824a631872605f7f8a853920737821">Tests.LongFlowHandling</a>
 , <a class="el" href="classTests_1_1RandomFlowHandling.html#a6c17d76759c1121ef04bf1a96171fc9d">Tests.RandomFlowHandling</a>
@@ -152,12 +162,25 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 , <a class="el" href="classTests_1_1WCBandwidthUtilization.html#afbf8b059b53a5b2516b48b9cc0792535">Tests.WCBandwidthUtilization</a>
 , <a class="el" href="classTests_1_1WCLogic.html#a32d94015b2b133971911266dfdafe28b">Tests.WCLogic</a>
 </li>
+<li>__str__()
+: <a class="el" href="classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#a16721e014eb8cbebd73bc695d2ea9f5d">FatTreeTopology.FatTreeTopo.FatTreeNodeID</a>
+, <a class="el" href="classFatTreeTopology_1_1NodeID.html#ae2a75060ee11c33bc3458825c19b0d9a">FatTreeTopology.NodeID</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
+<li>addMapJob()
+: <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a29c56eab51902062cdf14d3a538138ce">MapReduceHost.HostMapReduce</a>
+</li>
+<li>addReduceJob()
+: <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#aec48d806a8471773090b837c5c5f883d">MapReduceHost.HostMapReduce</a>
+</li>
 <li>alpha()
 : <a class="el" href="classCommon_1_1Math_1_1ExponentialSmoothing.html#a773b5e1fa0aa40b7965c213e77b0139d">Common::Math::ExponentialSmoothing</a>
+</li>
+<li>availableHosts()
+: <a class="el" href="classMapReduceManager_1_1MapReduceManager.html#a85fe3a8c0f35ac93d449a2eeac5580b5">MapReduceManager.MapReduceManager</a>
 </li>
 </ul>
 
@@ -200,26 +223,8 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>CommandLineArgumentParser()
 : <a class="el" href="classTestHandler_1_1CommandLineArgumentParser.html#ac05d450874629e5f8f16b22619add30c">TestHandler::CommandLineArgumentParser</a>
 </li>
-<li>createAggLayerSwitch()
-: <a class="el" href="classFatTreeTopology_1_1FatTree.html#a2d14a3a5200ae668f2fb2a6ec9a854a9">FatTreeTopology.FatTree</a>
-</li>
-<li>createCoreLayerSwitch()
-: <a class="el" href="classFatTreeTopology_1_1FatTree.html#a3a4f6ba31a0158fb47f66502e1c1f1a9">FatTreeTopology.FatTree</a>
-</li>
-<li>createEdgeLayerSwitch()
-: <a class="el" href="classFatTreeTopology_1_1FatTree.html#afbc1716ab9d400c84dc4116cdd5a3752">FatTreeTopology.FatTree</a>
-</li>
-<li>createHost()
-: <a class="el" href="classFatTreeTopology_1_1FatTree.html#a89cc2d5a70b13aa88b514bda267e37c4">FatTreeTopology.FatTree</a>
-</li>
-<li>createLink()
-: <a class="el" href="classFatTreeTopology_1_1FatTree.html#ad575c777c1668dda57d11f870a6efce4">FatTreeTopology.FatTree</a>
-</li>
-<li>createTopo()
-: <a class="el" href="classFatTreeTopology_1_1FatTree.html#a4506c6460edddb2de38b1e4234dcee1c">FatTreeTopology.FatTree</a>
-</li>
 <li>CurrentAndLastValues()
-: <a class="el" href="structCommon_1_1CurrentAndLastValues.html#a4ac6ca1dbe70d5765202d2fddbd8be67">Common::CurrentAndLastValues&lt; DataType &gt;</a>
+: <a class="el" href="structCommon_1_1CurrentAndLastValues.html#a8be3d2c45b74b8228589e9252a95a3b5">Common::CurrentAndLastValues&lt; DataType &gt;</a>
 </li>
 <li>currentState()
 : <a class="el" href="classWCEnabler_1_1WorkConservationFlowHandler.html#a61d235135353ecb317ca03b2e646f248">WCEnabler::WorkConservationFlowHandler</a>
@@ -230,6 +235,19 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
 <li>DataRateCalculator()
 : <a class="el" href="classCommon_1_1DataRateCalculator.html#adcfe40a4aa0043cd72ac3f874c533622">Common::DataRateCalculator&lt; CalculationDataType, RateDataType, RateCalculation &gt;</a>
+</li>
+<li>def_nopts()
+: <a class="el" href="classFatTreeTopology_1_1FatTreeTopo.html#a2488475e44075d9f6c890ed5f55fc0e1">FatTreeTopology.FatTreeTopo</a>
+, <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#a333c2ee4be489a97e7e7825a2ad279e2">FatTreeTopology.StructuredTopo</a>
+</li>
+<li>down_edges()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#ac3fee59b052a39485fd161ccc6761654">FatTreeTopology.StructuredTopo</a>
+</li>
+<li>down_nodes()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#a4fe1b0847cab28d8d03139acb660d916">FatTreeTopology.StructuredTopo</a>
+</li>
+<li>draw()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#a56ee1b765bef5b11ffe40608e901b8ee">FatTreeTopology.StructuredTopo</a>
 </li>
 </ul>
 
@@ -255,8 +273,17 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 
 <h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
+<li>handleAvailableHostCommunication()
+: <a class="el" href="classMapReduceManager_1_1MapReduceManager.html#a3aa8d65adec3aed0ef4d413ff32e298c">MapReduceManager.MapReduceManager</a>
+</li>
 <li>HandleHostBandwidth()
 : <a class="el" href="classBGAdaptor_1_1HandleHostBandwidth.html#af8e6a5d03b90da9fa56b15f5ef60aead">BGAdaptor::HandleHostBandwidth</a>
+</li>
+<li>handleHostProcesses()
+: <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a494e9b6064caf84070da891f242d23bc">MapReduceHost.HostMapReduce</a>
+</li>
+<li>handleTaskAssignment()
+: <a class="el" href="classMapReduceManager_1_1MapReduceManager.html#a81b5cd21ca14e06fb3a9af13ac0002fd">MapReduceManager.MapReduceManager</a>
 </li>
 <li>handleTerminatedSubprocess()
 : <a class="el" href="classTestHandler_1_1TestBaseClass.html#ad55708ad5efaed3c9200eafd6e5d38eb">TestHandler::TestBaseClass</a>
@@ -274,6 +301,13 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>InterfaceInfo()
 : <a class="el" href="structCommon_1_1HelperMethods_1_1InterfaceInfo.html#a8c5c5047166942a2738869d416921d38">Common::HelperMethods::InterfaceInfo</a>
 </li>
+<li>ip_str()
+: <a class="el" href="classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#a71a95d168171753eab389b3aa633d017">FatTreeTopology.FatTreeTopo.FatTreeNodeID</a>
+, <a class="el" href="classFatTreeTopology_1_1NodeID.html#af3d5dc0f85d5ee2c013d6fb01bd0b7cd">FatTreeTopology.NodeID</a>
+</li>
+<li>isPortUp()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#ab35776ce5144b26f21fab9c06bf495a4">FatTreeTopology.StructuredTopo</a>
+</li>
 <li>isRunning()
 : <a class="el" href="classTestHandler_1_1MainObject.html#a60c42acae93439849fa35f764d26a729">TestHandler::MainObject</a>
 </li>
@@ -281,8 +315,14 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
+<li>layer()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#a4a0ec7d9ee5f97de58d7da96fd2e7211">FatTreeTopology.StructuredTopo</a>
+</li>
+<li>layer_nodes()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#a7bb3436ba233d8b6643cb5b9a98babbf">FatTreeTopology.StructuredTopo</a>
+</li>
 <li>log()
-: <a class="el" href="classCommon_1_1LoggingHandler.html#a5c72b411fc450b086dcd31246e66bab0">Common::LoggingHandler</a>
+: <a class="el" href="classCommon_1_1LoggingHandler.html#a16022708e185ca7fba2fa415521b2ba4">Common::LoggingHandler</a>
 </li>
 <li>LoggingHandler()
 : <a class="el" href="classCommon_1_1LoggingHandler.html#ab0c0218b39b546dc2e7e99b92ffe1f4c">Common::LoggingHandler</a>
@@ -294,14 +334,22 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 
 <h3><a class="anchor" id="index_m"></a>- m -</h3><ul>
+<li>mac_str()
+: <a class="el" href="classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#a6242d66ac07e3af9434e8066318dd8e3">FatTreeTopology.FatTreeTopo.FatTreeNodeID</a>
+</li>
 <li>MainObject()
 : <a class="el" href="classTestHandler_1_1MainObject.html#a1b2a3535f89c9101a7815629cefd6ffb">TestHandler::MainObject</a>
 </li>
-<li>makeDPID()
-: <a class="el" href="classAnotherFatTreeTopology_1_1FatTree.html#a294f8d9592d4ca84ca001d60484ea804">AnotherFatTreeTopology.FatTree</a>
+<li>managerCallback()
+: <a class="el" href="classMapReduceScheduler_1_1MapReduceScheduler.html#a7b00e005c0273377544b820e17f0d1de">MapReduceScheduler.MapReduceScheduler</a>
 </li>
-<li>makeMAC()
-: <a class="el" href="classAnotherFatTreeTopology_1_1FatTree.html#a7180b42cfee01001b3e61034aad9c263">AnotherFatTreeTopology.FatTree</a>
+</ul>
+
+
+<h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
+<li>name_str()
+: <a class="el" href="classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#aa085e34f454aefe5b050a32dbca07d57">FatTreeTopology.FatTreeTopo.FatTreeNodeID</a>
+, <a class="el" href="classFatTreeTopology_1_1NodeID.html#aa41a967f9e5f4fc5fefef77eedc95ca3">FatTreeTopology.NodeID</a>
 </li>
 </ul>
 
@@ -310,17 +358,23 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <li>parseCommandLineArguments()
 : <a class="el" href="classTestHandler_1_1CommandLineArgumentParser.html#a3dde38d3188fa7552bddc671049a358a">TestHandler::CommandLineArgumentParser</a>
 </li>
+<li>port()
+: <a class="el" href="classFatTreeTopology_1_1FatTreeTopo.html#a0a5c0c31daf36e5f46e8f1b4c9355575">FatTreeTopology.FatTreeTopo</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
-<li>randByte()
-: <a class="el" href="classAnotherFatTreeTopology_1_1FatTree.html#afa76458fecf46fbc0f8663d90f251af8">AnotherFatTreeTopology.FatTree</a>
-</li>
 <li>rate()
 : <a class="el" href="classCommon_1_1DataRateCalculator.html#a2e875f42dc9d392103c743cd62a8ac5d">Common::DataRateCalculator&lt; CalculationDataType, RateDataType, RateCalculation &gt;</a>
 , <a class="el" href="classCommon_1_1Math_1_1ExponentialSmoothingCalculator.html#a6cac576f776741fe1a3121b3c56ff273">Common::Math::ExponentialSmoothingCalculator&lt; CalculationDataType, RateDataType &gt;</a>
 , <a class="el" href="classCommon_1_1Math_1_1SimpleRateCalculator.html#a2cbd1ea45660489a7c0901e081a2c3c6">Common::Math::SimpleRateCalculator&lt; CalculationDataType, RateDataType &gt;</a>
+</li>
+<li>runMapper()
+: <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#af09e49d0ae5a2b97bb0a0da2384a2de7">MapReduceHost.HostMapReduce</a>
+</li>
+<li>runReducer()
+: <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a9f4ba754d33fdbb3fd1d93ae68ebf47f">MapReduceHost.HostMapReduce</a>
 </li>
 <li>runTest()
 : <a class="el" href="classTestHandler_1_1TestBaseClass.html#aec41f0f6fb28166c4e39455d6c7ba2e6">TestHandler::TestBaseClass</a>
@@ -371,6 +425,11 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
+<li>terminate()
+: <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a392a84cdd0b9e3998958a9a72c11a909">MapReduceHost.HostMapReduce</a>
+, <a class="el" href="classMapReduceManager_1_1MapReduceManager.html#a6c39667f5dd0d5a8689184a9b3351756">MapReduceManager.MapReduceManager</a>
+, <a class="el" href="classMapReduceScheduler_1_1MapReduceScheduler.html#a6fba9ae82c0c5bf4c06d61be3d71e876">MapReduceScheduler.MapReduceScheduler</a>
+</li>
 <li>test()
 : <a class="el" href="classTestHandler_1_1TestBaseClass.html#a4b2df07c6d82ff378f3cbec496eaaa54">TestHandler::TestBaseClass</a>
 </li>
@@ -379,6 +438,16 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 </li>
 <li>TestData()
 : <a class="el" href="structTestHandler_1_1TestData.html#a7b900825eaa7d2b4eaa41dd9239269d1">TestHandler::TestData</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
+<li>up_edges()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#add2d75ee8fd4849941e309c2dbbaba99">FatTreeTopology.StructuredTopo</a>
+</li>
+<li>up_nodes()
+: <a class="el" href="classFatTreeTopology_1_1StructuredTopo.html#aaeb3fa2bd1b0cad7a4e0cea59ddb59df">FatTreeTopology.StructuredTopo</a>
 </li>
 </ul>
 

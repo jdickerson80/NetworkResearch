@@ -19,9 +19,17 @@ var hierarchy =
     [ "Common::HelperMethods::InterfaceInfo", "structCommon_1_1HelperMethods_1_1InterfaceInfo.html", null ],
     [ "Common::LoggerFactory", "classCommon_1_1LoggerFactory.html", null ],
     [ "Common::LoggingHandler", "classCommon_1_1LoggingHandler.html", null ],
-    [ "WCEnabler::MainObject", "classWCEnabler_1_1MainObject.html", null ],
     [ "TestHandler::MainObject", "classTestHandler_1_1MainObject.html", null ],
+    [ "WCEnabler::MainObject", "classWCEnabler_1_1MainObject.html", null ],
     [ "object", null, [
+      [ "FatTreeTopology.NodeID", "classFatTreeTopology_1_1NodeID.html", [
+        [ "FatTreeTopology.FatTreeTopo.FatTreeNodeID", "classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html", null ]
+      ] ],
+      [ "FatTreeTopology.StructuredEdgeSpec", "classFatTreeTopology_1_1StructuredEdgeSpec.html", null ],
+      [ "FatTreeTopology.StructuredNodeSpec", "classFatTreeTopology_1_1StructuredNodeSpec.html", null ],
+      [ "MapReduceHost.HostMapReduce", "classMapReduceHost_1_1HostMapReduce.html", null ],
+      [ "MapReduceManager.MapReduceManager", "classMapReduceManager_1_1MapReduceManager.html", null ],
+      [ "MapReduceScheduler.MapReduceScheduler", "classMapReduceScheduler_1_1MapReduceScheduler.html", null ],
       [ "Tests.TestBaseClass", "classTests_1_1TestBaseClass.html", [
         [ "Tests.Efficiency", "classTests_1_1Efficiency.html", null ],
         [ "Tests.LongFlowHandling", "classTests_1_1LongFlowHandling.html", null ],
@@ -31,6 +39,7 @@ var hierarchy =
         [ "Tests.WCLogic", "classTests_1_1WCLogic.html", null ]
       ] ]
     ] ],
+    [ "MapReduceHost.PerProcessPipes", "classMapReduceHost_1_1PerProcessPipes.html", null ],
     [ "Common::Math::SimpleRateCalculation", "classCommon_1_1Math_1_1SimpleRateCalculation.html", null ],
     [ "Common::Math::SimpleRateCalculator< CalculationDataType, RateDataType >", "classCommon_1_1Math_1_1SimpleRateCalculator.html", null ],
     [ "Common::Math::SimpleRateCalculator< unsigned int, unsigned int >", "classCommon_1_1Math_1_1SimpleRateCalculator.html", null ],
@@ -45,8 +54,13 @@ var hierarchy =
     [ "Common::ThreadHelper", "classCommon_1_1ThreadHelper.html", null ],
     [ "TestHandler::CommandLineArgumentParser::UsageArguments", "structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html", null ],
     [ "WCEnabler::WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", null ],
+    [ "IntEnum", null, [
+      [ "MapReduceHost.HostMapReduce.MapReduceClassIndex", "classMapReduceHost_1_1HostMapReduce_1_1MapReduceClassIndex.html", null ],
+      [ "MapReduceScheduler.MapReduceScheduler.MegabytesPerHostEnum", "classMapReduceScheduler_1_1MapReduceScheduler_1_1MegabytesPerHostEnum.html", null ]
+    ] ],
     [ "Topo", null, [
-      [ "AnotherFatTreeTopology.FatTree", "classAnotherFatTreeTopology_1_1FatTree.html", null ],
-      [ "FatTreeTopology.FatTree", "classFatTreeTopology_1_1FatTree.html", null ]
+      [ "FatTreeTopology.StructuredTopo", "classFatTreeTopology_1_1StructuredTopo.html", [
+        [ "FatTreeTopology.FatTreeTopo", "classFatTreeTopology_1_1FatTreeTopo.html", null ]
+      ] ]
     ] ]
 ];

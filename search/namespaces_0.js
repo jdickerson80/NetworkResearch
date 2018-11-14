@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['anotherfattreetopology',['AnotherFatTreeTopology',['../namespaceAnotherFatTreeTopology.html',1,'']]]
+  ['bandwidthshare',['BandwidthShare',['../namespaceBandwidthShare.html',1,'']]],
+  ['bgadaptor',['BGAdaptor',['../namespaceBGAdaptor.html',1,'']]]
 ];

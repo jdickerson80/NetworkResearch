@@ -5,12 +5,7 @@ var searchData=
   ['cleartccommands',['clearTCCommands',['../classCommon_1_1TCControl.html#a8ade51df8d9c334b570f023e3fafa7bc',1,'Common::TCControl']]],
   ['clientservertest',['ClientServerTest',['../classTestHandler_1_1ClientServerTest.html#a1c027f0d6f0bb5f9606311aef3981519',1,'TestHandler::ClientServerTest']]],
   ['commandlineargumentparser',['CommandLineArgumentParser',['../classTestHandler_1_1CommandLineArgumentParser.html#ac05d450874629e5f8f16b22619add30c',1,'TestHandler::CommandLineArgumentParser']]],
-  ['createagglayerswitch',['createAggLayerSwitch',['../classFatTreeTopology_1_1FatTree.html#a2d14a3a5200ae668f2fb2a6ec9a854a9',1,'FatTreeTopology::FatTree']]],
-  ['createcorelayerswitch',['createCoreLayerSwitch',['../classFatTreeTopology_1_1FatTree.html#a3a4f6ba31a0158fb47f66502e1c1f1a9',1,'FatTreeTopology::FatTree']]],
-  ['createedgelayerswitch',['createEdgeLayerSwitch',['../classFatTreeTopology_1_1FatTree.html#afbc1716ab9d400c84dc4116cdd5a3752',1,'FatTreeTopology::FatTree']]],
-  ['createhost',['createHost',['../classFatTreeTopology_1_1FatTree.html#a89cc2d5a70b13aa88b514bda267e37c4',1,'FatTreeTopology::FatTree']]],
-  ['createlink',['createLink',['../classFatTreeTopology_1_1FatTree.html#ad575c777c1668dda57d11f870a6efce4',1,'FatTreeTopology::FatTree']]],
-  ['createtopo',['createTopo',['../classFatTreeTopology_1_1FatTree.html#a4506c6460edddb2de38b1e4234dcee1c',1,'FatTreeTopology.FatTree.createTopo()'],['../namespaceBandwidthShare.html#a0c3c1a1e60abb461f5d6323d2565729b',1,'BandwidthShare.createTopo()']]],
+  ['createtopo',['createTopo',['../namespaceBandwidthShare.html#abe225628fb6435482d177afca01dc808',1,'BandwidthShare']]],
   ['currentandlastvalues',['CurrentAndLastValues',['../structCommon_1_1CurrentAndLastValues.html#a8be3d2c45b74b8228589e9252a95a3b5',1,'Common::CurrentAndLastValues::CurrentAndLastValues()'],['../structCommon_1_1CurrentAndLastValues.html#a4ac6ca1dbe70d5765202d2fddbd8be67',1,'Common::CurrentAndLastValues::CurrentAndLastValues(const DataType &amp;currentValue, const DataType &amp;lastValue)']]],
   ['currentstate',['currentState',['../classWCEnabler_1_1WorkConservationFlowHandler.html#a61d235135353ecb317ca03b2e646f248',1,'WCEnabler::WorkConservationFlowHandler']]]
 ];

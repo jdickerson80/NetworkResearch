@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['bandwidthshare',['BandwidthShare',['../namespaceBandwidthShare.html',1,'']]],
-  ['bgadaptor',['BGAdaptor',['../namespaceBGAdaptor.html',1,'']]]
+  ['common',['Common',['../namespaceCommon.html',1,'']]],
+  ['math',['Math',['../namespaceCommon_1_1Math.html',1,'Common']]]
 ];

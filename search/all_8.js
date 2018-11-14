@@ -1,15 +1,29 @@
 var searchData=
 [
+  ['h_5fboxes',['h_boxes',['../classFatTreeTopology_1_1StructuredTopo.html#ac1f48f478541bb4603b5d00af3c97eaa',1,'FatTreeTopology::StructuredTopo']]],
+  ['handleavailablehostcommunication',['handleAvailableHostCommunication',['../classMapReduceManager_1_1MapReduceManager.html#a3aa8d65adec3aed0ef4d413ff32e298c',1,'MapReduceManager::MapReduceManager']]],
   ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html',1,'BGAdaptor']]],
   ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html#af8e6a5d03b90da9fa56b15f5ef60aead',1,'BGAdaptor::HandleHostBandwidth']]],
   ['handlehostbandwidth_2ecpp',['HandleHostBandwidth.cpp',['../HandleHostBandwidth_8cpp.html',1,'']]],
   ['handlehostbandwidth_2eh',['HandleHostBandwidth.h',['../HandleHostBandwidth_8h.html',1,'']]],
+  ['handlehostprocesses',['handleHostProcesses',['../classMapReduceHost_1_1HostMapReduce.html#a494e9b6064caf84070da891f242d23bc',1,'MapReduceHost::HostMapReduce']]],
+  ['handler',['handler',['../classMapReduceHost_1_1HostMapReduce.html#a525b837736a99bcf9c1fad54b0824829',1,'MapReduceHost::HostMapReduce']]],
+  ['handletaskassignment',['handleTaskAssignment',['../classMapReduceManager_1_1MapReduceManager.html#a81b5cd21ca14e06fb3a9af13ac0002fd',1,'MapReduceManager::MapReduceManager']]],
   ['handleterminatedsubprocess',['handleTerminatedSubprocess',['../classTestHandler_1_1TestBaseClass.html#ad55708ad5efaed3c9200eafd6e5d38eb',1,'TestHandler::TestBaseClass']]],
+  ['height',['height',['../classFatTreeTopology_1_1StructuredTopo.html#ad1c7dc922ff1e84463bfe0d9e716b45b',1,'FatTreeTopology::StructuredTopo']]],
   ['help',['Help',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883a38c59921541962d5fc367a64bd098d9b',1,'TestHandler::CommandLineArgumentParser::UsageArguments']]],
   ['helpermethods',['HelperMethods',['../classCommon_1_1HelperMethods.html',1,'Common']]],
   ['helpermethods_2ecpp',['HelperMethods.cpp',['../HelperMethods_8cpp.html',1,'']]],
   ['helpermethods_2eh',['HelperMethods.h',['../HelperMethods_8h.html',1,'']]],
-  ['host',['host',['../namespaceBandwidthShare.html#aeed7d2d4150749b68f5bf73796852cea',1,'BandwidthShare']]],
-  ['hostlist',['HostList',['../classFatTreeTopology_1_1FatTree.html#acb3b255234b37481094643f4f7a52cd3',1,'FatTreeTopology::FatTree']]],
-  ['hostrange',['HostRange',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883afa4054ff07b5d8ef8dcf7ff7bcc6b687',1,'TestHandler::CommandLineArgumentParser::UsageArguments']]]
+  ['host',['host',['../classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#a946bd95ea068b9c2d74c13ee3f906ccc',1,'FatTreeTopology.FatTreeTopo.FatTreeNodeID.host()'],['../classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56',1,'MapReduceHost.HostMapReduce.host()'],['../namespaceBandwidthShare.html#aeed7d2d4150749b68f5bf73796852cea',1,'BandwidthShare.host()']]],
+  ['host_5fid',['host_id',['../classFatTreeTopology_1_1FatTreeTopo.html#a119d8ac33e38b20a784b69c6d7c8ecee',1,'FatTreeTopology::FatTreeTopo']]],
+  ['host_5fopts',['host_opts',['../classFatTreeTopology_1_1FatTreeTopo.html#af610c1b19263eb324377b8419400e5f7',1,'FatTreeTopology::FatTreeTopo']]],
+  ['hosthandler',['hostHandler',['../classMapReduceManager_1_1MapReduceManager.html#a5ada8ab57b0c304fff80157a1de2e397',1,'MapReduceManager::MapReduceManager']]],
+  ['hosthandlerrunning',['hostHandlerRunning',['../classMapReduceManager_1_1MapReduceManager.html#a8de4663264b34e6d1af6784d1a2bddfb',1,'MapReduceManager::MapReduceManager']]],
+  ['hostmapreduce',['HostMapReduce',['../classMapReduceHost_1_1HostMapReduce.html',1,'MapReduceHost']]],
+  ['hostmapreducelist',['hostMapReduceList',['../classMapReduceManager_1_1MapReduceManager.html#a4faa1e7b940014ac848ffd71120e57f1',1,'MapReduceManager::MapReduceManager']]],
+  ['hostneeded',['hostNeeded',['../classMapReduceScheduler_1_1MapReduceScheduler.html#a5c6c344425ecf9ff76177427d01f0a86',1,'MapReduceScheduler::MapReduceScheduler']]],
+  ['hostrange',['HostRange',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883afa4054ff07b5d8ef8dcf7ff7bcc6b687',1,'TestHandler::CommandLineArgumentParser::UsageArguments']]],
+  ['hostsneeded',['hostsNeeded',['../classMapReduceScheduler_1_1MapReduceScheduler.html#a091d611c8c4dd11aa5077fa77d75c8e0',1,'MapReduceScheduler.MapReduceScheduler.hostsNeeded()'],['../classMapReduceScheduler_1_1MapReduceScheduler.html#a28f500c504fc302746c799627b848942',1,'MapReduceScheduler.MapReduceScheduler.hostsNeeded()']]],
+  ['hostsnumber',['hostsNumber',['../classFatTreeTopology_1_1FatTreeTopo.html#aa23f9568f1103a4046b99a0c47902bdc',1,'FatTreeTopology::FatTreeTopo']]]
 ];

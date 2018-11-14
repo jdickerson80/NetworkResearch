@@ -1,8 +1,5 @@
 var files =
 [
-    [ "AnotherFatTreeTopology.py", "AnotherFatTreeTopology_8py.html", [
-      [ "FatTree", "classAnotherFatTreeTopology_1_1FatTree.html", "classAnotherFatTreeTopology_1_1FatTree" ]
-    ] ],
     [ "BandwidthCalculator.cpp", "BandwidthCalculator_8cpp.html", "BandwidthCalculator_8cpp" ],
     [ "BandwidthCalculator.h", "BandwidthCalculator_8h.html", [
       [ "BandwidthCalculator", "classWCEnabler_1_1BandwidthCalculator.html", "classWCEnabler_1_1BandwidthCalculator" ]
@@ -34,9 +31,7 @@ var files =
     [ "ExponentialSmoothingCalculator.h", "ExponentialSmoothingCalculator_8h.html", [
       [ "ExponentialSmoothingCalculator", "classCommon_1_1Math_1_1ExponentialSmoothingCalculator.html", "classCommon_1_1Math_1_1ExponentialSmoothingCalculator" ]
     ] ],
-    [ "FatTreeTopology.py", "FatTreeTopology_8py.html", [
-      [ "FatTree", "classFatTreeTopology_1_1FatTree.html", "classFatTreeTopology_1_1FatTree" ]
-    ] ],
+    [ "FatTreeTopology.py", "FatTreeTopology_8py.html", "FatTreeTopology_8py" ],
     [ "HandleHostBandwidth.cpp", "HandleHostBandwidth_8cpp.html", "HandleHostBandwidth_8cpp" ],
     [ "HandleHostBandwidth.h", "HandleHostBandwidth_8h.html", [
       [ "HandleHostBandwidth", "classBGAdaptor_1_1HandleHostBandwidth.html", "classBGAdaptor_1_1HandleHostBandwidth" ]
@@ -65,6 +60,14 @@ var files =
     ] ],
     [ "WCEnabler/MainObject.h", "WCEnabler_2MainObject_8h.html", [
       [ "MainObject", "classWCEnabler_1_1MainObject.html", "classWCEnabler_1_1MainObject" ]
+    ] ],
+    [ "MapReduceHost.py", "MapReduceHost_8py.html", "MapReduceHost_8py" ],
+    [ "MapReduceManager.py", "MapReduceManager_8py.html", [
+      [ "MapReduceManager", "classMapReduceManager_1_1MapReduceManager.html", "classMapReduceManager_1_1MapReduceManager" ]
+    ] ],
+    [ "MapReduceScheduler.py", "MapReduceScheduler_8py.html", [
+      [ "MapReduceScheduler", "classMapReduceScheduler_1_1MapReduceScheduler.html", "classMapReduceScheduler_1_1MapReduceScheduler" ],
+      [ "MegabytesPerHostEnum", "classMapReduceScheduler_1_1MapReduceScheduler_1_1MegabytesPerHostEnum.html", null ]
     ] ],
     [ "PrintHandler.h", "PrintHandler_8h.html", "PrintHandler_8h" ],
     [ "PrintUsage.cpp", "PrintUsage_8cpp.html", "PrintUsage_8cpp" ],
