@@ -1,47 +1,60 @@
 #!/usr/bin/python
 
+from enum import IntEnum
 from MapReduceManager import MapReduceManager
-from multiprocessing import Pipe
+from Queue import Queue
 import time
 import sys
 
 class MapReduceScheduler( object ):
-    def __init__( self, hostList ):
-	self.thisChannel, self.mapReduceManagerChannel = Pipe()
-	self.manager = MapReduceManager( hostList, self.mapReduceManagerChannel )
+    class MegabytesPerHostEnum( IntEnum ):
+	MegabytesPerHost = 64000000
+
+    def __init__( self, hostList, workFile ):
+	self.workQueue = Queue()
+	self.__preprocessJobList( workFile )
+	self.__processJobs( workFile )
+	for i in xrange( self.workQueue.qsize() ):
+	    print self.workQueue.get_nowait()
+	print self.workQueue.qsize()
+	self.manager = MapReduceManager( hostList, self.managerCallback )
 
     def terminate( self ):
 	self.manager.terminate()
 
     @staticmethod
-    def preprocessJobList( workFile ):
+    def __preprocessJobList( workFile ):
 	for job in workFile:
 	    job = job.replace( "\n", "" )
 	    job = job.replace( "job ", "" )
 	    job = job.replace( " ", "" )
+#	    print job
 
-    def runJobs( self, workFile ):
-	self.workFile = self.preprocessJobList( workFile )
+    def managerCallback( self, availableList ):
+	pass
+
+    def __processJobs( self, workFile ):
+	inputBytes = 0
+	perHostTransmitBytes = 0
+	hostNeeded = 0
 	for job in workFile:
-	    jobComponents = job.split( "," )
-	    if int( jobComponents[ 1 ] ) == 0:
+	    jobComponents = job.split( "\t" )
+	    if jobComponents[ 0 ] == '\n':
+		continue
+	    if int( jobComponents[ 2 ] ) == 0:
 		continue
 
-	    remainder = int( jobComponents[ 1 ] ) % 64000000
-	    hostsNeeded = ( int( jobComponents[ 1 ] ) / 64000000 )
-	    if remainder != 0:
+	    inputBytes = int( jobComponents[ 1 ] )
+
+	    remainder = inputBytes % self.MegabytesPerHostEnum.MegabytesPerHost
+	    hostsNeeded = inputBytes / self.MegabytesPerHostEnum.MegabytesPerHost
+	    if remainder != 0 or hostsNeeded == 0:
 		hostsNeeded = hostsNeeded + 1
 
-	    for i in xrange( 0, 10 ):
-		availableHosts = self.manager.availableHosts()
-		print availableHosts
-		time.sleep( 0.125 )
-#	    while True:
-#		print "polling"
-#		poll = self.thisChannel.poll( .50 )
-#		if poll == True:
-#		    message = self.thisChannel.recv()
-#		    break
-#	    print message
-#	    numberOfHostsNeeded = jobComponents[ 1 ] % 64
-#	    print numberOfHostsNeeded
+#	    if hostsNeeded == 0:
+#		print hostsNeeded
+	    perHostTransmitBytes = int( jobComponents[ 2 ] ) / hostsNeeded
+#	    print [ hostsNeeded, inputBytes, perHostTransmitBytes ]
+#	    print hostNeeded
+	    self.workQueue.put( [ hostsNeeded, perHostTransmitBytes ], block=False )
+
