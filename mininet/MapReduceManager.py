@@ -40,6 +40,9 @@ class MapReduceManager( object ):
     def availableHosts( self ):
 	return self.availableList
 
+#    def availableHostsCount( self ):
+
+
     def handleAvailableHostCommunication( self ):
         tempAvailableList = []
         self.availableList = []
@@ -54,7 +57,7 @@ class MapReduceManager( object ):
             if tempAvailableList != self.availableList:
 		self.availableList = tempAvailableList
 		self.callbackFunction( self.availableList )
-		print self.availableList
+#		print self.availableList
 
 	    time.sleep( 0.125 )
 
@@ -63,6 +66,6 @@ class MapReduceManager( object ):
 	if ( messageLength == 5 ):
 	    self.hostMapReduceList[ message[ 0 ] ].addMapJob( message[ 1 ], message[2:5] )
 	elif ( messageLength == 3 ):
-	    self.hostMapReduceList[ message[ 0 ] ].addReduceJob( message[ 1 ], message[ 2 ] )
+	    self.hostMapReduceList[ message[ 0 ] ].addReduceJob( message[ 1 ] )
 
 #	    time.sleep( 0.125 )

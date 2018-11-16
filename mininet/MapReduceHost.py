@@ -45,6 +45,8 @@ class HostMapReduce( object ):
 	self.reduceWorkers = []
 
 	self.availableList = []
+	portNumber = 5001
+	self.ipAddress = host.IP()
 
 	for i in self.mapPipes:
 	    i.parentConnection, i.childConnection = Pipe()
@@ -54,11 +56,13 @@ class HostMapReduce( object ):
 
 	for i in range( self.MapReduceClassIndex.NumberOfMappers ):
 	    self.mapWorkers.append( Process(target=self.runMapper, args=(self.mapPipes[ i ].childConnection, self.host, ) ) )
-	    self.availableList.append( False )
 
 	for i in range( self.MapReduceClassIndex.NumberOfReducers ):
-	    self.reduceWorkers.append( Process(target=self.runReducer, args=(self.reducePipes[ i ].childConnection, self.host, ) ) )
-	    self.availableList.append( False )
+	    self.reduceWorkers.append( Process(target=self.runReducer, args=(self.reducePipes[ i ].childConnection, self.host, portNumber, ) ) )
+	    portNumber = portNumber + 1
+
+	self.availableList.append( 0 )
+	self.availableList.append( 0 )
 
 	for p in self.mapWorkers:
 	    p.start()
@@ -70,13 +74,13 @@ class HostMapReduce( object ):
 	self.handler.start()
 
     @staticmethod
-    def runReducer( connection, host ):
+    def runReducer( connection, host, port ):
 	time.sleep( 0.5 )
 	connection.send( "ready" )
 	while True:
 	    receiveMessage = connection.recv()
 	    connection.send( "starting" )
-	    runReducer( receiveMessage, host )
+	    runReducer( receiveMessage, host, port )
 	    connection.send( "ready" )
 #            time.sleep( 0.125 )
 
@@ -93,6 +97,10 @@ class HostMapReduce( object ):
 
 #    def isMapperAvailable( self, whatMapper ):
 #        poll = self.mapPipes[ whatMapper ].parentConnection.poll()
+
+
+    def getIP( self ):
+	return self.ipAddress
 
     def addMapJob( self, whatMapper, message ):
 	self.mapPipes[ whatMapper ].parentConnection.send( message )
@@ -112,10 +120,10 @@ class HostMapReduce( object ):
 		    message = i.parentConnection.recv()
 
 		    if message == "ready":
-			self.availableList[ count ] = True
+			self.availableList[ count ] = self.availableList[ count ] + 1
 		    else:
-			self.availableList[ count ] = False
-		count = count + 1
+			self.availableList[ count ] = self.availableList[ count ] - 1
+	    count = 1
 
 	    for i in self.reducePipes:
 		poll = i.parentConnection.poll()
@@ -123,10 +131,10 @@ class HostMapReduce( object ):
 		    message = i.parentConnection.recv()
 
 		    if message == "ready":
-			self.availableList[ count ] = True
+			self.availableList[ count ] = self.availableList[ count ] + 1
 		    else:
-			self.availableList[ count ] = False
-		count = count + 1
+			self.availableList[ count ] = self.availableList[ count ] - 1
+#		count = count + 1
 
 	    self.schedularPipe.send( self.availableList )
 
