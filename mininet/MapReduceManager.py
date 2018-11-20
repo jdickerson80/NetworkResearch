@@ -52,14 +52,66 @@ class MapReduceManager( object ):
 		poll = i.parentConnection.poll()
                 if poll == True:
                     message = i.parentConnection.recv()
-                    tempAvailableList.append( message )
+		    tempAvailableList.append( message[ 0 ] )
 
             if tempAvailableList != self.availableList:
 		self.availableList = tempAvailableList
 		self.callbackFunction( self.availableList )
 #		print self.availableList
 
-	    time.sleep( 0.125 )
+	    time.sleep( 0.025 )
+
+#    def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend ):
+#	hostOneDestIP = self.hostMapReduceList[ hostOne ].getIP()
+#	hostTwoDestIP = self.hostMapReduceList[ hostTwo ].getIP()
+#	numberOfBytesToSend = numberOfBytesToSend / 2
+#	self.hostMapReduceList[ hostOne ].addMapJobPair( 0, numberOfBytesToSend, hostTwoDestIP )
+#	self.hostMapReduceList[ hostOne ].addMapJobPair( 1, numberOfBytesToSend, hostTwoDestIP )
+#	self.hostMapReduceList[ hostTwo ].addMapJobPair( 0, numberOfBytesToSend, hostOneDestIP )
+#	self.hostMapReduceList[ hostTwo ].addMapJobPair( 1, numberOfBytesToSend, hostOneDestIP )
+
+    def setIperf( self, hostOne, hostOneMapper, hostOneReducer, hostTwo, hostTwoMapper, hostTwoReducer, numberOfBytesToSend ):
+	print [ hostOne, hostOneMapper, hostOneReducer, hostTwo, hostTwoMapper, hostTwoReducer, numberOfBytesToSend ]
+	hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
+	hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
+	numberOfBytesToSend = numberOfBytesToSend / 2
+	self.hostMapReduceList[ hostOne ].addReducePair( hostOneReducer )
+#	self.hostMapReduceList[ hostTwo ].addReducePair( hostTwoReducer )
+
+	time.sleep( 5 )
+
+#	self.hostMapReduceList[ hostOne ].addMapPair( hostOneMapper, numberOfBytesToSend, hostTwoIP )
+	self.hostMapReduceList[ hostTwo ].addMapPair( hostTwoMapper, numberOfBytesToSend, hostOneIP )
+
+
+    def setIperf1( self, hostOne, hostOneMapper, hostTwo, hostTwoReducer, numberOfBytesToSend ):
+#	print [ hostOne, hostOneMapper, hostTwo, hostTwoReducer, numberOfBytesToSend ]
+	hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
+	hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
+	numberOfBytesToSend = numberOfBytesToSend / 2
+	self.hostMapReduceList[ hostOne ].addReducePair( hostOneMapper )
+
+#	time.sleep( 1 )
+
+	self.hostMapReduceList[ hostTwo ].addMapPair( hostTwoReducer, numberOfBytesToSend, hostOneIP )
+
+    def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend ):
+	hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
+	hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
+	numberOfBytesToSend = numberOfBytesToSend / 2
+	self.hostMapReduceList[ hostOne ].addReducePair( 0 )
+	self.hostMapReduceList[ hostOne ].addReducePair( 1 )
+
+	self.hostMapReduceList[ hostTwo ].addReducePair( 0 )
+	self.hostMapReduceList[ hostTwo ].addReducePair( 1 )
+
+	time.sleep( 1 )
+
+	self.hostMapReduceList[ hostOne ].addMapPair( 0, numberOfBytesToSend, hostTwoIP )
+	self.hostMapReduceList[ hostOne ].addMapPair( 1, numberOfBytesToSend, hostTwoIP )
+
+	self.hostMapReduceList[ hostTwo ].addMapPair( 0, numberOfBytesToSend, hostOneIP )
+	self.hostMapReduceList[ hostTwo ].addMapPair( 1, numberOfBytesToSend, hostOneIP )
 
     def handleTaskAssignment( self, message ):
 	messageLength = len( message )
