@@ -97,6 +97,31 @@ class MapReduceScheduler( object ):
 		break
 	return requiredHosts
 
+
+    def dualPairs( self, numberOfHosts, requiredHosts, bytesToTransmit ):
+	currentAvailableHostList = self.availableList
+	print "test %s" % currentAvailableHostList
+	for j in xrange( numberOfHosts ):
+	    if currentAvailableHostList[ j ][ 0 ] == 2:
+		mapperHost = j
+		for h in xrange( numberOfHosts - 1, 0, -1 ):
+		    if currentAvailableHostList[ h ][ 1 ] == 2:
+			if h == j:
+			    print "same host"
+			    break
+			elif j > h:
+			    print "wrap around"
+			    break
+			reducerHost = h
+			requiredHosts = requiredHosts - 1
+			self.manager.setIperfPair( reducerHost, mapperHost, bytesToTransmit )
+			break
+		    else:
+			if h == 0:
+			    j = 0
+		break
+	return requiredHosts
+
     def traverseInnerPairs( self, numberOfHosts, requiredHosts, bytesToTransmit ):
 	currentAvailableHostList = self.availableList
 	print "inner %s" % currentAvailableHostList
@@ -140,12 +165,13 @@ class MapReduceScheduler( object ):
 	    print currentJob
 
 	    while requiredHosts > 0:
-		if forward:
-		    tempHosts = self.traverseOuterPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
-		    forward = False
-		else:
-		    tempHosts = self.traverseInnerPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
-		    forward = True
+		tempHosts = self.dualPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
+#		if forward:
+#		    tempHosts = self.traverseOuterPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
+#		    forward = False
+#		else:
+#		    tempHosts = self.traverseInnerPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
+#		    forward = True
 		self.hasListBeenUpdated = False
 		if ( requiredHosts == tempHosts ):
 		    print "WAITING"
