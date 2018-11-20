@@ -8,7 +8,7 @@ import sys
 class MapReduceManager( object ):
     def __init__( self, hostList, callbackFunction ):
 	 self.callbackFunction = callbackFunction
-         numberOfHosts = len( hostList )
+	 numberOfHosts = len( hostList )
 	 self.hostMapReduceList = []
          self.availableList = []
          self.pipeList = [ PerProcessPipes() for i in range( numberOfHosts ) ]
@@ -52,12 +52,12 @@ class MapReduceManager( object ):
 		poll = i.parentConnection.poll()
                 if poll == True:
                     message = i.parentConnection.recv()
-		    tempAvailableList.append( message[ 0 ] )
+		    tempAvailableList.append( message )
 
             if tempAvailableList != self.availableList:
 		self.availableList = tempAvailableList
 		self.callbackFunction( self.availableList )
-#		print self.availableList
+#		print "manager has something new"
 
 	    time.sleep( 0.025 )
 
@@ -71,7 +71,7 @@ class MapReduceManager( object ):
 #	self.hostMapReduceList[ hostTwo ].addMapJobPair( 1, numberOfBytesToSend, hostOneDestIP )
 
     def setIperf( self, hostOne, hostOneMapper, hostOneReducer, hostTwo, hostTwoMapper, hostTwoReducer, numberOfBytesToSend ):
-	print [ hostOne, hostOneMapper, hostOneReducer, hostTwo, hostTwoMapper, hostTwoReducer, numberOfBytesToSend ]
+#	print [ hostOne, hostOneMapper, hostOneReducer, hostTwo, hostTwoMapper, hostTwoReducer, numberOfBytesToSend ]
 	hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
 	hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
 	numberOfBytesToSend = numberOfBytesToSend / 2
@@ -91,7 +91,7 @@ class MapReduceManager( object ):
 	numberOfBytesToSend = numberOfBytesToSend / 2
 	self.hostMapReduceList[ hostOne ].addReducePair( hostOneMapper )
 
-#	time.sleep( 1 )
+	time.sleep( 1.5 )
 
 	self.hostMapReduceList[ hostTwo ].addMapPair( hostTwoReducer, numberOfBytesToSend, hostOneIP )
 

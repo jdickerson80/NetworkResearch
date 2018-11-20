@@ -11,16 +11,16 @@ def runReducer( port, host, ip ):
 #    print "red start"
     command = "iperf3 -s -1 -p %s" % port
     print ip + " " + command
-#    print host.cmd( command )
-    time.sleep( 3 )
+    host.cmd( command )
+#    time.sleep( 3 )
 #    print "reduce after sleep"
 
 def runMapper( list, host, ip ):
 #     print "map start"
      command = "iperf3 -c %s -n %s -p %s" % ( list[0], list[1], list[2] )
      print ip + " " + command
-#     print host.cmd( command )
-     time.sleep( 3 )
+     print host.cmd( command )
+#     time.sleep( 3 )
 #     print "map after sleep"
 
 class PerProcessPipes():
@@ -50,6 +50,9 @@ class HostMapReduce( object ):
 	portNumber = 5001
 	self.ipAddress = host.IP()
 
+	self.availableList.append( 0 )
+	self.availableList.append( 0 )
+
 	for i in self.mapPipes:
 	    i.parentConnection, i.childConnection = Pipe()
 
@@ -63,9 +66,6 @@ class HostMapReduce( object ):
 	    self.reduceWorkers.append( Process(target=self.runReducer, args=(self.reducePipes[ i ].childConnection, self.host, portNumber, self.ipAddress, ) ) )
 	    portNumber = portNumber + 1
 
-	self.availableList.append( 0 )
-	self.availableList.append( 0 )
-
 	for p in self.mapWorkers:
 	    p.start()
 
@@ -78,23 +78,23 @@ class HostMapReduce( object ):
     @staticmethod
     def runReducer( connection, host, port, ip ):
 	time.sleep( 0.5 )
-	connection.send( "ready" )
+	connection.send( 1 )
 	while True:
 	    receiveMessage = connection.recv()
-	    connection.send( "starting" )
+	    connection.send( 0 )
 	    runReducer( port, host, ip )
-	    connection.send( "ready" )
+	    connection.send( 1 )
 #	    time.sleep( 0.125 )
 
     @staticmethod
     def runMapper( connection, host, ip ):
 	time.sleep( 0.5 )
-	connection.send( "ready" )
+	connection.send( 1 )
 	while True:
 	    receiveMessage = connection.recv()
-	    connection.send( "starting" )
+	    connection.send( 0 )
 	    runMapper( receiveMessage, host, ip )
-	    connection.send( "ready" )
+	    connection.send( 1 )
 #            time.sleep( 0.125 )
 
 #    def isMapperAvailable( self, whatMapper ):
@@ -138,25 +138,24 @@ class HostMapReduce( object ):
 		if poll == True:
 		    message = i.parentConnection.recv()
 
-		    if message == "ready":
+		    if message == 1:
 			self.availableList[ count ] = self.availableList[ count ] + 1
 		    else:
 			self.availableList[ count ] = self.availableList[ count ] - 1
-	    count = 1
+	    count = count + 1
 
 	    for i in self.reducePipes:
 		poll = i.parentConnection.poll()
 		if poll == True:
 		    message = i.parentConnection.recv()
 
-		    if message == "ready":
+		    if message == 1:
 			self.availableList[ count ] = self.availableList[ count ] + 1
 		    else:
 			self.availableList[ count ] = self.availableList[ count ] - 1
 #		count = count + 1
-
+#	    print self.availableList
 	    self.schedularPipe.send( self.availableList )
-
 	    time.sleep( 0.025 )
 
     def terminate( self ):
