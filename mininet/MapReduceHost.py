@@ -84,7 +84,6 @@ class HostMapReduce( object ):
 	    connection.send( 0 )
 	    runReducer( port, host, ip )
 	    connection.send( 1 )
-#	    time.sleep( 0.125 )
 
     @staticmethod
     def runMapper( connection, host, ip ):
@@ -95,36 +94,18 @@ class HostMapReduce( object ):
 	    connection.send( 0 )
 	    runMapper( receiveMessage, host, ip )
 	    connection.send( 1 )
-#            time.sleep( 0.125 )
-
-#    def isMapperAvailable( self, whatMapper ):
-#        poll = self.mapPipes[ whatMapper ].parentConnection.poll()
-
 
     def getIP( self ):
 	return self.ipAddress
-#	reducer
-#       command = "iperf3 -s -1 -p %s" % port
-#	mapper
-#	command = "iperf3 -c %s -n %s -p %s" % ( list[0], list[1], list[2] )
-#    def addMapJobPair( self, whatMapper, bytesToTransmit, destinationIPAddress ):
-#	if whatMapper % 2 == 0:
-#	    port = 5001
-#	else:
-#	    port = 5002
-#	self.reducePipes[ whatMapper ].parentConnection.send( "go" )
-#	time.sleep( 0.1250 )
-#	print [ destinationIPAddress, bytesToTransmit, port ]
-#	self.mapPipes[ whatMapper ].parentConnection.send( [ destinationIPAddress, bytesToTransmit, port ] )
 
-    def addMapPair( self, whatMapper, bytesToTransmit, destinationIPAddress ):
+    def addMapper( self, whatMapper, bytesToTransmit, destinationIPAddress ):
 	if whatMapper % 2 == 0:
 	    port = 5001
 	else:
 	    port = 5002
 	self.mapPipes[ whatMapper ].parentConnection.send( [ destinationIPAddress, bytesToTransmit, port ] )
 
-    def addReducePair( self, whatReducer ):
+    def addReducer( self, whatReducer ):
 	self.reducePipes[ whatReducer ].parentConnection.send( "go" )
 
     def handleHostProcesses( self ):
@@ -153,8 +134,7 @@ class HostMapReduce( object ):
 			self.availableList[ count ] = self.availableList[ count ] + 1
 		    else:
 			self.availableList[ count ] = self.availableList[ count ] - 1
-#		count = count + 1
-#	    print self.availableList
+
 	    self.schedularPipe.send( self.availableList )
 	    time.sleep( 0.025 )
 
@@ -173,36 +153,3 @@ class HostMapReduce( object ):
 
 	self.handler.terminate()
 	self.handler.join()
-
-
-
-#	    def addMapJob( self, whatMapper, message ):
-#		self.mapPipes[ whatMapper ].parentConnection.send( message )
-
-#	    def addReduceJob( self, whatReduce, message ):
-#		self.reducePipes[ whatReduce ].parentConnection.send( message )
-
-#	    print tempAvailableList
-#	    if tempAvailableList != self.availableList:
-#		self.schedularPipe.send( self.availableList )
-#		print "SENDING"
-#	    shouldSend = False
-#	    for i in xrange( 0, 4 ):
-##		print i
-#		print "t %i s %i" % (tempAvailableList[ i ], self.availableList[ i ] )
-#		if tempAvailableList[ i ] != self.availableList[ i ]:
-#		    self.availableList[ i ] = tempAvailableList[ i ]
-#		    shouldSend = True
-#		    print "DIFFERENT!!!!!!!!!!!!!!!!!!!!!!!!"
-#		    break
-
-#	    print tempAvailableList
-#	    print self.availableList
-
-#	    if shouldSend == True:
-#		self.schedularPipe.send( self.availableList )
-#	    if tempAvailableList != self.availableList:
-#		self.availableList = tempAvailableList
-#		print self.availableList
-#		self.schedularPipe.send( self.availableList )
-#	    print self.availableList
