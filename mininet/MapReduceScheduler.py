@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from enum import IntEnum
+import threading
 from MapReduceManager import MapReduceManager
 from Queue import Queue
 import time
@@ -8,6 +9,17 @@ import sys
 import time
 
 class MapReduceScheduler( object ):
+    class Statistics( object ):
+        def __init__( self ):
+            self.job = "Empty"
+            self.startTime = 0
+            self.endTime = 0
+            self.hosts = []
+
+        def __str__( self ):
+            hosts = '[%s]' % ', '.join( map( str, self.hosts ) )
+            return "%s, %s, %s, %s" % ( self.job, self.startTime, self.endTime, hosts )
+
     class BytesPerHostEnum( IntEnum ):
         BytesPerHost = 64000000
 
@@ -21,14 +33,51 @@ class MapReduceScheduler( object ):
         self.__processJobs( data )
 	self.availableList = []
 	self.hasListBeenUpdated = False
-	self.jobList = []
+        self.jobStats = []
+        self.logger = threading.Thread( target=self.handleJobLog )
 
 	print "Queue size: %i" % self.workQueue.qsize()
 	self.manager = MapReduceManager( hostList, self.managerCallback )
 	self.hasListBeenUpdated = False
 
+
+    def startLoggerThread( self ):
+        self.loggerRunning = True
+        self.logger.start()
+
     def terminate( self ):
-	self.manager.terminate()
+        self.manager.terminate()
+        if self.loggerRunning == True:
+            self.loggerRunning = False
+            self.logger.join()
+
+    def handleJobLog( self ):
+        beginningJobCounter = 0
+        hostList = []
+        time.sleep( 1 )
+        print "JobLogRunning"
+
+        while self.loggerRunning == True:
+#            if len( self.jobStats ) == beginningJobCounter + 1:
+#                print "BROKE"
+#                break
+            while self.hasListBeenUpdated == False:
+#                print "sleeeppy"
+                time.sleep( 0.025 )
+            for i in xrange( beginningJobCounter, len( self.jobStats ) ):
+                if self.jobStats[ i ].endTime == 0:
+                    hostList = self.jobStats[ i ].hosts
+                    listComplete = True
+                    for host in hostList:
+                        if self.availableList[ host - 1 ][ 0 ] != 2 and self.availableList[ host - 1 ][ 1 ]:
+                            listComplete = False
+                            break
+                    if listComplete == True:
+                        self.jobStats[ i ].endTime = self.getTime()
+                        beginningJobCounter = i
+
+
+            time.sleep( 0.025 )
 
     @staticmethod
     def getTime():
@@ -64,7 +113,7 @@ class MapReduceScheduler( object ):
 	    if ( int ( hostsNeeded ) > int ( self.numberOfHosts ) ):
 		continue
 
-	    self.workQueue.put( [ int ( hostsNeeded ), int ( jobComponents[ 2 ] ) ], block=False )
+            self.workQueue.put( [ int ( hostsNeeded ), int ( jobComponents[ 2 ] ), jobComponents[ 0 ] ], block=False )
 
 
     def managerCallback( self, availableList ):
@@ -98,9 +147,9 @@ class MapReduceScheduler( object ):
 	return requiredHosts
 
 
-    def dualPairs( self, numberOfHosts, requiredHosts, bytesToTransmit ):
+    def dualPairs( self, numberOfHosts, requiredHosts, bytesToTransmit, counter ):
 	currentAvailableHostList = self.availableList
-	print "test %s" % currentAvailableHostList
+#	print "test %s" % currentAvailableHostList
 	for j in xrange( numberOfHosts ):
 	    if currentAvailableHostList[ j ][ 0 ] == 2:
 		mapperHost = j
@@ -114,6 +163,8 @@ class MapReduceScheduler( object ):
 			    break
 			reducerHost = h
 			requiredHosts = requiredHosts - 1
+                        self.jobStats[ counter ].hosts.append( reducerHost + 1 )
+                        self.jobStats[ counter ].hosts.append( mapperHost + 1 )
 			self.manager.setIperfPair( reducerHost, mapperHost, bytesToTransmit )
 			break
 		    else:
@@ -153,6 +204,8 @@ class MapReduceScheduler( object ):
 	    raise LookupError( "Running test on an empty queue" )
 	currentJob = []
 	numberOfHosts = self.numberOfHosts
+        counter = 0
+        self.startLoggerThread()
 
 	for i in xrange( self.workQueue.qsize() ):
 	    currentAvailableHostList = self.availableList
@@ -162,10 +215,13 @@ class MapReduceScheduler( object ):
 	    tempHosts = requiredHosts
 	    totalRequiredHosts = currentJob[ 0 ]
 	    forward = True
-	    print currentJob
-
+#	    print currentJob
+            self.jobStats.append( self.Statistics() )
+            self.jobStats[ counter ].job = currentJob[ 2 ]
+            self.jobStats[ counter ].startTime = self.getTime()
+#            print self.jobStats[ counter ]
 	    while requiredHosts > 0:
-		tempHosts = self.dualPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
+                tempHosts = self.dualPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts, counter )
 #		if forward:
 #		    tempHosts = self.traverseOuterPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
 #		    forward = False
@@ -183,4 +239,9 @@ class MapReduceScheduler( object ):
 		    requiredHosts = tempHosts
 		time.sleep( 0.125 )
 	    time.sleep( 0.125 )
+            counter = counter + 1
+
+        with open('jobLog%s.txt' % self.getTime(), 'w') as f:
+            for item in self.jobStats:
+                f.write("%s\n" % item)
 

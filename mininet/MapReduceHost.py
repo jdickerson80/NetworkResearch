@@ -10,7 +10,7 @@ import sys
 def runReducer( port, host, ip ):
 #    print "red start"
     command = "iperf3 -s -1 -p %s" % port
-    print ip + " " + command
+#    print ip + " " + command
     host.cmd( command )
 #    time.sleep( 3 )
 #    print "reduce after sleep"
@@ -18,8 +18,8 @@ def runReducer( port, host, ip ):
 def runMapper( list, host, ip ):
 #     print "map start"
      command = "iperf3 -c %s -n %s -p %s" % ( list[0], list[1], list[2] )
-     print ip + " " + command
-     print host.cmd( command )
+#     print ip + " " + command
+     host.cmd( command )
 #     time.sleep( 3 )
 #     print "map after sleep"
 
