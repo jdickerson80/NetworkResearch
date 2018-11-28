@@ -1,15 +1,16 @@
 #!/usr/bin/python
 
 from mininet.node import *
-from MapReduceScheduler import Statistics
+from MapReduceScheduler import *
 from multiprocessing import Process
 from threading import Thread
 import time
 import sys
 
-class Job( Process ):
-    def __init__( self, schedularPipe ):
-        self.schedularPipe = schedularPipe
+class MapReduceJob( Process ):
+    def __init__( self, schedulerPipe ):
+	super( MapReduceJob, self ).__init__()
+	self.schedulerPipe = schedulerPipe
 
     @staticmethod
     def getTime():
@@ -58,19 +59,19 @@ class Job( Process ):
         threadList = []
         jobStatistic = None
         while True:
-            receiveMessage = self.schedularPipe.recv()
+	    receiveMessage = self.schedulerPipe.recv()
             jobStatistic = receiveMessage
             for pair in xrange( 0, len( jobStatistic.hosts ), 2 ):
                 threadList.append( self.setIperfPair( jobStatistic.hosts( pair ), jobStatistic.hosts( pair + 1 ), jobStatistic.bytesToSend ) )
 
             jobStatistic.startTime = self.getTime()
 
-            for thread in threads:
+	    for thread in threadList:
                 thread.start()
                 time.sleep( 0.5 )
 
-            for thread in threads:
+	    for thread in threadList:
                 thread.join()
 
-            jobStatistic.startTime = self.getTime()
-            connection.send( jobStatistic )
+	    jobStatistic.endTime = self.getTime()
+	    self.schedulerPipe.send( jobStatistic )

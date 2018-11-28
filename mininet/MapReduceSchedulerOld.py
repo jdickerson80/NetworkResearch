@@ -2,20 +2,13 @@
 
 from enum import IntEnum
 import threading
-from MapReduceJob import *
-from multiprocessing import Pipe
+from MapReduceManager import MapReduceManager
 from Queue import Queue
 import time
 import sys
 import time
 
 class MapReduceScheduler( object ):
-
-    class PerProcessPipes():
-	def __init__( self ):
-	    self.parentConnection = None
-	    self.childConnection  = None
-
     class Statistics( object ):
         def __init__( self ):
             self.job = "Empty"
@@ -37,64 +30,55 @@ class MapReduceScheduler( object ):
 
 	self.workQueue = Queue()
 	self.numberOfHosts = int ( len( hostList ) )
-	self.hostList = hostList
         self.__preprocessJobList( data )
         self.__processJobs( data )
-	self.jobList = []
-	self.availableList = [ [ 2, 2 ] for i in xrange( self.numberOfHosts ) ]
-	self.pipeList = [ self.PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
-	self.handleJobPipeThreadRunning = True
-
-	for i in self.pipeList:
-	    i.parentConnection, i.childConnection = Pipe()
-
-	for i in xrange( self.numberOfHosts ):
-	    job = MapReduceJob( schedulerPipe = self.pipeList[ i ].childConnection )
-	    job.start()
-	    self.jobList.append( job )
-
+	self.availableList = []
 	self.hasListBeenUpdated = False
         self.jobStats = []
-	self.handleJobPipeThread = threading.Thread( target=self.handleJobPipe )
+        self.logger = threading.Thread( target=self.handleJobLog )
 
-	self.handleJobPipeThread.start()
 	print "Queue size: %i" % self.workQueue.qsize()
+	self.manager = MapReduceManager( hostList, self.managerCallback )
 	self.hasListBeenUpdated = False
 
+
+    def startLoggerThread( self ):
+        self.loggerRunning = True
+        self.logger.start()
+
     def terminate( self ):
-	for i in self.jobList:
-	    i.terminate()
+        self.manager.terminate()
+        if self.loggerRunning == True:
+            self.loggerRunning = False
+            self.logger.join()
 
-	for i in self.jobList:
-	    i.join()
-
-	self.handleJobPipeThreadRunning = False
-	self.handleJobPipeThread.join()
-
-    def handleJobPipe( self ):
+    def handleJobLog( self ):
         beginningJobCounter = 0
         hostList = []
         time.sleep( 1 )
-#        print "JobLogRunning"
+        print "JobLogRunning"
 
-	while self.handleJobPipeThreadRunning == True:
-#	    while self.hasListBeenUpdated == False:
-##                print "sleeeppy"
-#		time.sleep( 0.025 )
-#	    for i in xrange( beginningJobCounter, len( self.jobStats ) ):
-#		if self.jobStats[ i ].endTime == 0:
-#		    hostList = self.jobStats[ i ].hosts
-#		    listComplete = True
-#		    for host in hostList:
-#			if self.availableList[ host - 1 ][ 0 ] != 2 and self.availableList[ host - 1 ][ 1 ]:
-#			    listComplete = False
-#			    break
-#		    if listComplete == True:
-#			self.jobStats[ i ].endTime = self.getTime()
-#			beginningJobCounter = i
+        while self.loggerRunning == True:
+#            if len( self.jobStats ) == beginningJobCounter + 1:
+#                print "BROKE"
+#                break
+            while self.hasListBeenUpdated == False:
+#                print "sleeeppy"
+                time.sleep( 0.025 )
+            for i in xrange( beginningJobCounter, len( self.jobStats ) ):
+                if self.jobStats[ i ].endTime == 0:
+                    hostList = self.jobStats[ i ].hosts
+                    listComplete = True
+                    for host in hostList:
+                        if self.availableList[ host - 1 ][ 0 ] != 2 and self.availableList[ host - 1 ][ 1 ]:
+                            listComplete = False
+                            break
+                    if listComplete == True:
+                        self.jobStats[ i ].endTime = self.getTime()
+                        beginningJobCounter = i
 
 
-	    time.sleep( 0.025 )
+            time.sleep( 0.025 )
 
     @staticmethod
     def getTime():
