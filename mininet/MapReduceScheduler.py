@@ -15,6 +15,7 @@ class MapReduceScheduler( object ):
             self.startTime = 0
             self.endTime = 0
             self.hosts = []
+            self.bytesToSend = None
 
         def __str__( self ):
             hosts = '[%s]' % ', '.join( map( str, self.hosts ) )
