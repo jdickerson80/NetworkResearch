@@ -9,24 +9,24 @@ import time
 import sys
 import time
 
+class Statistics( object ):
+    def __init__( self ):
+	self.job = "Empty"
+	self.startTime = 0
+	self.endTime = 0
+	self.hosts = []
+	self.bytesToSend = None
+
+    def __str__( self ):
+	hosts = '[%s]' % ', '.join( map( str, self.hosts ) )
+	return "%s, %s, %s, %s" % ( self.job, self.startTime, self.endTime, hosts )
+
 class MapReduceScheduler( object ):
 
     class PerProcessPipes():
 	def __init__( self ):
 	    self.parentConnection = None
 	    self.childConnection  = None
-
-    class Statistics( object ):
-        def __init__( self ):
-            self.job = "Empty"
-            self.startTime = 0
-            self.endTime = 0
-            self.hosts = []
-            self.bytesToSend = None
-
-        def __str__( self ):
-            hosts = '[%s]' % ', '.join( map( str, self.hosts ) )
-            return "%s, %s, %s, %s" % ( self.job, self.startTime, self.endTime, hosts )
 
     class BytesPerHostEnum( IntEnum ):
         BytesPerHost = 64000000
@@ -41,15 +41,16 @@ class MapReduceScheduler( object ):
         self.__preprocessJobList( data )
         self.__processJobs( data )
 	self.jobList = []
-	self.availableList = [ [ 2, 2 ] for i in xrange( self.numberOfHosts ) ]
+        self.availableList = [ 2 for i in xrange( self.numberOfHosts ) ]
 	self.pipeList = [ self.PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
 	self.handleJobPipeThreadRunning = True
 
+        print self.availableList
 	for i in self.pipeList:
 	    i.parentConnection, i.childConnection = Pipe()
 
 	for i in xrange( self.numberOfHosts ):
-	    job = MapReduceJob( schedulerPipe = self.pipeList[ i ].childConnection )
+	    job = MapReduceJob( schedulerPipe = self.pipeList[ i ].childConnection, hostList = self.hostList )
 	    job.start()
 	    self.jobList.append( job )
 
@@ -97,10 +98,6 @@ class MapReduceScheduler( object ):
 	    time.sleep( 0.025 )
 
     @staticmethod
-    def getTime():
-	return time.strftime( "%H:%M:%S", time.localtime() )
-
-    @staticmethod
     def __preprocessJobList( workFile ):
 	for job in workFile:
 	    job = job.replace( "\n", "" )
@@ -132,46 +129,14 @@ class MapReduceScheduler( object ):
 
             self.workQueue.put( [ int ( hostsNeeded ), int ( jobComponents[ 2 ] ), jobComponents[ 0 ] ], block=False )
 
-
-    def managerCallback( self, availableList ):
-	self.availableList = availableList
-	self.hasListBeenUpdated = True
-
-    def traverseOuterPairs( self, numberOfHosts, requiredHosts, bytesToTransmit ):
+    def findHosts( self, numberOfHosts, requiredHosts, counter ):
 	currentAvailableHostList = self.availableList
-	print "outer %s" % currentAvailableHostList
+        print "test %s" % currentAvailableHostList
 	for j in xrange( numberOfHosts ):
-	    if currentAvailableHostList[ j ][ 0 ] != 0:
-		mapperHost = j
-		mapperHostNumber = currentAvailableHostList[ j ][ 0 ] - 1
-		for h in xrange( numberOfHosts - 1, 0, -1 ):
-		    if currentAvailableHostList[ h ][ 1 ] != 0:
-			if h == j:
-			    print "same host"
-			    break
-			elif j > h:
-			    print "wrap around"
-			    break
-			reducerHost = h
-			reducerHostNumber = currentAvailableHostList[ h ][ 1 ] - 1
-			requiredHosts = requiredHosts - 1
-			self.manager.setIperf( reducerHost, reducerHostNumber, mapperHost, mapperHostNumber, bytesToTransmit )
-			break
-		    else:
-			if h == 0:
-			    j = 0
-		break
-	return requiredHosts
-
-
-    def dualPairs( self, numberOfHosts, requiredHosts, bytesToTransmit, counter ):
-	currentAvailableHostList = self.availableList
-#	print "test %s" % currentAvailableHostList
-	for j in xrange( numberOfHosts ):
-	    if currentAvailableHostList[ j ][ 0 ] == 2:
+            if currentAvailableHostList[ j ] == 2:
 		mapperHost = j
 		for h in xrange( numberOfHosts - 1, 0, -1 ):
-		    if currentAvailableHostList[ h ][ 1 ] == 2:
+                    if currentAvailableHostList[ h ] == 2:
 			if h == j:
 			    print "same host"
 			    break
@@ -180,35 +145,10 @@ class MapReduceScheduler( object ):
 			    break
 			reducerHost = h
 			requiredHosts = requiredHosts - 1
-                        self.jobStats[ counter ].hosts.append( reducerHost + 1 )
-                        self.jobStats[ counter ].hosts.append( mapperHost + 1 )
-			self.manager.setIperfPair( reducerHost, mapperHost, bytesToTransmit )
-			break
-		    else:
-			if h == 0:
-			    j = 0
-		break
-	return requiredHosts
-
-    def traverseInnerPairs( self, numberOfHosts, requiredHosts, bytesToTransmit ):
-	currentAvailableHostList = self.availableList
-	print "inner %s" % currentAvailableHostList
-	for j in xrange( numberOfHosts ):
-	    if currentAvailableHostList[ j ][ 1 ] != 0:
-		reducerHost = j
-		reducerHostNumber = currentAvailableHostList[ j ][ 1 ] - 1
-		for h in xrange( numberOfHosts - 1, 0, -1 ):
-		    if currentAvailableHostList[ h ][ 0 ] != 0:
-			if h == j:
-			    print "same host"
-			    break
-			elif j > h:
-			    print "wrap around"
-			    break
-			mapperHost = h
-			mapperHostNumber = currentAvailableHostList[ h ][ 0 ] - 1
-			requiredHosts = requiredHosts - 1
-			self.manager.setIperf( reducerHost, reducerHostNumber, mapperHost, mapperHostNumber, bytesToTransmit )
+			self.availableList[ j ] = 0
+			self.availableList[ h ] = 0
+			self.jobStats[ counter ].hosts.append( reducerHost )
+			self.jobStats[ counter ].hosts.append( mapperHost )
 			break
 		    else:
 			if h == 0:
@@ -222,31 +162,21 @@ class MapReduceScheduler( object ):
 	currentJob = []
 	numberOfHosts = self.numberOfHosts
         counter = 0
-        self.startLoggerThread()
 
 	for i in xrange( self.workQueue.qsize() ):
 	    currentAvailableHostList = self.availableList
 	    currentJob = self.workQueue.get_nowait()
-	    startTime = self.getTime()
-	    requiredHosts = currentJob[ 0 ]
+            requiredHosts = currentJob[ 0 ]
 	    tempHosts = requiredHosts
 	    totalRequiredHosts = currentJob[ 0 ]
-	    forward = True
-#	    print currentJob
-            self.jobStats.append( self.Statistics() )
+#            print currentJob
+	    self.jobStats.append( Statistics() )
             self.jobStats[ counter ].job = currentJob[ 2 ]
-            self.jobStats[ counter ].startTime = self.getTime()
-#            print self.jobStats[ counter ]
-	    while requiredHosts > 0:
-                tempHosts = self.dualPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts, counter )
-#		if forward:
-#		    tempHosts = self.traverseOuterPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
-#		    forward = False
-#		else:
-#		    tempHosts = self.traverseInnerPairs( numberOfHosts, requiredHosts, currentJob[ 1 ] / totalRequiredHosts  )
-#		    forward = True
-		self.hasListBeenUpdated = False
-		if ( requiredHosts == tempHosts ):
+	    self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
+            while requiredHosts > 0:
+                self.hasListBeenUpdated = False
+		tempHosts = self.findHosts( numberOfHosts, requiredHosts, counter )
+                if requiredHosts == tempHosts:
 		    print "WAITING"
 		    while ( True ):
 			if self.hasListBeenUpdated == True:
@@ -256,6 +186,7 @@ class MapReduceScheduler( object ):
 		    requiredHosts = tempHosts
 		time.sleep( 0.125 )
 	    time.sleep( 0.125 )
+	    self.pipeList[ counter ].parentConnection.send( self.jobStats[ counter ] )
             counter = counter + 1
 
         with open('jobLog%s.txt' % self.getTime(), 'w') as f:

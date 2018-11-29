@@ -3,74 +3,113 @@
 from mininet.node import *
 from MapReduceScheduler import *
 from multiprocessing import Process
-from threading import Thread
+import threading
 import time
 import sys
 
+class ReducerThread( threading.Thread ):
+    def __init__( self, host, port ):
+	threading.Thread.__init__( self )
+	self.host = host
+	self.port = port
+	self.myIP = self.host.IP()
+
+    def run( self ):
+    #    print "red start"
+	command = "iperf3 -s -1 -p %s" % self.port
+	shouldRun = True
+	print self.myIP + " " + command
+	while shouldRun == True:
+	    try:
+		self.host.cmd( command )
+		print "reducer BROKE"
+		shouldRun = False
+	    except AssertionError as error:
+#		print "reduce continue"
+		time.sleep( 0.125 )
+
+    #    time.sleep( 3 )
+    #    print "reduce after sleep"
+
+class MapperThread( threading.Thread ):
+    def __init__( self, host, port, destinationIP, bytesToSend ):
+	threading.Thread.__init__( self )
+	self.host = host
+	self.port = port
+	self.destinationIP = destinationIP
+	self.bytesToSend = bytesToSend
+	self.myIP = self.host.IP()
+
+    def run( self ):
+#	 print "map start"
+	 shouldRun = True
+	 command = "iperf3 -c %s -n %s -p %s" % ( self.destinationIP, self.bytesToSend, self.port )
+	 print self.myIP + " " + command
+	 while shouldRun == True:
+	     try:
+		 print "mapper BROKE"
+		 self.host.cmd( command )
+		 shouldRun = False
+	     except AssertionError as error:
+#		 print "map continue"
+		 time.sleep( 0.125 )
+
+    #     time.sleep( 3 )
+    #     print "map after sleep"
+
+
 class MapReduceJob( Process ):
-    def __init__( self, schedulerPipe ):
+    def __init__( self, schedulerPipe, hostList ):
 	super( MapReduceJob, self ).__init__()
 	self.schedulerPipe = schedulerPipe
+	self.hostList = hostList
+	self.threads = []
 
     @staticmethod
     def getTime():
         return time.strftime( "%H:%M:%S", time.localtime() )
 
-    @staticmethod
-    def runReducer( port, host, ip ):
-    #    print "red start"
-        command = "iperf3 -s -1 -p %s" % port
-    #    print ip + " " + command
-        host.cmd( command )
-    #    time.sleep( 3 )
-    #    print "reduce after sleep"
 
-    @staticmethod
-    def runMapper( host, destinationIP, port, bytesToSend ):
-    #     print "map start"
-         command = "iperf3 -c %s -n %s -p %s" % ( destinationOP, bytesToSend, port )
-    #     print ip + " " + command
-         host.cmd( command )
-    #     time.sleep( 3 )
-    #     print "map after sleep"
-
-    @staticmethod
-    def setIperfPair( hostOne, hostTwo, numberOfBytesToSend ):
-        threads = []
-        hostOneIP = hostOne.getIP()
-        hostTwoIP = hostTwo.getIP()
+    def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend ):
+#	threads = []
+	hostOneIP = hostOne.IP()
+	hostTwoIP = hostTwo.IP()
         numberOfBytesToSend = numberOfBytesToSend / 2
 
-        threads.append( Thread( target=self.runReducer( 5001, hostOne, hostOneIP ) ) )
-        threads.append( Thread( target=self.runMapper( hostTwo, hostOneIP, 5001, numberOfBytesToSend ) ) )
+	self.threads.append( ReducerThread( hostOne, 5001 ) )
+	self.threads.append( ReducerThread( hostOne, 5002 ) )
+	self.threads.append( ReducerThread( hostTwo, 5001 ) )
+	self.threads.append( ReducerThread( hostTwo, 5002 ) )
 
-        threads.append( Thread( target=self.runReducer( 5002, hostTwo, hostTwoIP ) ) )
-        threads.append( Thread( target=self.runMapper( hostOne, hostTwoIP, 5001, numberOfBytesToSend ) ) )
-
-        threads.append( Thread( target=self.runReducer( 5001, hostTwo, hostTwoIP ) ) )
-        threads.append( Thread( target=self.runMapper( hostOne, hostTwoIP, 5001, numberOfBytesToSend ) ) )
-
-        threads.append( Thread( target=self.runReducer( 5002, hostOne, hostTwoIP ) ) )
-        threads.append( Thread( target=self.runMapper( hostTwo, hostOneIP, 5001, numberOfBytesToSend ) ) )
-
-        return threads
+	self.threads.append( MapperThread(  hostOne, 5001, hostTwoIP, numberOfBytesToSend ) )
+	self.threads.append( MapperThread(  hostOne, 5002, hostTwoIP, numberOfBytesToSend ) )
+	self.threads.append( MapperThread(  hostTwo, 5001, hostOneIP, numberOfBytesToSend ) )
+	self.threads.append( MapperThread(  hostTwo, 5002, hostOneIP, numberOfBytesToSend ) )
+#	print "DONE!!!"
+#	print self.threads
 
     def run( self ):
-        threadList = []
-        jobStatistic = None
+	jobStatistic = None
+
         while True:
+	    self.threads = []
 	    receiveMessage = self.schedulerPipe.recv()
             jobStatistic = receiveMessage
+	    print jobStatistic
+#	    print len( jobStatistic.hosts )
             for pair in xrange( 0, len( jobStatistic.hosts ), 2 ):
-                threadList.append( self.setIperfPair( jobStatistic.hosts( pair ), jobStatistic.hosts( pair + 1 ), jobStatistic.bytesToSend ) )
+#		print jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ]
+		self.setIperfPair( self.hostList[ jobStatistic.hosts[ pair ] ], self.hostList[ jobStatistic.hosts[ pair + 1 ] ], jobStatistic.bytesToSend )
 
             jobStatistic.startTime = self.getTime()
 
-	    for thread in threadList:
-                thread.start()
-                time.sleep( 0.5 )
+	    for thread in self.threads:
+		thread.start()
+#		while thread.is_alive() == False:
+#		    print "WAITING!!!!!"
+		time.sleep( 1 )
 
-	    for thread in threadList:
+	    for thread in self.threads:
                 thread.join()
 
 	    jobStatistic.endTime = self.getTime()
