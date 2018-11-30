@@ -20,7 +20,6 @@ class MapReduceJob( Process ):
         return time.strftime( "%H:%M:%S", time.localtime() )
 
     def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend ):
-#	threads = []
         hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
         hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
         numberOfBytesToSend = numberOfBytesToSend / 2
@@ -43,8 +42,6 @@ class MapReduceJob( Process ):
         time.sleep( 0.5 )
         self.hostMapReduceList[ hostOne ].addMapper( 1, numberOfBytesToSend, hostTwoIP )
         time.sleep( 0.5 )
-#	print "DONE!!!"
-#	print self.threads
 
     def run( self ):
 	jobStatistic = None
@@ -53,33 +50,24 @@ class MapReduceJob( Process ):
             jobPipes = []
 	    receiveMessage = self.schedulerPipe.recv()
             jobStatistic = receiveMessage
-#	    print jobStatistic
-#	    print len( jobStatistic.hosts )
             jobStatistic.startTime = self.getTime()
             for pair in xrange( 0, len( jobStatistic.hosts ), 2 ):
-#		print jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ]
                 self.setIperfPair( jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ], jobStatistic.bytesToSend )
                 jobPipes.append( self.hostPipeList[ pair ] )
                 jobPipes.append( self.hostPipeList[ pair + 1 ] )
 
-#            print "length = %i" % len( jobPipes )
             while True:
                 count = 0
                 for i in jobPipes:
                     poll = i.parentConnection.poll()
                     if poll == True:
                         message = i.parentConnection.recv()
-                        print message
-#                        print message
                         if message == [ 2, 2 ]:
                             del jobPipes[ count ]
                     count += 1
                 if len( jobPipes ) == 0:
-#                    print "broke"
                     break
                 time.sleep( 0.025 )
-#                print count
 
 	    jobStatistic.endTime = self.getTime()
-            print jobStatistic
 	    self.schedulerPipe.send( jobStatistic )

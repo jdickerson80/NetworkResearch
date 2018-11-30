@@ -10,7 +10,7 @@ import sys
 def runReducer( port, host, ip ):
 #    print "red start"
     command = "iperf3 -s -1 -p %s" % port
-#    print ip + " " + command
+    print ip + " " + command
     host.cmd( command )
 #    time.sleep( 3 )
 #    print "reduce after sleep"
@@ -18,15 +18,11 @@ def runReducer( port, host, ip ):
 def runMapper( list, host, ip ):
 #     print "map start"
      command = "iperf3 -c %s -n %s -p %s" % ( list[0], list[1], list[2] )
-#     print ip + " " + command
+     print ip + " " + command
      host.cmd( command )
 #     time.sleep( 3 )
 #     print "map after sleep"
 
-#class PerProcessPipes():
-#    def __init__( self ):
-#	self.parentConnection = None
-#	self.childConnection  = None
 
 class HostMapReduce( object ):
     class MapReduceClassIndex( IntEnum ):
@@ -110,7 +106,7 @@ class HostMapReduce( object ):
 
     def handleHostProcesses( self ):
 	self.schedularPipe.send( self.availableList )
-        tempAvailableList = self.availableList
+
 	while True:
 	    count = 0
 	    for i in self.mapPipes:
@@ -120,9 +116,9 @@ class HostMapReduce( object ):
 		    message = i.parentConnection.recv()
 #                    print message
 		    if message == 1:
-                        tempAvailableList[ count ] += 1
+			self.availableList[ count ] += 1
 		    else:
-                        tempAvailableList[ count ] -= 1
+			self.availableList[ count ] -= 1
 	    count = count + 1
 
 	    for i in self.reducePipes:
@@ -131,14 +127,15 @@ class HostMapReduce( object ):
 		    message = i.parentConnection.recv()
 #                    print message
 		    if message == 1:
-                        tempAvailableList[ count ] += 1
+			self.availableList[ count ] += 1
 		    else:
-                        tempAvailableList[ count ] -= 1
+			self.availableList[ count ] -= 1
 #            print tempAvailableList
 #            if tempAvailableList[ 0 ] != self.availableList[ 0 ] and tempAvailableList[ 1 ] != self.availableList[ 1 ]:
 #                self.availableList = tempAvailableList
 #                print "ASDFSADF" + self.availableList
-                self.schedularPipe.send( tempAvailableList )
+#	    print self.availableList
+	    self.schedularPipe.send( self.availableList )
 	    time.sleep( 0.025 )
 
     def terminate( self ):

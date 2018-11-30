@@ -21,7 +21,7 @@ class Statistics( object ):
 
     def __str__( self ):
 	hosts = '[%s]' % ', '.join( map( str, self.hosts ) )
-        return "%s, %s, %s, %s %i" % ( self.job, self.startTime, self.endTime, hosts, self.bytesToSend )
+	return "%s, %s, %s, %s, %i" % ( self.job, self.startTime, self.endTime, hosts, self.bytesToSend )
 
 class MapReduceScheduler( object ):
 
@@ -61,23 +61,20 @@ class MapReduceScheduler( object ):
 	    job.start()
 	    self.jobList.append( job )
 
-	self.hasListBeenUpdated = False
+	self.hasListBeenUpdated = True
         self.jobStats = []
 	self.handleJobPipeThread = threading.Thread( target=self.handleJobPipe )
 
 	self.handleJobPipeThread.start()
 	print "Queue size: %i" % self.workQueue.qsize()
-	self.hasListBeenUpdated = False
 
         for i in self.hostPipeList:
             i.parentConnection.recv()
 
     def terminate( self ):
+	self.handleJobPipeThreadRunning = False
         for i in self.hostList:
 	    i.terminate()
-
-        for i in self.hostList:
-	    i.join()
 
         for i in self.jobList:
             i.terminate()
@@ -85,33 +82,24 @@ class MapReduceScheduler( object ):
         for i in self.jobList:
             i.join()
 
-	self.handleJobPipeThreadRunning = False
 	self.handleJobPipeThread.join()
 
     def handleJobPipe( self ):
-        beginningJobCounter = 0
-        hostList = []
-        time.sleep( 1 )
-#        print "JobLogRunning"
-
+	jobStatistic = None
+	time.sleep( 0.5 )
 	while self.handleJobPipeThreadRunning == True:
-#	    while self.hasListBeenUpdated == False:
-##                print "sleeeppy"
-#		time.sleep( 0.025 )
-#	    for i in xrange( beginningJobCounter, len( self.jobStats ) ):
-#		if self.jobStats[ i ].endTime == 0:
-#		    hostList = self.jobStats[ i ].hosts
-#		    listComplete = True
-#		    for host in hostList:
-#			if self.availableList[ host - 1 ][ 0 ] != 2 and self.availableList[ host - 1 ][ 1 ]:
-#			    listComplete = False
-#			    break
-#		    if listComplete == True:
-#			self.jobStats[ i ].endTime = self.getTime()
-#			beginningJobCounter = i
-
-
+	    for i in self.jobPipeList:
+		poll = i.parentConnection.poll()
+		if poll == True:
+		    message = i.parentConnection.recv()
+		    jobStatistic = message
+		    for i in jobStatistic.hosts:
+#			print i
+			self.availableList[ i ] = 2
+		    self.hasListBeenUpdated = True
+#		    print message
 	    time.sleep( 0.025 )
+
 
     @staticmethod
     def __preprocessJobList( workFile ):
@@ -159,6 +147,7 @@ class MapReduceScheduler( object ):
 			elif j > h:
 			    print "wrap around"
 			    break
+			print counter
 			reducerHost = h
 			requiredHosts = requiredHosts - 1
 			self.availableList[ j ] = 0
