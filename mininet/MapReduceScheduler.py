@@ -3,6 +3,8 @@
 from enum import IntEnum
 import threading
 from MapReduceJob import *
+from MapReduceHost import *
+from PerProcessPipes import *
 from multiprocessing import Pipe
 from Queue import Queue
 import time
@@ -19,14 +21,9 @@ class Statistics( object ):
 
     def __str__( self ):
 	hosts = '[%s]' % ', '.join( map( str, self.hosts ) )
-	return "%s, %s, %s, %s" % ( self.job, self.startTime, self.endTime, hosts )
+        return "%s, %s, %s, %s %i" % ( self.job, self.startTime, self.endTime, hosts, self.bytesToSend )
 
 class MapReduceScheduler( object ):
-
-    class PerProcessPipes():
-	def __init__( self ):
-	    self.parentConnection = None
-	    self.childConnection  = None
 
     class BytesPerHostEnum( IntEnum ):
         BytesPerHost = 64000000
@@ -41,16 +38,26 @@ class MapReduceScheduler( object ):
         self.__preprocessJobList( data )
         self.__processJobs( data )
 	self.jobList = []
+        self.hostMapReduceList = []
         self.availableList = [ 2 for i in xrange( self.numberOfHosts ) ]
-	self.pipeList = [ self.PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
+        self.jobPipeList = [ PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
+        self.hostPipeList = [ PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
 	self.handleJobPipeThreadRunning = True
+        counter = 0
 
         print self.availableList
-	for i in self.pipeList:
+        for i in self.jobPipeList:
 	    i.parentConnection, i.childConnection = Pipe()
 
+        for i in self.hostPipeList:
+            i.parentConnection, i.childConnection = Pipe()
+
+        for i in self.hostList:
+            self.hostMapReduceList.append( HostMapReduce( host = i, schedularPipe = self.hostPipeList[ counter ].childConnection ) )
+            counter = counter + 1
+
 	for i in xrange( self.numberOfHosts ):
-	    job = MapReduceJob( schedulerPipe = self.pipeList[ i ].childConnection, hostList = self.hostList )
+            job = MapReduceJob( schedulerPipe = self.jobPipeList[ i ].childConnection, hostMapReduceList = self.hostMapReduceList, hostPipeList = self.hostPipeList )
 	    job.start()
 	    self.jobList.append( job )
 
@@ -62,12 +69,21 @@ class MapReduceScheduler( object ):
 	print "Queue size: %i" % self.workQueue.qsize()
 	self.hasListBeenUpdated = False
 
+        for i in self.hostPipeList:
+            i.parentConnection.recv()
+
     def terminate( self ):
-	for i in self.jobList:
+        for i in self.hostList:
 	    i.terminate()
 
-	for i in self.jobList:
+        for i in self.hostList:
 	    i.join()
+
+        for i in self.jobList:
+            i.terminate()
+
+        for i in self.jobList:
+            i.join()
 
 	self.handleJobPipeThreadRunning = False
 	self.handleJobPipeThread.join()
@@ -162,6 +178,8 @@ class MapReduceScheduler( object ):
 	currentJob = []
 	numberOfHosts = self.numberOfHosts
         counter = 0
+#        for i in xrange( self.workQueue.qsize() ):
+#            print self.workQueue.get_nowait()
 
 	for i in xrange( self.workQueue.qsize() ):
 	    currentAvailableHostList = self.availableList
@@ -186,7 +204,8 @@ class MapReduceScheduler( object ):
 		    requiredHosts = tempHosts
 		time.sleep( 0.125 )
 	    time.sleep( 0.125 )
-	    self.pipeList[ counter ].parentConnection.send( self.jobStats[ counter ] )
+#            print self.jobStats[ counter ]
+            self.jobPipeList[ counter ].parentConnection.send( self.jobStats[ counter ] )
             counter = counter + 1
 
         with open('jobLog%s.txt' % self.getTime(), 'w') as f:

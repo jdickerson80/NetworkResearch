@@ -2,89 +2,47 @@
 
 from mininet.node import *
 from MapReduceScheduler import *
+from MapReduceHost import *
 from multiprocessing import Process
-import threading
+#import threading
 import time
 import sys
 
-class ReducerThread( threading.Thread ):
-    def __init__( self, host, port ):
-	threading.Thread.__init__( self )
-	self.host = host
-	self.port = port
-	self.myIP = self.host.IP()
-
-    def run( self ):
-    #    print "red start"
-	command = "iperf3 -s -1 -p %s" % self.port
-	shouldRun = True
-	print self.myIP + " " + command
-	while shouldRun == True:
-	    try:
-		self.host.cmd( command )
-		print "reducer BROKE"
-		shouldRun = False
-	    except AssertionError as error:
-#		print "reduce continue"
-		time.sleep( 0.125 )
-
-    #    time.sleep( 3 )
-    #    print "reduce after sleep"
-
-class MapperThread( threading.Thread ):
-    def __init__( self, host, port, destinationIP, bytesToSend ):
-	threading.Thread.__init__( self )
-	self.host = host
-	self.port = port
-	self.destinationIP = destinationIP
-	self.bytesToSend = bytesToSend
-	self.myIP = self.host.IP()
-
-    def run( self ):
-#	 print "map start"
-	 shouldRun = True
-	 command = "iperf3 -c %s -n %s -p %s" % ( self.destinationIP, self.bytesToSend, self.port )
-	 print self.myIP + " " + command
-	 while shouldRun == True:
-	     try:
-		 print "mapper BROKE"
-		 self.host.cmd( command )
-		 shouldRun = False
-	     except AssertionError as error:
-#		 print "map continue"
-		 time.sleep( 0.125 )
-
-    #     time.sleep( 3 )
-    #     print "map after sleep"
-
-
 class MapReduceJob( Process ):
-    def __init__( self, schedulerPipe, hostList ):
+    def __init__( self, schedulerPipe, hostMapReduceList, hostPipeList ):
 	super( MapReduceJob, self ).__init__()
 	self.schedulerPipe = schedulerPipe
-	self.hostList = hostList
-	self.threads = []
+        self.hostMapReduceList = hostMapReduceList
+        self.hostPipeList = hostPipeList
 
     @staticmethod
     def getTime():
         return time.strftime( "%H:%M:%S", time.localtime() )
 
-
     def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend ):
 #	threads = []
-	hostOneIP = hostOne.IP()
-	hostTwoIP = hostTwo.IP()
+        hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
+        hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
         numberOfBytesToSend = numberOfBytesToSend / 2
 
-	self.threads.append( ReducerThread( hostOne, 5001 ) )
-	self.threads.append( ReducerThread( hostOne, 5002 ) )
-	self.threads.append( ReducerThread( hostTwo, 5001 ) )
-	self.threads.append( ReducerThread( hostTwo, 5002 ) )
+        self.hostMapReduceList[ hostOne ].addReducer( 0 )
+        time.sleep( 0.5 )
+        self.hostMapReduceList[ hostTwo ].addMapper( 0, numberOfBytesToSend, hostOneIP )
+        time.sleep( 0.5 )
+        self.hostMapReduceList[ hostOne ].addReducer( 1 )
+        time.sleep( 0.5 )
+        self.hostMapReduceList[ hostTwo ].addMapper( 1, numberOfBytesToSend, hostOneIP )
+        time.sleep( 0.5 )
 
-	self.threads.append( MapperThread(  hostOne, 5001, hostTwoIP, numberOfBytesToSend ) )
-	self.threads.append( MapperThread(  hostOne, 5002, hostTwoIP, numberOfBytesToSend ) )
-	self.threads.append( MapperThread(  hostTwo, 5001, hostOneIP, numberOfBytesToSend ) )
-	self.threads.append( MapperThread(  hostTwo, 5002, hostOneIP, numberOfBytesToSend ) )
+
+        self.hostMapReduceList[ hostTwo ].addReducer( 0 )
+        time.sleep( 0.5 )
+        self.hostMapReduceList[ hostOne ].addMapper( 0, numberOfBytesToSend, hostTwoIP )
+        time.sleep( 0.5 )
+        self.hostMapReduceList[ hostTwo ].addReducer( 1 )
+        time.sleep( 0.5 )
+        self.hostMapReduceList[ hostOne ].addMapper( 1, numberOfBytesToSend, hostTwoIP )
+        time.sleep( 0.5 )
 #	print "DONE!!!"
 #	print self.threads
 
@@ -92,25 +50,36 @@ class MapReduceJob( Process ):
 	jobStatistic = None
 
         while True:
-	    self.threads = []
+            jobPipes = []
 	    receiveMessage = self.schedulerPipe.recv()
             jobStatistic = receiveMessage
-	    print jobStatistic
+#	    print jobStatistic
 #	    print len( jobStatistic.hosts )
+            jobStatistic.startTime = self.getTime()
             for pair in xrange( 0, len( jobStatistic.hosts ), 2 ):
 #		print jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ]
-		self.setIperfPair( self.hostList[ jobStatistic.hosts[ pair ] ], self.hostList[ jobStatistic.hosts[ pair + 1 ] ], jobStatistic.bytesToSend )
+                self.setIperfPair( jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ], jobStatistic.bytesToSend )
+                jobPipes.append( self.hostPipeList[ pair ] )
+                jobPipes.append( self.hostPipeList[ pair + 1 ] )
 
-            jobStatistic.startTime = self.getTime()
-
-	    for thread in self.threads:
-		thread.start()
-#		while thread.is_alive() == False:
-#		    print "WAITING!!!!!"
-		time.sleep( 1 )
-
-	    for thread in self.threads:
-                thread.join()
+#            print "length = %i" % len( jobPipes )
+            while True:
+                count = 0
+                for i in jobPipes:
+                    poll = i.parentConnection.poll()
+                    if poll == True:
+                        message = i.parentConnection.recv()
+                        print message
+#                        print message
+                        if message == [ 2, 2 ]:
+                            del jobPipes[ count ]
+                    count += 1
+                if len( jobPipes ) == 0:
+#                    print "broke"
+                    break
+                time.sleep( 0.025 )
+#                print count
 
 	    jobStatistic.endTime = self.getTime()
+            print jobStatistic
 	    self.schedulerPipe.send( jobStatistic )

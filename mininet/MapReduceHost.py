@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from mininet.node import *
-
+from PerProcessPipes import *
 from multiprocessing import *
 from enum import IntEnum
 import time
@@ -23,10 +23,10 @@ def runMapper( list, host, ip ):
 #     time.sleep( 3 )
 #     print "map after sleep"
 
-class PerProcessPipes():
-    def __init__( self ):
-	self.parentConnection = None
-	self.childConnection  = None
+#class PerProcessPipes():
+#    def __init__( self ):
+#	self.parentConnection = None
+#	self.childConnection  = None
 
 class HostMapReduce( object ):
     class MapReduceClassIndex( IntEnum ):
@@ -110,32 +110,35 @@ class HostMapReduce( object ):
 
     def handleHostProcesses( self ):
 	self.schedularPipe.send( self.availableList )
+        tempAvailableList = self.availableList
 	while True:
-	    tempAvailableList = self.availableList
 	    count = 0
 	    for i in self.mapPipes:
 		poll = i.parentConnection.poll()
 
 		if poll == True:
 		    message = i.parentConnection.recv()
-
+#                    print message
 		    if message == 1:
-			self.availableList[ count ] = self.availableList[ count ] + 1
+                        tempAvailableList[ count ] += 1
 		    else:
-			self.availableList[ count ] = self.availableList[ count ] - 1
+                        tempAvailableList[ count ] -= 1
 	    count = count + 1
 
 	    for i in self.reducePipes:
 		poll = i.parentConnection.poll()
 		if poll == True:
 		    message = i.parentConnection.recv()
-
+#                    print message
 		    if message == 1:
-			self.availableList[ count ] = self.availableList[ count ] + 1
+                        tempAvailableList[ count ] += 1
 		    else:
-			self.availableList[ count ] = self.availableList[ count ] - 1
-
-	    self.schedularPipe.send( self.availableList )
+                        tempAvailableList[ count ] -= 1
+#            print tempAvailableList
+#            if tempAvailableList[ 0 ] != self.availableList[ 0 ] and tempAvailableList[ 1 ] != self.availableList[ 1 ]:
+#                self.availableList = tempAvailableList
+#                print "ASDFSADF" + self.availableList
+                self.schedularPipe.send( tempAvailableList )
 	    time.sleep( 0.025 )
 
     def terminate( self ):
