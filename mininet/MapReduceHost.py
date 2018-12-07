@@ -10,7 +10,7 @@ import sys
 def runReducer( port, host, ip ):
 #    print "red start"
     command = "iperf3 -s -1 -p %s" % port
-    print ip + " " + command
+#    print ip + " " + command
     host.cmd( command )
 #    time.sleep( 3 )
 #    print "reduce after sleep"
@@ -18,7 +18,7 @@ def runReducer( port, host, ip ):
 def runMapper( list, host, ip ):
 #     print "map start"
      command = "iperf3 -c %s -n %s -p %s" % ( list[0], list[1], list[2] )
-     print ip + " " + command
+#     print ip + " " + command
      host.cmd( command )
 #     time.sleep( 3 )
 #     print "map after sleep"
@@ -42,12 +42,16 @@ class HostMapReduce( object ):
 	self.mapWorkers  = []
 	self.reduceWorkers = []
 
-	self.availableList = []
+	self.availableListOne = []
+	self.availableListTwo = []
 	portNumber = 5001
 	self.ipAddress = host.IP()
 
-	self.availableList.append( 0 )
-	self.availableList.append( 0 )
+	self.availableListOne.append( 0 )
+	self.availableListOne.append( 0 )
+
+	self.availableListTwo.append( 0 )
+	self.availableListTwo.append( 0 )
 
 	for i in self.mapPipes:
 	    i.parentConnection, i.childConnection = Pipe()
@@ -104,38 +108,54 @@ class HostMapReduce( object ):
     def addReducer( self, whatReducer ):
 	self.reducePipes[ whatReducer ].parentConnection.send( "go" )
 
-    def handleHostProcesses( self ):
-	self.schedularPipe.send( self.availableList )
+    @staticmethod
+    def checkList( listOne, listTwo ):
+	theSame = True
+	for i in xrange( len( listOne ) ):
+	    if listOne[ i ] != listTwo[ i ]:
+		theSame = False
+		break
+#	    print "%i, %i" % ( listOne[ i ], listTwo[ i ] )
 
+	return theSame
+
+    def handleHostProcesses( self ):
+	self.schedularPipe.send( self.availableListOne )
+#	tempAvailableList = self.availableListOne
 	while True:
 	    count = 0
 	    for i in self.mapPipes:
 		poll = i.parentConnection.poll()
-
 		if poll == True:
 		    message = i.parentConnection.recv()
-#                    print message
 		    if message == 1:
-			self.availableList[ count ] += 1
+			self.availableListTwo[ count ] += 1
 		    else:
-			self.availableList[ count ] -= 1
-	    count = count + 1
+			self.availableListTwo[ count ] -= 1
+#		    print tempAvailableList[ count ]
+
+	    count += 1
 
 	    for i in self.reducePipes:
 		poll = i.parentConnection.poll()
 		if poll == True:
 		    message = i.parentConnection.recv()
-#                    print message
 		    if message == 1:
-			self.availableList[ count ] += 1
+			self.availableListTwo[ count ] += 1
 		    else:
-			self.availableList[ count ] -= 1
-#            print tempAvailableList
-#            if tempAvailableList[ 0 ] != self.availableList[ 0 ] and tempAvailableList[ 1 ] != self.availableList[ 1 ]:
-#                self.availableList = tempAvailableList
-#                print "ASDFSADF" + self.availableList
+			self.availableListTwo[ count ] -= 1
+#		    print tempAvailableList[ count ]
+#	    print "Temp:"
+#	    print tempAvailableList
+#	    print "Self:"
 #	    print self.availableList
-	    self.schedularPipe.send( self.availableList )
+#	    if not self.checkList( tempAvailableList, self.availableList ):
+	    if self.availableListOne != self.availableListTwo:
+		self.availableListOne = self.availableListTwo
+#		print self.availableListTwo
+		self.schedularPipe.send( self.availableListOne )
+#	    print self.availableList
+#	    self.schedularPipe.send( self.availableList )
 	    time.sleep( 0.025 )
 
     def terminate( self ):
