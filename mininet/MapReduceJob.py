@@ -69,8 +69,8 @@ class MapReduceJob( Process ):
 					count += 1
 				if len( jobPipes ) == 0:
 					break
-		time.sleep( 0.020 )
+				time.sleep( 0.020 )
 
-		jobStatistic.endTime = self.getTime()
-		print jobStatistic
-		self.schedulerPipe.send( jobStatistic )
+			jobStatistic.endTime = self.getTime()
+			print jobStatistic
+			self.schedulerPipe.send( jobStatistic )
