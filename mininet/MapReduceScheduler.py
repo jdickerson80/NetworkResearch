@@ -41,7 +41,7 @@ class MapReduceScheduler( object ):
 		self.availableJobList = [ True for i in xrange( self.numberOfHosts ) ]
 		self.hostMapReduceList = []
 		self.availableList = [ 2 for i in xrange( self.numberOfHosts ) ]
-		self.jobPipeList = [ PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
+		self.jobPipeList = [ PerProcessPipes() for i in xrange( self.numberOfHosts / 2 ) ]
 		self.hostPipeList = [ PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
 		self.handleJobPipeThreadRunning = True
 		counter = 0
@@ -55,9 +55,9 @@ class MapReduceScheduler( object ):
 
 		for i in self.hostList:
 			self.hostMapReduceList.append( HostMapReduce( host = i, schedularPipe = self.hostPipeList[ counter ].childConnection ) )
-			counter = counter + 1
+			counter += 1
 
-		for i in xrange( self.numberOfHosts ):
+		for i in xrange( self.numberOfHosts / 2 ):
 			job = MapReduceJob( schedulerPipe = self.jobPipeList[ i ].childConnection, hostMapReduceList = self.hostMapReduceList, hostPipeList = self.hostPipeList )
 			job.start()
 			self.jobList.append( job )
@@ -86,7 +86,7 @@ class MapReduceScheduler( object ):
 		self.handleJobPipeThread.join()
 
 	def handleJobPipe( self ):
-		jobStatistic = None
+		# jobStatistic = None
 		time.sleep( 0.5 )
 		while self.handleJobPipeThreadRunning == True:
 			for i in self.jobPipeList:
@@ -94,15 +94,19 @@ class MapReduceScheduler( object ):
 				if poll == True:
 					message = i.parentConnection.recv()
 					jobStatistic = message
+					print jobStatistic
+
 					for i in jobStatistic.hosts:
 						self.availableList[ i ] = 2
-						self.availableJobList[ jobStatistic.reduceJob ] = True
+
+					self.availableJobList[ jobStatistic.reduceJob ] = True
 
 					for i in xrange( len( self.jobStats ) ):
 						if self.jobStats[ i ].job == jobStatistic.job:
 							self.jobStats[ i ] = jobStatistic
-							print self.jobStats[ i ]
+							# print self.jobStats[ i ]
 							break
+
 					self.hasListBeenUpdated = True
 		#                    print self.availableJobList
 			time.sleep( 0.025 )
@@ -134,7 +138,7 @@ class MapReduceScheduler( object ):
 			hostsNeeded = inputBytes / self.BytesPerHostEnum.BytesPerHost
 
 			if remainder != 0 or hostsNeeded == 0:
-				hostsNeeded = hostsNeeded + 1
+				hostsNeeded += 1
 
 			if ( int ( hostsNeeded ) > int ( self.numberOfHosts ) ):
 				continue
@@ -142,13 +146,11 @@ class MapReduceScheduler( object ):
 			self.workQueue.put( [ int ( hostsNeeded ), int ( jobComponents[ 2 ] ), jobComponents[ 0 ] ], block=False )
 
 	def findHosts( self, numberOfHosts, requiredHosts, counter ):
-		currentAvailableHostList = self.availableList
-		#        print "test %s" % currentAvailableHostList
 		for j in xrange( numberOfHosts ):
-			if currentAvailableHostList[ j ] == 2:
+			if self.availableList[ j ] == 2:
 				mapperHost = j
 				for h in xrange( numberOfHosts - 1, 0, -1 ):
-					if currentAvailableHostList[ h ] == 2:
+					if self.availableList[ h ] == 2:
 						if h == j:
 							print "same host"
 							break
@@ -158,39 +160,43 @@ class MapReduceScheduler( object ):
 
 						reducerHost = h
 						requiredHosts = requiredHosts - 1
-						currentAvailableHostList[ j ] = 0
-						currentAvailableHostList[ h ] = 0
+						self.availableList[ j ] = 0
+						self.availableList[ h ] = 0
 						self.jobStats[ counter ].hosts.append( reducerHost )
 						self.jobStats[ counter ].hosts.append( mapperHost )
+						# print self.jobStats[ counter ].hosts
 						break
 					else:
 						if h == 0:
 							j = 0
-							break
+				break
 		return requiredHosts
 
 	def runTest( self ):
 		if self.workQueue.empty() == True:
 			raise LookupError( "Running test on an empty queue" )
+
 		currentJob = []
 		numberOfHosts = self.numberOfHosts
 		counter = 0
-		#        for i in xrange( self.workQueue.qsize() ):
-		#            print self.workQueue.get_nowait()
+
+		# for i in xrange( self.workQueue.qsize() ):
+		# 	print self.workQueue.get_nowait()
 
 		for i in xrange( self.workQueue.qsize() ):
-			currentAvailableHostList = self.availableList
+			# currentAvailableHostList = self.availableList
 			currentJob = self.workQueue.get_nowait()
 			requiredHosts = currentJob[ 0 ]
 			tempHosts = requiredHosts
 			totalRequiredHosts = currentJob[ 0 ]
-			#            print currentJob
 			self.jobStats.append( Statistics() )
 			self.jobStats[ counter ].job = currentJob[ 2 ]
 			self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
+
 			while requiredHosts > 0:
 				self.hasListBeenUpdated = False
 				tempHosts = self.findHosts( numberOfHosts, requiredHosts, counter )
+				# print tempHosts
 				if requiredHosts == tempHosts:
 					print "WAITING"
 					while ( True ):
@@ -199,8 +205,10 @@ class MapReduceScheduler( object ):
 						time.sleep( 0.125 )
 				else:
 					requiredHosts = tempHosts
-					time.sleep( 0.125 )
+					# time.sleep( 0.125 )
 				time.sleep( 0.125 )
+
+			# print self.jobStats[ counter ]
 
 			for i in xrange( len( self.availableJobList ) ):
 				if self.availableJobList[ i ] == True:
@@ -211,7 +219,9 @@ class MapReduceScheduler( object ):
 		#		    print self.jobStats[ counter ]
 		#		    print self.availableJobList
 					break
-			counter = counter + 1
+
+			# print self.jobStats[ counter ]
+			counter += 1
 
 		while True:
 			done = True
@@ -221,7 +231,7 @@ class MapReduceScheduler( object ):
 					break
 			if done == True:
 				print "BROKE!"
-				print self.availableJobList
+				# print self.availableJobList
 				break
 			time.sleep( 0.125 )
 
