@@ -51,25 +51,25 @@ class MapReduceJob( Process ):
 				# print "host one got false"
 				break
 
-		self.hostMapReduceList[ hostOne ].addReducer( 0 )
-		time.sleep( 2 )
+		# self.hostMapReduceList[ hostOne ].addReducer( 0 )
+		# time.sleep( 2 )
 		self.hostMapReduceList[ hostTwo ].addMapper( 0, numberOfBytesToSend, hostOneIP )
-		time.sleep( 1 )
+		# time.sleep( 1 )
 
-		self.hostMapReduceList[ hostOne ].addReducer( 1 )
-		time.sleep( 2 )
+		# self.hostMapReduceList[ hostOne ].addReducer( 1 )
+		# time.sleep( 2 )
 		self.hostMapReduceList[ hostTwo ].addMapper( 1, numberOfBytesToSend, hostOneIP )
-		time.sleep( 1 )
+		# time.sleep( 1 )
 
 
-		self.hostMapReduceList[ hostTwo ].addReducer( 0 )
-		time.sleep( 2 )
+		# self.hostMapReduceList[ hostTwo ].addReducer( 0 )
+		# time.sleep( 2 )
 		self.hostMapReduceList[ hostOne ].addMapper( 0, numberOfBytesToSend, hostTwoIP )
-		time.sleep( 1 )
-		self.hostMapReduceList[ hostTwo ].addReducer( 1 )
-		time.sleep( 2 )
+		# time.sleep( 1 )
+		# self.hostMapReduceList[ hostTwo ].addReducer( 1 )
+		# time.sleep( 2 )
 		self.hostMapReduceList[ hostOne ].addMapper( 1, numberOfBytesToSend, hostTwoIP )
-		time.sleep( 1 )
+		# time.sleep( 1 )
 
 
 	def run( self ):
