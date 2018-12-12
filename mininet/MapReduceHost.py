@@ -7,187 +7,152 @@ from enum import IntEnum
 import time
 import sys
 
-
-class IperfServer( Process ):
-	def __init__( self, port, host, ip ):
-		super( IperfServer, self ).__init__()
-		self.port = port
-		self.host = host
-		self.ip = ip
-
-	def run( self ):
-		command = "iperf3 -s -i 1 -p %s" % self.port
-		print self.ip + " " + command
-		print self.host.cmd( command )
-		# time.sleep( 3 )
-		# while True:
-			# time.sleep( 1 )
-
-
 class HostMapReduce( object ):
+	"""
+	This class starts 4 processes per host. Two iperf3 servers and clients.
+	"""
+
 	@staticmethod
-	def runReducer( port, host, ip ):
-		# print "red start"
+	def runReducerMethod( port, host, ip ):
+		# create the command
 		command = "iperf3 -s -i 1 -p %s" % port
 		# print ip + " " + command
-		host.sendCmd( command )
-		# time.sleep( 3 )
-		while True:
-			time.sleep( 1 )
-
-	# print "reduce after sleep"
-
+		# start another process and exec the command
+		print host.pexec( command )
+	
 	@staticmethod
 	def runMapperMethod( list, host, ip ):
-		# print "map start"
+		# create the command
 		command = "iperf3 -c %s -i 1 -n %s -p %s" % ( list[0], list[1], list[2] )
-		print ip + " " + command
-		print host.cmd( command )
-		# time.sleep( 3 )
-		# print "map after sleep"
+		# print ip + " " + command
+		# start another process and exec the command
+		# @todo use the err to make sure the command ran successfully
+		out, err, exit = host.pexec( command )
 
 	class MapReduceClassIndex( IntEnum ):
-		MapperOne = 0
-		MapperTwo = 1
-		ReducerOne = 2
-		ReducerTwo = 3
+		# just an enum to hold max reducers and mappers
 		NumberOfMappers = 2
 		NumberOfReducers = 2
 
-
 	def __init__( self, host, schedularPipe ):
-		self.host = host
-		self.schedularPipe = schedularPipe
-		self.mapPipes    = [ PerProcessPipes() for i in range( self.MapReduceClassIndex.NumberOfMappers  ) ]
-		self.reducePipes = [ PerProcessPipes() for i in range( self.MapReduceClassIndex.NumberOfReducers ) ]
-		self.mapWorkers  = []
-		self.reduceWorkers = []
+		# init the variables
+		self.host 			= host
+		self.schedularPipe 	= schedularPipe
+		self.mapPipes    	= [ PerProcessPipes() for i in range( self.MapReduceClassIndex.NumberOfMappers ) ]
+		self.mapWorkers  	= []
+		self.reduceWorkers 	= []
 
-		self.availableListOne = []
-		self.availableListTwo = []
+		self.availableMappers = 0
 		portNumber = 5001
 		self.ipAddress = host.IP()
 
-		self.availableListOne.append( 0 )
-		self.availableListOne.append( 2 )
-
-		self.availableListTwo.append( 0 )
-		self.availableListTwo.append( 2 )
-
+		# init the map pipes
 		for i in self.mapPipes:
 			i.parentConnection, i.childConnection = Pipe()
 
-		# for i in self.reducePipes:
-		# 	i.parentConnection, i.childConnection = Pipe()
+		# @note there is no reducer pipes because the iperf server runs forever
 
+		# create the list of mappers and reducers
 		for i in xrange( self.MapReduceClassIndex.NumberOfMappers ):
 			self.mapWorkers.append( Process(target=self.runMapper, args=(self.mapPipes[ i ].childConnection, self.host, self.ipAddress, ) ) )
 
-		# for i in xrange( self.MapReduceClassIndex.NumberOfReducers ):
-		# self.reduceWorkers.append( Process(target=self.runReducer, args=(self.reducePipes[ i ].childConnection, self.host, portNumber, self.ipAddress, ) ) )
-			# self.reduceWorkers.append( Process(target=self.runReducer, args=(portNumber, self.host, self.ipAddress, ) ) )
-			# portNumber = portNumber + 1
-
 		for i in xrange( self.MapReduceClassIndex.NumberOfReducers ):
-			job = IperfServer( port = portNumber, host = self.host, ip = self.ipAddress, )
-			job.start()
-			self.reduceWorkers.append( job )
+			self.reduceWorkers.append( Process(target=self.runReducer, args=(self.host, portNumber, self.ipAddress, ) ) )
 			portNumber += 1
 
-		print len( self.reduceWorkers )
-
+		# start the mappers and reducers
 		for p in self.mapWorkers:
 			p.start()
 
-		# for p in self.reduceWorkers:
-		# 	p.start()
+		for p in self.reduceWorkers:
+			p.start()
 
+		# start the process for handling the mappers communication
 		self.handler = Process( target=self.handleHostProcesses )
 		self.handler.start()
 
-	#   @staticmethod
-	#   def runReducer( connection, host, port, ip ):
-	# time.sleep( 0.5 )
-	# connection.send( 1 )
-	# while True:
-	#     # receiveMessage = connection.recv()
-	#     connection.send( 1 )
-	#     runReducer( port, host, ip )
-	#     connection.send( 1 )
+	@staticmethod
+	def runReducer( host, port, ip ):
+		# just calls the iperf3 server
+		HostMapReduce.runReducerMethod( port, host, ip )
 
-	def runMapper( self, connection, host, ip ):
-		time.sleep( 0.5 )
+	@staticmethod
+	def runMapper( connection, host, ip ):
+		# send ready
 		connection.send( 1 )
+		# infinite loop
 		while True:
+			# wait for a message
 			receiveMessage = connection.recv()
+			# send busy command
 			connection.send( 0 )
-			self.runMapperMethod( receiveMessage, host, ip )
+			# run the iperf client
+			HostMapReduce.runMapperMethod( receiveMessage, host, ip )
+			# send the ready command
 			connection.send( 1 )
 
 	def getIP( self ):
+		# get the ip
 		return self.ipAddress
 
 	def addMapper( self, whatMapper, bytesToTransmit, destinationIPAddress ):
+		# get what port to use
 		if whatMapper % 2 == 0:
 			port = 5001
 		else:
 			port = 5002
+
+		# send the job to the mappers
 		self.mapPipes[ whatMapper ].parentConnection.send( [ destinationIPAddress, bytesToTransmit, port ] )
 
-	def addReducer( self, whatReducer ):
-		pass
-		# self.reducePipes[ whatReducer ].parentConnection.send( "go" )
-
 	def handleHostProcesses( self ):
-		self.schedularPipe.send( self.availableListOne )
+		# send the available mappers to the schedulers
+		self.schedularPipe.send( self.availableMappers )
+		# store the mappers in a temp variable to only send data when mappers have changed
+		availableMappers = self.availableMappers
 		while True:
+			# set the count to zero
 			count = 0
+			# loop through the map pipes
 			for i in self.mapPipes:
+				# get the poll variable
 				poll = i.parentConnection.poll()
+
+				# if there is data to receive
 				if poll == True:
+					# get the message
 					message = i.parentConnection.recv()
+					# if this a ready message
 					if message == 1:
-					# print "map %i got a one"  % count
-						self.availableListTwo[ count ] += 1
-					else:
-					# print "map %i got a zero"  % count
-						self.availableListTwo[ count ] -= 1
-					#		    print tempAvailableList[ count ]
-
-			# count += 1
-
-			# for i in self.reducePipes:
-			# 	poll = i.parentConnection.poll()
-			# 	if poll == True:
-			# 		message = i.parentConnection.recv()
-			# 		if message == 1:
-			# 			# print "reduce %i got a one"  % count
-			# 			self.availableListTwo[ count ] += 1
-			# 		else:
-			# 			# print "reduce %i got a zero"  % count
-			# 			self.availableListTwo[ count ] -= 1
-
-			# print self.availableListTwo
-
-			if self.availableListOne != self.availableListTwo:
-				self.availableListOne = [ i for i in self.availableListTwo ]
-				self.schedularPipe.send( self.availableListOne )
-				# print "sending %s" % self.availableListOne
-
-			time.sleep( 0.025 )
+						# increment mappers
+						availableMappers += 1
+					else: # if this is a busy message
+						# reduce the mappers
+						availableMappers -= 1
+			# if the mappers has changed this scan
+			if self.availableMappers != availableMappers:
+				# set the lists equal and send it
+				self.availableMappers = availableMappers
+				self.schedularPipe.send( self.availableMappers )
+				# print "sending %s" % self.availableMappers
+			# sleep for the loop	
+			time.sleep( 0.02 )
 
 	def terminate( self ):
+		# terminate the mappers and reducers
 		for p in self.mapWorkers:
 			p.terminate()
 
 		for p in self.reduceWorkers:
 			p.terminate()
 
+		# join the mappers and reducers
 		for p in self.mapWorkers:
 			p.join()
 
 		for p in self.reduceWorkers:
 			p.join()
 
+		# terminate host handler and join it	
 		self.handler.terminate()
 		self.handler.join()
