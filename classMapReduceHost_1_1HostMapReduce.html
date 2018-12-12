@@ -111,7 +111,7 @@ $(document).ready(function(){initNavTree('classMapReduceHost_1_1HostMapReduce.ht
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classMapReduceHost_1_1HostMapReduce-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">MapReduceHost.HostMapReduce Class Reference</div>  </div>
@@ -137,10 +137,10 @@ Classes</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:afb808d77923136d27a633f209468417e"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#afb808d77923136d27a633f209468417e">__init__</a> (self, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a>, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#afa5fd621f25c71a1739e8e5645ea30a4">schedularPipe</a>)</td></tr>
 <tr class="separator:afb808d77923136d27a633f209468417e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29c56eab51902062cdf14d3a538138ce"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a29c56eab51902062cdf14d3a538138ce">addMapJob</a> (self, whatMapper, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a2d8575537a09c257b127d0702d92c5fa">message</a>)</td></tr>
-<tr class="separator:a29c56eab51902062cdf14d3a538138ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec48d806a8471773090b837c5c5f883d"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#aec48d806a8471773090b837c5c5f883d">addReduceJob</a> (self, whatReduce, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a2d8575537a09c257b127d0702d92c5fa">message</a>)</td></tr>
-<tr class="separator:aec48d806a8471773090b837c5c5f883d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a853b0ad4cdcdb53ac7f52bf8e26761d9"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a853b0ad4cdcdb53ac7f52bf8e26761d9">getIP</a> (self)</td></tr>
+<tr class="separator:a853b0ad4cdcdb53ac7f52bf8e26761d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3197695cd1dbf6c606cc76ceda4e9ee1"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a3197695cd1dbf6c606cc76ceda4e9ee1">addMapper</a> (self, whatMapper, bytesToTransmit, destinationIPAddress)</td></tr>
+<tr class="separator:a3197695cd1dbf6c606cc76ceda4e9ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a494e9b6064caf84070da891f242d23bc"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a494e9b6064caf84070da891f242d23bc">handleHostProcesses</a> (self)</td></tr>
 <tr class="separator:a494e9b6064caf84070da891f242d23bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a392a84cdd0b9e3998958a9a72c11a909"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a392a84cdd0b9e3998958a9a72c11a909">terminate</a> (self)</td></tr>
@@ -148,57 +148,38 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a9f4ba754d33fdbb3fd1d93ae68ebf47f"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a9f4ba754d33fdbb3fd1d93ae68ebf47f">runReducer</a> (connection, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a>)</td></tr>
-<tr class="separator:a9f4ba754d33fdbb3fd1d93ae68ebf47f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af09e49d0ae5a2b97bb0a0da2384a2de7"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#af09e49d0ae5a2b97bb0a0da2384a2de7">runMapper</a> (connection, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a>)</td></tr>
-<tr class="separator:af09e49d0ae5a2b97bb0a0da2384a2de7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7a7152d8376dc173593d52de2f090fa"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#ae7a7152d8376dc173593d52de2f090fa">runReducerMethod</a> (port, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a>, ip)</td></tr>
+<tr class="separator:ae7a7152d8376dc173593d52de2f090fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3f1d74a0c13de855865a813d3b9bd79"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#af3f1d74a0c13de855865a813d3b9bd79">runMapperMethod</a> (list, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a>, ip)</td></tr>
+<tr class="separator:af3f1d74a0c13de855865a813d3b9bd79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0991ccfbf4a37f46aa0e9f6aeaf1288"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#ae0991ccfbf4a37f46aa0e9f6aeaf1288">runReducer</a> (<a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a>, port, ip)</td></tr>
+<tr class="separator:ae0991ccfbf4a37f46aa0e9f6aeaf1288"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a757386dd7a1ac3782681999ec0b581f8"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a757386dd7a1ac3782681999ec0b581f8">runMapper</a> (connection, <a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a>, ip)</td></tr>
+<tr class="separator:a757386dd7a1ac3782681999ec0b581f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:a918f85c16124e2aa5359aa8de2057873"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a918f85c16124e2aa5359aa8de2057873">MapperTwo</a></td></tr>
-<tr class="separator:a918f85c16124e2aa5359aa8de2057873"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8f477a38fc15bd66ba40e303dc41b2f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#ad8f477a38fc15bd66ba40e303dc41b2f">ReducerOne</a> = 2</td></tr>
-<tr class="separator:ad8f477a38fc15bd66ba40e303dc41b2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72bbb6fbde8c804837cd42632cf6b609"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a72bbb6fbde8c804837cd42632cf6b609">ReducerTwo</a> = 3</td></tr>
-<tr class="separator:a72bbb6fbde8c804837cd42632cf6b609"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e2a21ecfbe677c0a750feec50c70ce7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6e2a21ecfbe677c0a750feec50c70ce7">NumberOfMappers</a> = 2</td></tr>
-<tr class="separator:a6e2a21ecfbe677c0a750feec50c70ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bb125df9bcc5bd90145e482dec2140b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6bb125df9bcc5bd90145e482dec2140b">NumberOfReducers</a> = 2</td></tr>
-<tr class="separator:a6bb125df9bcc5bd90145e482dec2140b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
 <tr class="memitem:a6a2501b2dc000ec01a734af6cf281b56"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a6a2501b2dc000ec01a734af6cf281b56">host</a></td></tr>
 <tr class="separator:a6a2501b2dc000ec01a734af6cf281b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa5fd621f25c71a1739e8e5645ea30a4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#afa5fd621f25c71a1739e8e5645ea30a4">schedularPipe</a></td></tr>
 <tr class="separator:afa5fd621f25c71a1739e8e5645ea30a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cbcf65362cc86c0d14696ae1c095324"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a4cbcf65362cc86c0d14696ae1c095324">mapPipes</a></td></tr>
 <tr class="separator:a4cbcf65362cc86c0d14696ae1c095324"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac374a3da1220a11c7e606c43f0c42919"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#ac374a3da1220a11c7e606c43f0c42919">reducePipes</a></td></tr>
-<tr class="separator:ac374a3da1220a11c7e606c43f0c42919"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa30af96100cf6279e352ab381d6bff9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#aaa30af96100cf6279e352ab381d6bff9">mapWorkers</a></td></tr>
 <tr class="separator:aaa30af96100cf6279e352ab381d6bff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a438577a52f7e674c76e7d5b862e772a4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a438577a52f7e674c76e7d5b862e772a4">reduceWorkers</a></td></tr>
 <tr class="separator:a438577a52f7e674c76e7d5b862e772a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5425032825fcf2892de778bdab3857c9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a5425032825fcf2892de778bdab3857c9">availableList</a></td></tr>
-<tr class="separator:a5425032825fcf2892de778bdab3857c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb16c51752621d203dc3a6b7d95542f7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#adb16c51752621d203dc3a6b7d95542f7">childConnection</a></td></tr>
-<tr class="separator:adb16c51752621d203dc3a6b7d95542f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a258fe7f7ce1c4d9276dc32fa4ab99297"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a258fe7f7ce1c4d9276dc32fa4ab99297">availableMappers</a></td></tr>
+<tr class="separator:a258fe7f7ce1c4d9276dc32fa4ab99297"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab47047bd850636d2b65dea8ff89c250"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#aab47047bd850636d2b65dea8ff89c250">ipAddress</a></td></tr>
+<tr class="separator:aab47047bd850636d2b65dea8ff89c250"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a525b837736a99bcf9c1fad54b0824829"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a525b837736a99bcf9c1fad54b0824829">handler</a></td></tr>
 <tr class="separator:a525b837736a99bcf9c1fad54b0824829"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39119c7e869a510b19f87316f41b5fbe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a39119c7e869a510b19f87316f41b5fbe">target</a></td></tr>
-<tr class="separator:a39119c7e869a510b19f87316f41b5fbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0b5a9bb0b49f837092c5def8a28d640"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#ae0b5a9bb0b49f837092c5def8a28d640">receiveMessage</a> = connection.recv()</td></tr>
-<tr class="separator:ae0b5a9bb0b49f837092c5def8a28d640"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac84c4609039923dddf5e7e60b22ae28f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#ac84c4609039923dddf5e7e60b22ae28f">tempAvailableList</a> = self.availableList</td></tr>
-<tr class="separator:ac84c4609039923dddf5e7e60b22ae28f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28e5704929dc40f32e6f23200e2bebb8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a28e5704929dc40f32e6f23200e2bebb8">count</a> = 0</td></tr>
-<tr class="separator:a28e5704929dc40f32e6f23200e2bebb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a06a76374edd82ccfa60ed13113f30b56"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a06a76374edd82ccfa60ed13113f30b56">poll</a> = i.parentConnection.poll()</td></tr>
-<tr class="separator:a06a76374edd82ccfa60ed13113f30b56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d8575537a09c257b127d0702d92c5fa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMapReduceHost_1_1HostMapReduce.html#a2d8575537a09c257b127d0702d92c5fa">message</a> = i.parentConnection.recv()</td></tr>
-<tr class="separator:a2d8575537a09c257b127d0702d92c5fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00029">29</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<div class="textblock"><pre class="fragment">This class starts 4 processes per host. Two iperf3 servers and clients.
+</pre> 
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00010">10</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="afb808d77923136d27a633f209468417e"></a>
 <div class="memitem">
@@ -230,17 +211,17 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00039">39</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00037">37</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a29c56eab51902062cdf14d3a538138ce"></a>
+<a class="anchor" id="a3197695cd1dbf6c606cc76ceda4e9ee1"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def MapReduceHost.HostMapReduce.addMapJob </td>
+          <td class="memname">def MapReduceHost.HostMapReduce.addMapper </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>self</em>, </td>
@@ -255,7 +236,13 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>message</em>&#160;</td>
+          <td class="paramname"><em>bytesToTransmit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>destinationIPAddress</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -265,41 +252,25 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00097">97</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00098">98</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aec48d806a8471773090b837c5c5f883d"></a>
+<a class="anchor" id="a853b0ad4cdcdb53ac7f52bf8e26761d9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">def MapReduceHost.HostMapReduce.addReduceJob </td>
+          <td class="memname">def MapReduceHost.HostMapReduce.getIP </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>self</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>whatReduce</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>message</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00100">100</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00094">94</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
@@ -317,11 +288,11 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00103">103</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00108">108</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af09e49d0ae5a2b97bb0a0da2384a2de7"></a>
+<a class="anchor" id="a757386dd7a1ac3782681999ec0b581f8"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -338,7 +309,13 @@ Static Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>host</em>&#160;</td>
+          <td class="paramname"><em>host</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>ip</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -353,11 +330,53 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00084">84</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00080">80</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a9f4ba754d33fdbb3fd1d93ae68ebf47f"></a>
+<a class="anchor" id="af3f1d74a0c13de855865a813d3b9bd79"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">def MapReduceHost.HostMapReduce.runMapperMethod </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>host</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>ip</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00024">24</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae0991ccfbf4a37f46aa0e9f6aeaf1288"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -368,13 +387,19 @@ Static Public Attributes</h2></td></tr>
           <td class="memname">def MapReduceHost.HostMapReduce.runReducer </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>connection</em>, </td>
+          <td class="paramname"><em>host</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>host</em>&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>ip</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -389,7 +414,49 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00073">73</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00075">75</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ae7a7152d8376dc173593d52de2f090fa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">def MapReduceHost.HostMapReduce.runReducerMethod </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>host</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>ip</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00016">16</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
@@ -407,448 +474,120 @@ Static Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00135">135</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00141">141</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="a5425032825fcf2892de778bdab3857c9"></a>
+<a class="anchor" id="a258fe7f7ce1c4d9276dc32fa4ab99297"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.availableList</td>
+          <td class="memname">MapReduceHost.HostMapReduce.availableMappers</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00047">47</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="adb16c51752621d203dc3a6b7d95542f7"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.childConnection</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00050">50</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a28e5704929dc40f32e6f23200e2bebb8"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int MapReduceHost.HostMapReduce.count = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00107">107</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a525b837736a99bcf9c1fad54b0824829"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.handler</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00069">69</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a6a2501b2dc000ec01a734af6cf281b56"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.host</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00040">40</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a918f85c16124e2aa5359aa8de2057873"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.MapperTwo</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00032">32</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a4cbcf65362cc86c0d14696ae1c095324"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.mapPipes</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00042">42</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="aaa30af96100cf6279e352ab381d6bff9"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.mapWorkers</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00044">44</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a2d8575537a09c257b127d0702d92c5fa"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.message = i.parentConnection.recv()</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00112">112</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a6e2a21ecfbe677c0a750feec50c70ce7"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int MapReduceHost.HostMapReduce.NumberOfMappers = 2</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00035">35</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a6bb125df9bcc5bd90145e482dec2140b"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int MapReduceHost.HostMapReduce.NumberOfReducers = 2</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00036">36</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a06a76374edd82ccfa60ed13113f30b56"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.poll = i.parentConnection.poll()</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00109">109</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ae0b5a9bb0b49f837092c5def8a28d640"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.receiveMessage = connection.recv()</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00077">77</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ac374a3da1220a11c7e606c43f0c42919"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.reducePipes</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00043">43</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ad8f477a38fc15bd66ba40e303dc41b2f"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int MapReduceHost.HostMapReduce.ReducerOne = 2</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00033">33</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a72bbb6fbde8c804837cd42632cf6b609"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int MapReduceHost.HostMapReduce.ReducerTwo = 3</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00034">34</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a438577a52f7e674c76e7d5b862e772a4"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.reduceWorkers</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00045">45</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="afa5fd621f25c71a1739e8e5645ea30a4"></a>
+<a class="anchor" id="a525b837736a99bcf9c1fad54b0824829"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.schedularPipe</td>
+          <td class="memname">MapReduceHost.HostMapReduce.handler</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00071">71</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6a2501b2dc000ec01a734af6cf281b56"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MapReduceHost.HostMapReduce.host</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00039">39</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aab47047bd850636d2b65dea8ff89c250"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MapReduceHost.HostMapReduce.ipAddress</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00047">47</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a4cbcf65362cc86c0d14696ae1c095324"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MapReduceHost.HostMapReduce.mapPipes</td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00041">41</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a39119c7e869a510b19f87316f41b5fbe"></a>
+<a class="anchor" id="aaa30af96100cf6279e352ab381d6bff9"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.target</td>
+          <td class="memname">MapReduceHost.HostMapReduce.mapWorkers</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00069">69</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00042">42</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ac84c4609039923dddf5e7e60b22ae28f"></a>
+<a class="anchor" id="a438577a52f7e674c76e7d5b862e772a4"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">MapReduceHost.HostMapReduce.tempAvailableList = self.availableList</td>
+          <td class="memname">MapReduceHost.HostMapReduce.reduceWorkers</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00106">106</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00043">43</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="afa5fd621f25c71a1739e8e5645ea30a4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MapReduceHost.HostMapReduce.schedularPipe</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="MapReduceHost_8py_source.html#l00040">40</a> of file <a class="el" href="MapReduceHost_8py_source.html">MapReduceHost.py</a>.</p>
 
 </div>
 </div>

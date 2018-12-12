@@ -12,5 +12,5 @@ var searchData=
   ['down_5ftotal',['down_total',['../classFatTreeTopology_1_1StructuredNodeSpec.html#acb02a7178f8436c0136596cc1b54db4a',1,'FatTreeTopology::StructuredNodeSpec']]],
   ['dpid',['dpid',['../classFatTreeTopology_1_1NodeID.html#af62b177fcd8e344c1108f3e0ea8e92b9',1,'FatTreeTopology.NodeID.dpid()'],['../classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#a27dd5fbed3e3e91f89db1b2943ea4e1e',1,'FatTreeTopology.FatTreeTopo.FatTreeNodeID.dpid()']]],
   ['draw',['draw',['../classFatTreeTopology_1_1StructuredTopo.html#a56ee1b765bef5b11ffe40608e901b8ee',1,'FatTreeTopology::StructuredTopo']]],
-  ['duration',['Duration',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883a6d0107630495ec75c3c073a206ce4d50',1,'TestHandler::CommandLineArgumentParser::UsageArguments::Duration()'],['../structTestHandler_1_1TestData.html#acbd3961e8692c6bcd5d901b5fd0ca64d',1,'TestHandler::TestData::duration()']]]
+  ['duration',['duration',['../structTestHandler_1_1TestData.html#acbd3961e8692c6bcd5d901b5fd0ca64d',1,'TestHandler::TestData::duration()'],['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883a6d0107630495ec75c3c073a206ce4d50',1,'TestHandler::CommandLineArgumentParser::UsageArguments::Duration()']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wcenabler',['WCEnabler',['../namespaceWCEnabler.html',1,'']]]
+  ['perprocesspipes',['PerProcessPipes',['../namespacePerProcessPipes.html',1,'']]]
 ];

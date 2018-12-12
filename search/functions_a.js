@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['mac_5fstr',['mac_str',['../classFatTreeTopology_1_1FatTreeTopo_1_1FatTreeNodeID.html#a6242d66ac07e3af9434e8066318dd8e3',1,'FatTreeTopology::FatTreeTopo::FatTreeNodeID']]],
-  ['main',['main',['../BGAdaptor_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../TestHandler_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp'],['../WCEnabler_2main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97',1,'main(int argc, char *argv[]):&#160;main.cpp']]],
-  ['mainobject',['MainObject',['../classTestHandler_1_1MainObject.html#a1b2a3535f89c9101a7815629cefd6ffb',1,'TestHandler::MainObject']]],
-  ['managercallback',['managerCallback',['../classMapReduceScheduler_1_1MapReduceScheduler.html#a7b00e005c0273377544b820e17f0d1de',1,'MapReduceScheduler::MapReduceScheduler']]]
+  ['layer',['layer',['../classFatTreeTopology_1_1StructuredTopo.html#a4a0ec7d9ee5f97de58d7da96fd2e7211',1,'FatTreeTopology::StructuredTopo']]],
+  ['layer_5fnodes',['layer_nodes',['../classFatTreeTopology_1_1StructuredTopo.html#a7bb3436ba233d8b6643cb5b9a98babbf',1,'FatTreeTopology::StructuredTopo']]],
+  ['log',['log',['../classCommon_1_1LoggingHandler.html#a5c72b411fc450b086dcd31246e66bab0',1,'Common::LoggingHandler::log(const std::string &amp;stringToLog)'],['../classCommon_1_1LoggingHandler.html#a16022708e185ca7fba2fa415521b2ba4',1,'Common::LoggingHandler::log(const char *const stringToLog)']]],
+  ['logginghandler',['LoggingHandler',['../classCommon_1_1LoggingHandler.html#ab0c0218b39b546dc2e7e99b92ffe1f4c',1,'Common::LoggingHandler']]],
+  ['loggingpath',['loggingPath',['../classCommon_1_1LoggingHandler.html#a72561fe6985c6070d7a50e6774e4f8ff',1,'Common::LoggingHandler']]]
 ];

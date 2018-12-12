@@ -19,10 +19,12 @@ var searchData=
   ['bandwidthvalues_2eh',['BandwidthValues.h',['../BandwidthValues_8h.html',1,'']]],
   ['bgadaptor',['BGAdaptor',['../namespaceBGAdaptor.html',1,'']]],
   ['bgadaptoripaddress',['BGAdaptorIPAddress',['../Macros_8h.html#a964ce18b780a57310801832387f6a0dc',1,'Macros.h']]],
-  ['block',['block',['../classMapReduceScheduler_1_1MapReduceScheduler.html#a8340a3aa1bf6229e82bf3c455c92386b',1,'MapReduceScheduler::MapReduceScheduler']]],
   ['buffersize',['BUFFERSIZE',['../CommandLineArgumentParser_8h.html#ac3146f1e9227301bb4aa518f4d336cee',1,'BUFFERSIZE():&#160;CommandLineArgumentParser.h'],['../ClientServerTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;ClientServerTest.cpp'],['../ClientServerTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;ClientServerTest.cpp'],['../SingleClientTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;SingleClientTest.cpp'],['../SingleServerTest_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;SingleServerTest.cpp'],['../BandwidthCalculator_8cpp.html#aa362edf6db9662acf6ef958a6db19c35',1,'BufferSize():&#160;BandwidthCalculator.cpp']]],
   ['buildlogger',['buildLogger',['../classCommon_1_1LoggerFactory.html#a8edcb8fd5fabe1e88bf1c15b868e5bdd',1,'Common::LoggerFactory']]],
   ['bytes',['Bytes',['../structTestHandler_1_1CommandLineArgumentParser_1_1UsageArguments.html#aa20d2a532c186277e958e2a2c3ce6883a8f5de70c49ae3d005160e82cd06221ed',1,'TestHandler::CommandLineArgumentParser::UsageArguments']]],
+  ['bytesperhost',['BytesPerHost',['../classMapReduceScheduler_1_1MapReduceScheduler_1_1BytesPerHostEnum.html#ad85488f5e02fb936adc2cea0ba134968',1,'MapReduceScheduler::MapReduceScheduler::BytesPerHostEnum']]],
+  ['bytesperhostenum',['BytesPerHostEnum',['../classMapReduceScheduler_1_1MapReduceScheduler_1_1BytesPerHostEnum.html',1,'MapReduceScheduler::MapReduceScheduler']]],
   ['bytestobetransmitted',['bytesToBeTransmitted',['../structTestHandler_1_1TestData.html#a10b2c008859775f17ec847b345b33c30',1,'TestHandler::TestData']]],
+  ['bytestosend',['bytesToSend',['../classJobStatistic_1_1JobStatistic.html#a1e4e049a491f3c6c3e5cac64958c7369',1,'JobStatistic::JobStatistic']]],
   ['main_2ecpp',['main.cpp',['../BGAdaptor_2main_8cpp.html',1,'']]]
 ];

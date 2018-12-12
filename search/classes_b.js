@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['randomflowhandling',['RandomFlowHandling',['../classTests_1_1RandomFlowHandling.html',1,'Tests']]]
+  ['perprocesspipes',['PerProcessPipes',['../classPerProcessPipes_1_1PerProcessPipes.html',1,'PerProcessPipes']]]
 ];

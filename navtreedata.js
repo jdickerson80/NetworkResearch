@@ -38,7 +38,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "BGAdaptor_2main_8cpp.html",
-"classFatTreeTopology_1_1StructuredTopo.html"
+"classFatTreeTopology_1_1StructuredNodeSpec.html#adf082579d231c87061519e1d15a637df"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

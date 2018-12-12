@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['handleavailablehostcommunication',['handleAvailableHostCommunication',['../classMapReduceManager_1_1MapReduceManager.html#a3aa8d65adec3aed0ef4d413ff32e298c',1,'MapReduceManager::MapReduceManager']]],
-  ['handlehostbandwidth',['HandleHostBandwidth',['../classBGAdaptor_1_1HandleHostBandwidth.html#af8e6a5d03b90da9fa56b15f5ef60aead',1,'BGAdaptor::HandleHostBandwidth']]],
-  ['handlehostprocesses',['handleHostProcesses',['../classMapReduceHost_1_1HostMapReduce.html#a494e9b6064caf84070da891f242d23bc',1,'MapReduceHost::HostMapReduce']]],
-  ['handletaskassignment',['handleTaskAssignment',['../classMapReduceManager_1_1MapReduceManager.html#a81b5cd21ca14e06fb3a9af13ac0002fd',1,'MapReduceManager::MapReduceManager']]],
-  ['handleterminatedsubprocess',['handleTerminatedSubprocess',['../classTestHandler_1_1TestBaseClass.html#ad55708ad5efaed3c9200eafd6e5d38eb',1,'TestHandler::TestBaseClass']]]
+  ['gethostname',['getHostName',['../classCommon_1_1HelperMethods.html#a37ffcf3eafeb2f4dd5eb6a7b336632c8',1,'Common::HelperMethods']]],
+  ['getinterfacename',['getInterfaceName',['../classCommon_1_1HelperMethods.html#ac25baf3735415338e1f57cbfdc0890cb',1,'Common::HelperMethods']]],
+  ['getip',['getIP',['../classMapReduceHost_1_1HostMapReduce.html#a853b0ad4cdcdb53ac7f52bf8e26761d9',1,'MapReduceHost::HostMapReduce']]],
+  ['gettime',['getTime',['../classMapReduceJob_1_1MapReduceJob.html#a3c48711661a4d2410c4d5bc54e273983',1,'MapReduceJob.MapReduceJob.getTime()'],['../classMapReduceScheduler_1_1MapReduceScheduler.html#ae11dcc707e73e7545675b6c38c041132',1,'MapReduceScheduler.MapReduceScheduler.getTime()']]]
 ];

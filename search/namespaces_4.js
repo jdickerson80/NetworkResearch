@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['testhandler',['TestHandler',['../namespaceTestHandler.html',1,'']]],
-  ['tests',['Tests',['../namespaceTests.html',1,'']]]
+  ['mapreducehost',['MapReduceHost',['../namespaceMapReduceHost.html',1,'']]],
+  ['mapreducejob',['MapReduceJob',['../namespaceMapReduceJob.html',1,'']]],
+  ['mapreducescheduler',['MapReduceScheduler',['../namespaceMapReduceScheduler.html',1,'']]]
 ];

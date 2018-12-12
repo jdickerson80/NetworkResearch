@@ -41,6 +41,9 @@ var files =
       [ "HelperMethods", "classCommon_1_1HelperMethods.html", "classCommon_1_1HelperMethods" ],
       [ "InterfaceInfo", "structCommon_1_1HelperMethods_1_1InterfaceInfo.html", "structCommon_1_1HelperMethods_1_1InterfaceInfo" ]
     ] ],
+    [ "JobStatistic.py", "JobStatistic_8py.html", [
+      [ "JobStatistic", "classJobStatistic_1_1JobStatistic.html", "classJobStatistic_1_1JobStatistic" ]
+    ] ],
     [ "LoggerFactory.cpp", "LoggerFactory_8cpp.html", null ],
     [ "LoggerFactory.h", "LoggerFactory_8h.html", [
       [ "LoggerFactory", "classCommon_1_1LoggerFactory.html", null ]
@@ -61,13 +64,19 @@ var files =
     [ "WCEnabler/MainObject.h", "WCEnabler_2MainObject_8h.html", [
       [ "MainObject", "classWCEnabler_1_1MainObject.html", "classWCEnabler_1_1MainObject" ]
     ] ],
-    [ "MapReduceHost.py", "MapReduceHost_8py.html", "MapReduceHost_8py" ],
-    [ "MapReduceManager.py", "MapReduceManager_8py.html", [
-      [ "MapReduceManager", "classMapReduceManager_1_1MapReduceManager.html", "classMapReduceManager_1_1MapReduceManager" ]
+    [ "MapReduceHost.py", "MapReduceHost_8py.html", [
+      [ "HostMapReduce", "classMapReduceHost_1_1HostMapReduce.html", "classMapReduceHost_1_1HostMapReduce" ],
+      [ "MapReduceClassIndex", "classMapReduceHost_1_1HostMapReduce_1_1MapReduceClassIndex.html", null ]
+    ] ],
+    [ "MapReduceJob.py", "MapReduceJob_8py.html", [
+      [ "MapReduceJob", "classMapReduceJob_1_1MapReduceJob.html", "classMapReduceJob_1_1MapReduceJob" ]
     ] ],
     [ "MapReduceScheduler.py", "MapReduceScheduler_8py.html", [
       [ "MapReduceScheduler", "classMapReduceScheduler_1_1MapReduceScheduler.html", "classMapReduceScheduler_1_1MapReduceScheduler" ],
-      [ "MegabytesPerHostEnum", "classMapReduceScheduler_1_1MapReduceScheduler_1_1MegabytesPerHostEnum.html", null ]
+      [ "BytesPerHostEnum", "classMapReduceScheduler_1_1MapReduceScheduler_1_1BytesPerHostEnum.html", null ]
+    ] ],
+    [ "PerProcessPipes.py", "PerProcessPipes_8py.html", [
+      [ "PerProcessPipes", "classPerProcessPipes_1_1PerProcessPipes.html", "classPerProcessPipes_1_1PerProcessPipes" ]
     ] ],
     [ "PrintHandler.h", "PrintHandler_8h.html", "PrintHandler_8h" ],
     [ "PrintUsage.cpp", "PrintUsage_8cpp.html", "PrintUsage_8cpp" ],
@@ -110,7 +119,7 @@ var files =
     [ "ThreadHelper.h", "ThreadHelper_8h.html", [
       [ "ThreadHelper", "classCommon_1_1ThreadHelper.html", "classCommon_1_1ThreadHelper" ]
     ] ],
-    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", "WorkConservationFlowHandler_8cpp" ],
+    [ "WorkConservationFlowHandler.cpp", "WorkConservationFlowHandler_8cpp.html", null ],
     [ "WorkConservationFlowHandler.h", "WorkConservationFlowHandler_8h.html", [
       [ "WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", "classWCEnabler_1_1WorkConservationFlowHandler" ],
       [ "FlowState", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState.html", "structWCEnabler_1_1WorkConservationFlowHandler_1_1FlowState" ]

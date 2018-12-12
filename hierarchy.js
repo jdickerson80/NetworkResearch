@@ -27,8 +27,8 @@ var hierarchy =
       ] ],
       [ "FatTreeTopology.StructuredEdgeSpec", "classFatTreeTopology_1_1StructuredEdgeSpec.html", null ],
       [ "FatTreeTopology.StructuredNodeSpec", "classFatTreeTopology_1_1StructuredNodeSpec.html", null ],
+      [ "JobStatistic.JobStatistic", "classJobStatistic_1_1JobStatistic.html", null ],
       [ "MapReduceHost.HostMapReduce", "classMapReduceHost_1_1HostMapReduce.html", null ],
-      [ "MapReduceManager.MapReduceManager", "classMapReduceManager_1_1MapReduceManager.html", null ],
       [ "MapReduceScheduler.MapReduceScheduler", "classMapReduceScheduler_1_1MapReduceScheduler.html", null ],
       [ "Tests.TestBaseClass", "classTests_1_1TestBaseClass.html", [
         [ "Tests.Efficiency", "classTests_1_1Efficiency.html", null ],
@@ -39,7 +39,7 @@ var hierarchy =
         [ "Tests.WCLogic", "classTests_1_1WCLogic.html", null ]
       ] ]
     ] ],
-    [ "MapReduceHost.PerProcessPipes", "classMapReduceHost_1_1PerProcessPipes.html", null ],
+    [ "PerProcessPipes.PerProcessPipes", "classPerProcessPipes_1_1PerProcessPipes.html", null ],
     [ "Common::Math::SimpleRateCalculation", "classCommon_1_1Math_1_1SimpleRateCalculation.html", null ],
     [ "Common::Math::SimpleRateCalculator< CalculationDataType, RateDataType >", "classCommon_1_1Math_1_1SimpleRateCalculator.html", null ],
     [ "Common::Math::SimpleRateCalculator< unsigned int, unsigned int >", "classCommon_1_1Math_1_1SimpleRateCalculator.html", null ],
@@ -56,7 +56,10 @@ var hierarchy =
     [ "WCEnabler::WorkConservationFlowHandler", "classWCEnabler_1_1WorkConservationFlowHandler.html", null ],
     [ "IntEnum", null, [
       [ "MapReduceHost.HostMapReduce.MapReduceClassIndex", "classMapReduceHost_1_1HostMapReduce_1_1MapReduceClassIndex.html", null ],
-      [ "MapReduceScheduler.MapReduceScheduler.MegabytesPerHostEnum", "classMapReduceScheduler_1_1MapReduceScheduler_1_1MegabytesPerHostEnum.html", null ]
+      [ "MapReduceScheduler.MapReduceScheduler.BytesPerHostEnum", "classMapReduceScheduler_1_1MapReduceScheduler_1_1BytesPerHostEnum.html", null ]
+    ] ],
+    [ "Process", null, [
+      [ "MapReduceJob.MapReduceJob", "classMapReduceJob_1_1MapReduceJob.html", null ]
     ] ],
     [ "Topo", null, [
       [ "FatTreeTopology.StructuredTopo", "classFatTreeTopology_1_1StructuredTopo.html", [
