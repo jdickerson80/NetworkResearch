@@ -7,27 +7,59 @@ from enum import IntEnum
 import time
 import sys
 
+
+
 class HostMapReduce( object ):
 	"""
 	This class starts 4 processes per host. Two iperf3 servers and clients.
 	"""
+	_speedSafetyFactor = 500
+	@staticmethod
+	def getLinkSpeed( host ):
+		linkSpeed = []
+
+		while len ( linkSpeed ) == 0:
+			linkSpeed = []
+			speed = host.cmd( "ethtool %s | grep -i speed" % host.intf() )	
+			# print "comman speed %s" % speed
+			speed = speed.replace( "\n", "" )
+			speed = speed.replace( "\t", "" )
+			speed = speed.replace( " ", "" )
+			speed = speed.replace( "Speed:", "" )
+			speed = speed.replace( "Mb/s", "" )
+			linkSpeed = [ float(s) for s in speed.split() if s.isdigit() ]
+		
+		return linkSpeed[ 0 ] 
+		# return int( speed )
 
 	@staticmethod
-	def runReducerMethod( port, host, ip ):
-		# create the command
-		command = "iperf3 -s -p %s > /dev/null" % port
-		# print ip + " " + command
-		# start another process and exec the command
-		print host.pexec( command )
-	
-	@staticmethod
 	def runMapperMethod( list, host, ip ):
+		# maxTime = int( ( float( list[ 1 ] ) / HostMapReduce.getLinkSpeed( host ) ) ) 
+		# if maxTime == 0:
+		# 	maxTime = 1
+
+		# maxTime *= HostMapReduce._speedSafetyFactor
+
+		# print maxTime
 		# create the command
 		command = "iperf3 -c %s -n %s -p %s > /dev/null" % ( list[0], list[1], list[2] )
 		# print ip + " " + command
 		# start another process and exec the command
 		# @todo use the err to make sure the command ran successfully
-		out, err, exit = host.pexec( command )
+		pOpenObject = host.pexecNoWait( command )
+
+		timeCounter = 0
+		while timeCounter <= 10000:
+			returnCode = pOpenObject.poll()
+			if returnCode != None:
+				return returnCode;	
+
+			timeCounter += 1
+			time.sleep( 0.0125 )
+
+		pOpenObject.kill()
+		pOpenObject.wait()
+		print "killed mapper"
 
 	class MapReduceClassIndex( IntEnum ):
 		# just an enum to hold max reducers and mappers
@@ -57,24 +89,19 @@ class HostMapReduce( object ):
 			self.mapWorkers.append( Process(target=self.runMapper, args=(self.mapPipes[ i ].childConnection, self.host, self.ipAddress, ) ) )
 
 		for i in xrange( self.MapReduceClassIndex.NumberOfReducers ):
-			self.reduceWorkers.append( Process(target=self.runReducer, args=(self.host, portNumber, self.ipAddress, ) ) )
+			pOpen = host.pexecNoWait( "iperf3 -s -p %s > /dev/null" % portNumber )
+			# stdOut, stdError = pOpen.communicate()
+			# self.reduceWorkers.append( [ pOpen, stdOut, stdError ] )
+			self.reduceWorkers.append( pOpen )
 			portNumber += 1
 
 		# start the mappers and reducers
 		for p in self.mapWorkers:
 			p.start()
 
-		for p in self.reduceWorkers:
-			p.start()
-
 		# start the process for handling the mappers communication
 		self.handler = Process( target=self.handleHostProcesses )
 		self.handler.start()
-
-	@staticmethod
-	def runReducer( host, port, ip ):
-		# just calls the iperf3 server
-		HostMapReduce.runReducerMethod( port, host, ip )
 
 	@staticmethod
 	def runMapper( connection, host, ip ):
@@ -144,14 +171,15 @@ class HostMapReduce( object ):
 			p.terminate()
 
 		for p in self.reduceWorkers:
-			p.terminate()
+			p.kill()
+			p.wait()
 
 		# join the mappers and reducers
 		for p in self.mapWorkers:
 			p.join()
 
-		for p in self.reduceWorkers:
-			p.join()
+		# for p in self.reduceWorkers:
+			# p.returncode()
 
 		# terminate host handler and join it	
 		self.handler.terminate()
