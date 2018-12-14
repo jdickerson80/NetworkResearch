@@ -8,7 +8,8 @@ class JobStatistic( object ):
 		self.hosts = []
 		self.bytesToSend = None
 		self.reduceJob = 0
+		self.numberOfHosts = 0
 
 	def __str__( self ):
 		hosts = '[%s]' % ' '.join( map( str, self.hosts ) )
-		return "%s, %s, %s, %s, %i, %i" % ( self.job, self.startTime, self.endTime, hosts, self.bytesToSend, self.reduceJob )
+		return "%s, %s, %s, %s, %s, %i, %i" % ( self.job, self.numberOfHosts ,self.startTime, self.endTime, hosts, self.bytesToSend, self.reduceJob )
