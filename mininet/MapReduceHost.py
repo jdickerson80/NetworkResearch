@@ -15,7 +15,7 @@ class HostMapReduce( object ):
 	@staticmethod
 	def runReducerMethod( port, host, ip ):
 		# create the command
-		command = "iperf3 -s -i 1 -p %s" % port
+		command = "iperf3 -s -p %s > /dev/null" % port
 		# print ip + " " + command
 		# start another process and exec the command
 		print host.pexec( command )
@@ -23,7 +23,7 @@ class HostMapReduce( object ):
 	@staticmethod
 	def runMapperMethod( list, host, ip ):
 		# create the command
-		command = "iperf3 -c %s -i 1 -n %s -p %s" % ( list[0], list[1], list[2] )
+		command = "iperf3 -c %s -n %s -p %s > /dev/null" % ( list[0], list[1], list[2] )
 		# print ip + " " + command
 		# start another process and exec the command
 		# @todo use the err to make sure the command ran successfully
