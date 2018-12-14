@@ -134,8 +134,8 @@ class MapReduceScheduler( object ):
 						if self.jobStats[ i ].job == jobStatistic.job:
 							# set the job equal to the appropriate list position
 							self.jobStats[ i ] = jobStatistic
-							print self.jobStats[ i ]
 							break
+
 					# set the list to updated		
 					self.hasListBeenUpdated = True
 			# loop sleep time
@@ -224,7 +224,7 @@ class MapReduceScheduler( object ):
 						# capture the second reducer
 						reducerHost = h
 						# decrement the required hosts
-						requiredHosts = requiredHosts - 1
+						requiredHosts -= 2
 						# clear both hosts
 						self.availableList[ j ] = 0
 						self.availableList[ h ] = 0
@@ -272,6 +272,7 @@ class MapReduceScheduler( object ):
 			# grab the job and bytes to send
 			self.jobStats[ counter ].job = currentJob[ 2 ]
 			self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
+			self.jobStats[ counter ].numberOfHosts = requiredHosts
 
 			# while there are hosts required 
 			while requiredHosts > 0:
@@ -283,13 +284,15 @@ class MapReduceScheduler( object ):
 
 				# if the hosts are the same, there are no available hosts
 				if requiredHosts == tempHosts:
-					print "WAITING"
+					timeCounter = 0
+					# print "WAITING for %i in %s job %s queue %s" % ( requiredHosts, self.availableList, self.jobStats[ counter ], currentJob )
 					# wait forever
-					while ( True ):
+					while ( timeCounter < 100 ):
 						# if the list has been updated, break the loop
 						if self.hasListBeenUpdated == True:
 							break
 						# sleep
+						timeCounter += 1
 						time.sleep( 0.125 )
 				# found hosts, so set the variables equal
 				else:
@@ -327,7 +330,7 @@ class MapReduceScheduler( object ):
 			time.sleep( 0.125 )
 
 		# log all of the job stats
-		with open('jobLog%s.txt' % self.getTime(), 'w') as f:
-			f.write("Job,StartTime,EndTime,Hosts,BytesTransmitted,JobNumber\n");
+		with open('jobLog%s.csv' % self.getTime(), 'w') as f:
+			f.write("Job,NumberOfHosts,StartTime,EndTime,Hosts,BytesTransmitted,JobNumber\n");
 			for item in self.jobStats:
 				f.write("%s\n" % item)
