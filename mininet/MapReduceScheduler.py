@@ -134,6 +134,7 @@ class MapReduceScheduler( object ):
 						if self.jobStats[ i ].job == jobStatistic.job:
 							# set the job equal to the appropriate list position
 							self.jobStats[ i ] = jobStatistic
+							print "job %s completed" % ( self.jobStats[ i ].job )
 							break
 
 					# set the list to updated		
@@ -285,7 +286,7 @@ class MapReduceScheduler( object ):
 				# if the hosts are the same, there are no available hosts
 				if requiredHosts == tempHosts:
 					timeCounter = 0
-					# print "WAITING for %i in %s job %s queue %s" % ( requiredHosts, self.availableList, self.jobStats[ counter ], currentJob )
+					# print "WAITING for %i job %s queue %s" % ( requiredHosts, self.jobStats[ counter ], currentJob )
 					# wait forever
 					while ( timeCounter < 100 ):
 						# if the list has been updated, break the loop
