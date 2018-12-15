@@ -7,6 +7,7 @@ from PerProcessPipes import *
 from multiprocessing import Pipe
 from Queue import Queue
 from JobStatistic import *
+from FileConstants import *
 import threading
 import time
 import sys
@@ -237,14 +238,35 @@ class MapReduceScheduler( object ):
 					else:
 						# if we are at the end of the loop
 						if h == 0:
-							# reset the j value
+							# reset the j value 
 							j = 0
 				# if the program get here, break the loop
 				break
 		# return the required hosts
 		return requiredHosts
+		
+	def clearHostsBandwidthLogs( self ):
+		for host in self.hostList:
+			hostDirectory = "%s%s/" % ( FileConstants.hostBaseDirectory, host )
+			# print hostDirectory
+			FileConstants.removeFiles( hostDirectory, ".csv" )
 
-	def runTest( self ):
+	def logTestResults( self, outputDirectory ):
+		for item in self.jobStats:
+			jobDirectory = "%s%s/" % ( outputDirectory, item.job )
+			# print jobDirectory
+			if not os.path.exists( jobDirectory ):
+				os.mkdir( jobDirectory )
+
+			for host in self.hostList:
+				hostDirectory = "%s%s/" % ( FileConstants.hostBaseDirectory, host )
+				# print hostDirectory
+				# print hostDirectory, jobDirectory, item.job
+				FileConstants.copyFiles( hostDirectory, jobDirectory, item.job )
+			# FileConstants.copyFiles( hostDirectory, outputDirectory, ".csv" )
+
+
+	def runTest( self, outputDirectory ):
 		"""
 		This method runs the tests in the file
 		"""
@@ -256,6 +278,8 @@ class MapReduceScheduler( object ):
 		currentJob = []
 		numberOfHosts = self.numberOfHosts
 		counter = 0
+
+		self.clearHostsBandwidthLogs()
 
 		# loop through the queue
 		for i in xrange( self.workQueue.qsize() ):
@@ -330,8 +354,11 @@ class MapReduceScheduler( object ):
 				break
 			time.sleep( 0.125 )
 
+
+		self.logTestResults( outputDirectory )
+
 		# log all of the job stats
-		with open('jobLog%s.csv' % self.getTime(), 'w') as f:
+		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w') as f:
 			f.write("Job,NumberOfHosts,StartTime,EndTime,Hosts,BytesTransmitted,JobNumber\n");
 			for item in self.jobStats:
 				f.write("%s\n" % item)

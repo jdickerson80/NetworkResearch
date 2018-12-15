@@ -73,6 +73,7 @@ class HostMapReduce( object ):
 		self.mapPipes    	= [ PerProcessPipes() for i in range( self.MapReduceClassIndex.NumberOfMappers ) ]
 		self.mapWorkers  	= []
 		self.reduceWorkers 	= []
+		self.name 			= "%s" % host
 
 		self.availableMappers = 0
 		portNumber = 5001
@@ -82,7 +83,7 @@ class HostMapReduce( object ):
 		for i in self.mapPipes:
 			i.parentConnection, i.childConnection = Pipe()
 
-		# @note there is no reducer pipes because the iperf server runs forever
+		# @note there are no reducer pipes because the iperf server runs forever
 
 		# create the list of mappers and reducers
 		for i in xrange( self.MapReduceClassIndex.NumberOfMappers ):
@@ -121,6 +122,9 @@ class HostMapReduce( object ):
 	def getIP( self ):
 		# get the ip
 		return self.ipAddress
+
+	def getName( self ):
+		return self.name
 
 	def addMapper( self, whatMapper, bytesToTransmit, destinationIPAddress ):
 		# get what port to use

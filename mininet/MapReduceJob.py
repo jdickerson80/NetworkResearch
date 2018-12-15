@@ -4,6 +4,9 @@ from mininet.node import *
 from JobStatistic import *
 from MapReduceHost import *
 from multiprocessing import Process
+from FileConstants import *
+import shutil
+import os
 import time
 import sys
 
@@ -11,6 +14,7 @@ class MapReduceJob( Process ):
 	"""
 	This class runs a map reduce job and logs its stats
 	"""
+
 	def __init__( self, schedulerPipe, hostMapReduceList, hostPipeList ):
 		# init the parent class
 		super( MapReduceJob, self ).__init__()
@@ -18,6 +22,34 @@ class MapReduceJob( Process ):
 		self.schedulerPipe = schedulerPipe
 		self.hostMapReduceList = hostMapReduceList
 		self.hostPipeList = hostPipeList
+
+	def removeHostsBandwidthLog( self, hostList ):
+		for host in hostList:
+			hostName = self.hostMapReduceList[ host ].getName()
+			command = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
+			# print command
+			while True:			
+				try:
+					os.remove( command )
+					break
+				except os.error as error:
+					print "remove %s" % error		
+				time.sleep( 0.025 )
+
+		# pass
+
+	def logHostsBandwidth( self, hostList, filePrefix ):
+		for host in hostList:
+			hostName = self.hostMapReduceList[ host ].getName()
+			originalFile = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
+			newFile = "%s%s/%s%s%s" % ( FileConstants.hostBaseDirectory, hostName, hostName, filePrefix, FileConstants.hostJobLogFile )
+			while True:			
+				try:
+					shutil.copy2( originalFile, newFile )
+					break
+				except IOError as error:
+					print "log %s" % error		
+				time.sleep( 0.125 )
 
 	@staticmethod
 	def getTime():
@@ -60,6 +92,7 @@ class MapReduceJob( Process ):
 			else: # if there is no data, leave the loop
 				break
 
+		self.removeHostsBandwidthLog( [ hostOne, hostTwo ] )
 		# send the job to all the hosts
 		self.hostMapReduceList[ hostOne ].addMapper( 0, numberOfBytesToSend, hostTwoIP )
 		self.hostMapReduceList[ hostTwo ].addMapper( 0, numberOfBytesToSend, hostOneIP )
@@ -111,11 +144,14 @@ class MapReduceJob( Process ):
 				if len( jobPipes ) == 0:
 					# job is complete, so break the loop
 					break
-				# sleep 
+				# 				sle ep 
 				time.sleep( 0.020 )
+
+			self.logHostsBandwidth( jobStatistic.hosts, jobStatistic.job )
 
 			# get the end end time
 			jobStatistic.endTime = self.getTime()
+
 
 			# send the stat to the scheduler
 			self.schedulerPipe.send( jobStatistic )
