@@ -7,7 +7,6 @@
 #define INET_ECN_CE         ( 0x03 )    /* ECN congestion */
 #define INET_ECN_MASK       ( 0x03 )    /* Mask of ECN bits */
 
-#define BGAdaptorIPAddress ( "10.0.0.2" )
 #define WorkConservationFlowDecimalForm ( 56 )
 #define WorkConservationFlowHexForm ( 38 )
 #define WorkConvervationMask ( 0xFC )

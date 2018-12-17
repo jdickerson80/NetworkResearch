@@ -2,6 +2,7 @@
 #define MAINOBJECT_H
 
 #include <stdint.h>
+#include <string>
 
 // Forward declarations
 namespace Common {
@@ -23,13 +24,6 @@ class MainObject
 {
 private:
 
-	/**
-	 * @brief MainObject constructor for the app
-	 */
-	MainObject();
-
-private:
-
 	BandwidthCalculator* _bandwidthCalculator;
 	BandwidthCommunicator* _bandwidthCommunicator;
 	BandwidthValues* _bandwidthValues;
@@ -38,12 +32,9 @@ private:
 public:
 
 	/**
-	 * @brief instance instance method is the Singleton method of creating and accessing this
-	 *			class. This ensures there can only be ONE instance of this class.
-	 * @return reference to this class.
-	 * @note	https://en.wikipedia.org/wiki/Singleton_pattern
+	 * @brief MainObject constructor for the app
 	 */
-	static MainObject& instance();
+	MainObject( std::string& bgAdaptorAddress );
 
 	~MainObject();
 

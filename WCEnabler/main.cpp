@@ -4,6 +4,7 @@
 #include <string>
 #include <unistd.h>
 
+#include "CommandLineArgumentParser.h"
 #include "PrintHandler.h"
 #include "MainObject.h"
 #include "BandwidthValues.h"
@@ -28,13 +29,28 @@ int main( int argc, char* argv[] )
 		exit( EXIT_FAILURE );
 	}
 
+	if ( argc < 1 )
+	{
+		CommandLineArgumentParser::printUsage();
+		exit( EXIT_FAILURE );
+	}
+
+	std::string bgAdaptorAddress = CommandLineArgumentParser::parseCommandLineArgument( argc, argv );
+
+	if ( bgAdaptorAddress.empty() )
+	{
+		CommandLineArgumentParser::printUsage();
+		exit( EXIT_FAILURE );
+	}
+
+
 	// add the signal handlers
 	signal( SIGINT, signalHandler );
 	signal( SIGTERM, signalHandler );
 	setlocale( LC_ALL, "" );
 
 	// create the main object
-	WCEnabler::MainObject::instance();
+	WCEnabler::MainObject wCEnabler = WCEnabler::MainObject( bgAdaptorAddress );
 
 	// do nothing loop to keep the app going
 	while ( isRunning )

@@ -13,7 +13,7 @@
 
 namespace WCEnabler {
 
-MainObject::MainObject()
+MainObject::MainObject( std::string& bgAdaptorAddress )
 {
 	setECNEnabled( true );
 
@@ -24,7 +24,7 @@ MainObject::MainObject()
 
 	// create the threads
 	_bandwidthCommunicator = new BandwidthCommunicator(
-				BGAdaptorIPAddress
+				bgAdaptorAddress
 				, interface.interfaceName
 				, _bandwidthValues
 				, Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthLimit", false )
@@ -32,8 +32,8 @@ MainObject::MainObject()
 
 	_workConservationFlowHandler = new WorkConservationFlowHandler(
 				interface.interfaceName
-				, 0.05
-				, 0.05
+				, 0.05f
+				, 0.05f
 				, Common::LoggerFactory::buildLogger( interface.interfaceName, "WorkConservation", false )
 				, _bandwidthValues  );
 
@@ -56,12 +56,6 @@ MainObject::~MainObject()
 const BandwidthValues* const MainObject::bandwidthValues() const
 {
 	return _bandwidthValues;
-}
-
-MainObject& MainObject::instance()
-{
-	static MainObject instance;
-	return instance;
 }
 
 void MainObject::setECNEnabled( bool isEnabled )
