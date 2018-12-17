@@ -18,7 +18,7 @@ class MapReduceScheduler( object ):
 	This class handles the scheduling of the map reduce jobs. It figures out the hosts to 
 	run the job, and sends the info to the MapReduceJob to handle the running of the job.
 	"""
-	
+	_maximumJobsPerTest = 10000
 	# Bytes per host to divide up the job
 	class BytesPerHostEnum( IntEnum ):
 		BytesPerHost = 64000000
@@ -169,6 +169,10 @@ class MapReduceScheduler( object ):
 
 		# for each job in the file
 		for job in workFile:
+			if self.workQueue.qsize() >= self._maximumJobsPerTest:
+				print "MAX JOBS REACHED!!!!"
+				break
+
 			# split line by tabs
 			jobComponents = job.split( "\t" )
 
@@ -250,6 +254,7 @@ class MapReduceScheduler( object ):
 			hostDirectory = "%s%s/" % ( FileConstants.hostBaseDirectory, host )
 			# print hostDirectory
 			FileConstants.removeFiles( hostDirectory, ".csv" )
+			FileConstants.removeFiles( hostDirectory, ".log" )
 
 	def logTestResults( self, outputDirectory ):
 		for item in self.jobStats:
@@ -263,8 +268,18 @@ class MapReduceScheduler( object ):
 				# print hostDirectory
 				# print hostDirectory, jobDirectory, item.job
 				FileConstants.copyFiles( hostDirectory, jobDirectory, item.job )
-			# FileConstants.copyFiles( hostDirectory, outputDirectory, ".csv" )
 
+	@staticmethod
+	def clearTestFolder( outputDirectory ):
+		try:
+			shutil.rmtree( outputDirectory )
+		except OSError as error:
+			print "RMTree folders got %s error" % error
+
+		try:
+			os.mkdir( outputDirectory )
+		except OSError as error:
+			print "mkdir folders got %s error" % error
 
 	def runTest( self, outputDirectory ):
 		"""
@@ -278,6 +293,8 @@ class MapReduceScheduler( object ):
 		currentJob = []
 		numberOfHosts = self.numberOfHosts
 		counter = 0
+
+		self.clearTestFolder( outputDirectory )
 
 		self.clearHostsBandwidthLogs()
 

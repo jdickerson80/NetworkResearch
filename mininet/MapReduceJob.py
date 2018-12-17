@@ -14,7 +14,6 @@ class MapReduceJob( Process ):
 	"""
 	This class runs a map reduce job and logs its stats
 	"""
-
 	def __init__( self, schedulerPipe, hostMapReduceList, hostPipeList ):
 		# init the parent class
 		super( MapReduceJob, self ).__init__()
@@ -27,16 +26,13 @@ class MapReduceJob( Process ):
 		for host in hostList:
 			hostName = self.hostMapReduceList[ host ].getName()
 			command = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
-			# print command
 			while True:			
 				try:
 					os.remove( command )
 					break
 				except os.error as error:
-					print "remove %s" % error		
+					continue
 				time.sleep( 0.025 )
-
-		# pass
 
 	def logHostsBandwidth( self, hostList, filePrefix ):
 		for host in hostList:
@@ -48,57 +44,45 @@ class MapReduceJob( Process ):
 					shutil.copy2( originalFile, newFile )
 					break
 				except IOError as error:
-					print "log %s" % error		
-				time.sleep( 0.125 )
+					continue
+					# print "log %s" % error		
+				time.sleep( 0.025 )
+
+	def clearHostsPipes( self, hostList ):
+		for host in hostList:
+			# clear both hosts buffers
+			while True:
+				# get the poll value
+				poll = self.hostPipeList[ host ].parentConnection.poll()
+
+				# if there is data
+				if poll == True:
+					# get the message
+					message = self.hostPipeList[ host ].parentConnection.recv()
+					if message == 2:
+						# if the message is ready, leave the loop
+						break
+				else: # if there is no data, leave the loop
+					break
 
 	@staticmethod
 	def getTime():
 		# get the time
 		return time.time()
 
-	def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend ):
+	def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend, outputFile ):
 		# get the ip address of both hosts
 		hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
 		hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
 		# divide the data in half
 		numberOfBytesToSend = numberOfBytesToSend / 2
 
-		# clear both hosts buffers
-		while True:
-			# get the poll value
-			poll = self.hostPipeList[ hostOne ].parentConnection.poll()
-
-			# if there is data
-			if poll == True:
-				# get the message
-				message = self.hostPipeList[ hostOne ].parentConnection.recv()
-				if message == 2:
-					# if the message is ready, leave the loop
-					break
-			else: # if there is no data, leave the loop
-				break
-
-		while True:
-			# get the poll value
-			poll = self.hostPipeList[ hostTwo ].parentConnection.poll()
-
-			# if there is data
-			if poll == True:
-				# get the message
-				message = self.hostPipeList[ hostTwo ].parentConnection.recv()
-				if message == 2:
-					# if the message is ready, leave the loop
-					break
-			else: # if there is no data, leave the loop
-				break
-
-		self.removeHostsBandwidthLog( [ hostOne, hostTwo ] )
 		# send the job to all the hosts
-		self.hostMapReduceList[ hostOne ].addMapper( 0, numberOfBytesToSend, hostTwoIP )
-		self.hostMapReduceList[ hostTwo ].addMapper( 0, numberOfBytesToSend, hostOneIP )
+		self.hostMapReduceList[ hostOne ].addMapper( 0, numberOfBytesToSend, hostTwoIP, outputFile )
+		self.hostMapReduceList[ hostTwo ].addMapper( 0, numberOfBytesToSend, hostOneIP, outputFile )
 
-		self.hostMapReduceList[ hostOne ].addMapper( 1, numberOfBytesToSend, hostTwoIP )
-		self.hostMapReduceList[ hostTwo ].addMapper( 1, numberOfBytesToSend, hostOneIP )
+		self.hostMapReduceList[ hostOne ].addMapper( 1, numberOfBytesToSend, hostTwoIP, outputFile )
+		self.hostMapReduceList[ hostTwo ].addMapper( 1, numberOfBytesToSend, hostOneIP, outputFile )
 
 	def run( self ):
 		while True:
@@ -110,6 +94,9 @@ class MapReduceJob( Process ):
 			# "cast" the message to a job statistic
 			jobStatistic = receiveMessage
 
+			self.clearHostsPipes( jobStatistic.hosts )
+			self.removeHostsBandwidthLog( jobStatistic.hosts )
+
 			# log the start time
 			jobStatistic.startTime = self.getTime()
 
@@ -119,7 +106,7 @@ class MapReduceJob( Process ):
 				jobPipes.append( self.hostPipeList[ jobStatistic.hosts[ pair ] ] )
 				jobPipes.append( self.hostPipeList[ jobStatistic.hosts[ pair + 1 ]  ] )
 				# start the hosts' mappers
-				self.setIperfPair( jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ], jobStatistic.bytesToSend )
+				self.setIperfPair( jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ], jobStatistic.bytesToSend, jobStatistic.job )
 
 			# wait for the mappers to be completed
 			while True:
@@ -144,14 +131,13 @@ class MapReduceJob( Process ):
 				if len( jobPipes ) == 0:
 					# job is complete, so break the loop
 					break
-				# 				sle ep 
+				
 				time.sleep( 0.020 )
-
-			self.logHostsBandwidth( jobStatistic.hosts, jobStatistic.job )
 
 			# get the end end time
 			jobStatistic.endTime = self.getTime()
 
+			self.logHostsBandwidth( jobStatistic.hosts, jobStatistic.job )
 
 			# send the stat to the scheduler
 			self.schedulerPipe.send( jobStatistic )

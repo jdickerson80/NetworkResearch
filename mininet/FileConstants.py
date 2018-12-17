@@ -21,7 +21,6 @@ class FileConstants():
 						print "remove files %s" % error       
 					time.sleep( 0.025 )
 
-
 	@staticmethod
 	def copyFiles( sourceDirectory, destinationDirectory, pattern ):
 		for f in os.listdir( sourceDirectory ):

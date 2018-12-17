@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from FileConstants import *
 from mininet.node import *
 from PerProcessPipes import *
 from multiprocessing import *
@@ -42,11 +43,13 @@ class HostMapReduce( object ):
 
 		# print maxTime
 		# create the command
-		command = "iperf3 -c %s -n %s -p %s > /dev/null" % ( list[0], list[1], list[2] )
+		logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, host, host, list[ 3 ], list[ 2 ] )
+		command = "iperf3 -c %s -i 1 -n %s -p %s --logfile %s" % ( list[ 0 ], list[ 1 ], list[ 2 ], logFile )
 		# print ip + " " + command
 		# start another process and exec the command
 		# @todo use the err to make sure the command ran successfully
 		pOpenObject = host.pexecNoWait( command )
+		# out, err = pOpenObject.communicate()
 
 		timeCounter = 0
 		while timeCounter <= 10000:
@@ -126,7 +129,7 @@ class HostMapReduce( object ):
 	def getName( self ):
 		return self.name
 
-	def addMapper( self, whatMapper, bytesToTransmit, destinationIPAddress ):
+	def addMapper( self, whatMapper, bytesToTransmit, destinationIPAddress, outputFile ):
 		# get what port to use
 		if whatMapper % 2 == 0:
 			port = 5001
@@ -134,7 +137,7 @@ class HostMapReduce( object ):
 			port = 5002
 
 		# send the job to the mappers
-		self.mapPipes[ whatMapper ].parentConnection.send( [ destinationIPAddress, bytesToTransmit, port ] )
+		self.mapPipes[ whatMapper ].parentConnection.send( [ destinationIPAddress, bytesToTransmit, port, outputFile ] )
 
 	def handleHostProcesses( self ):
 		# send the available mappers to the schedulers
