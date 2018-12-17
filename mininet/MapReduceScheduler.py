@@ -31,7 +31,7 @@ class MapReduceScheduler( object ):
 		# create the queue
 		self.workQueue = Queue()
 		# get the length of the hosts list, which is the number of the hosts
-		self.numberOfHosts = int ( len( hostList ) )
+		self.numberOfHosts = int ( len( hostList ) - 1 )
 		self.hostList = hostList
 		# preprocess the job list
 		self.__preprocessJobList( data )
@@ -56,7 +56,10 @@ class MapReduceScheduler( object ):
 
 		# create the hosts' map reduce clients
 		for i in self.hostList:
-			self.hostMapReduceList.append( HostMapReduce( host = i, schedularPipe = self.hostPipeList[ counter ].childConnection ) )
+			if counter == self.numberOfHosts :
+				break
+			else:
+				self.hostMapReduceList.append( HostMapReduce( host = i, schedularPipe = self.hostPipeList[ counter ].childConnection ) )
 			counter += 1
 
 		# create the map reduce jobs. It is half of the number of hosts because each job takes two hosts at a minimum
@@ -65,7 +68,6 @@ class MapReduceScheduler( object ):
 			job.start()
 			self.jobList.append( job )
 
-		print len( self.jobList )	
 		# set the list to be updated, so the job can be scheduled
 		self.hasListBeenUpdated = True
 		self.jobStats = []

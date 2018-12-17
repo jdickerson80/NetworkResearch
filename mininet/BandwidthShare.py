@@ -83,11 +83,16 @@ def setupTCCommand( interface, host, switchPortSpeed ):
 
 def startBWShare( net, bandwidthGuarantee ):
     print "Starting BG and WC"
-    for host in net.hosts:
-	if host.name == 'h001' or host.name == 'h1' or host.name == '10.0.0.2':
-	    host.cmd( './BGAdaptor %s 2>&1 > /dev/null &' % bandwidthGuarantee )
-	else:
-	    host.cmd( './WCEnabler 2>&1 > /dev/null &' )
+	counter = 0
+	bgAdaptorAddress = net.hosts[ len( net.hosts ) - 1 ].IP()
+
+	for host in net.hosts:
+		if counter == len( net.hosts ) - 1:
+			host.cmd( './BGAdaptor %s 2>&1 > /dev/null &' % bandwidthGuarantee )
+		else:
+			command = './WCEnabler -b %s 2>&1 > /dev/null &' % bgAdaptorAddress
+			host.cmd( command )
+		counter += 1 
 
 def setupSwitchQueues( net, switchPortSpeed ):
     print "Setting up switch queues"
