@@ -44,13 +44,14 @@ class HostMapReduce( object ):
 		# print maxTime
 		# create the command
 		logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, host, host, list[ 3 ], list[ 2 ] )
-		command = "iperf3 -c %s -i 1 -n %s -p %s --logfile %s" % ( list[ 0 ], list[ 1 ], list[ 2 ], logFile )
-		# print ip + " " + command
+		command = "iperf3 -c %s -i 1 -n %s -p %s --logfile %s --get-server-output 2>&1 > /dev/null" % ( list[ 0 ], list[ 1 ], list[ 2 ], logFile )
 		# start another process and exec the command
 		# @todo use the err to make sure the command ran successfully
 		pOpenObject = host.pexecNoWait( command )
-		# out, err = pOpenObject.communicate()
+		out, err = pOpenObject.communicate()
+		# print ip + " " + command + out + err
 
+		# print out, err
 		timeCounter = 0
 		while timeCounter <= 10000:
 			returnCode = pOpenObject.poll()
@@ -93,7 +94,7 @@ class HostMapReduce( object ):
 			self.mapWorkers.append( Process(target=self.runMapper, args=(self.mapPipes[ i ].childConnection, self.host, self.ipAddress, ) ) )
 
 		for i in xrange( self.MapReduceClassIndex.NumberOfReducers ):
-			pOpen = host.pexecNoWait( "iperf3 -s -p %s > /dev/null" % portNumber )
+			pOpen = host.pexecNoWait( "iperf3 -s -p %s 2>&1 > /dev/null" % portNumber )
 			# stdOut, stdError = pOpen.communicate()
 			# self.reduceWorkers.append( [ pOpen, stdOut, stdError ] )
 			self.reduceWorkers.append( pOpen )
