@@ -24,19 +24,12 @@ class MapReduceScheduler( object ):
 		BytesPerHost = 64000000
 
 	# constructor
-	def __init__( self, hostList, workFile ):
-		# cache the work file lines
-		with open( workFile ) as f:
-			data = f.readlines()
+	def __init__( self, hostList ):
 		# create the queue
 		self.workQueue = Queue()
 		# get the length of the hosts list, which is the number of the hosts
 		self.numberOfHosts = int ( len( hostList ) - 1 )
 		self.hostList = hostList
-		# preprocess the job list
-		self.__preprocessJobList( data )
-		# add the jobs to the queue
-		self.__processJobs( data )
 		self.jobList = []
 		# create the available job list, which is used to figure out what map reduce job to assign the job
 		self.availableJobList = [ True for i in xrange( self.numberOfHosts / 2 ) ]
@@ -77,7 +70,6 @@ class MapReduceScheduler( object ):
 
 		# start the thread
 		self.handleJobPipeThread.start()
-		print "Queue size: %i" % self.workQueue.qsize()
 
 		# flush the hosts' buffer
 		for i in self.hostPipeList:
@@ -283,13 +275,25 @@ class MapReduceScheduler( object ):
 		except OSError as error:
 			print "mkdir folders got %s error" % error
 
-	def runTest( self, outputDirectory ):
+	def runTest( self, outputDirectory, workFile ):
 		"""
 		This method runs the tests in the file
 		"""
-		# if the queue is empty, throw a lookup error
+		try:
+			with open( workFile ) as f:
+				data = f.readlines()
+		except IOError as error:
+			raise LookupError( "Caching work file failed." )
+
+		# preprocess the job list
+		self.__preprocessJobList( data )
+		# add the jobs to the queue
+		self.__processJobs( data )
+		
 		if self.workQueue.empty() == True:
 			raise LookupError( "Running test on an empty queue" )
+
+		print "Queue size: %i" % self.workQueue.qsize()
 
 		# clear the current job list, get the number of hosts, and clears the counter
 		currentJob = []
