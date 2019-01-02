@@ -31,35 +31,31 @@ class MapReduceScheduler( object ):
 		self.numberOfHosts = int ( len( hostList ) - 1 )
 		self.hostList = hostList
 		self.jobList = []
-		# create the available job list, which is used to figure out what map reduce job to assign the job
-		self.availableJobList = [ True for i in xrange( self.numberOfHosts / 2 ) ]
-		self.hostMapReduceList = []
-		# available hosts. two mappers per host
-		self.availableList = [ 2 for i in xrange( self.numberOfHosts ) ]
-		self.jobPipeList = [ PerProcessPipes() for i in xrange( self.numberOfHosts / 2 ) ]
-		self.hostPipeList = [ PerProcessPipes() for i in xrange( self.numberOfHosts ) ]
-		self.handleJobPipeThreadRunning = True
-		counter = 0
 
+		numberOfJobProcesses = self.numberOfHosts * 2 
+		# create the available job list, which is used to figure out what map reduce job to assign the job
+		self.availableJobList = [ True for i in xrange( numberOfJobProcesses ) ]
+		self.jobPipeList = [ PerProcessPipes() for i in xrange( numberOfJobProcesses ) ]
+		self.hostMapReduceList = []
+
+		# available hosts. two mappers per host
+		self.availableMapperList	= [ [ HostStates.Ready, HostStates.Ready ] for i in xrange( self.numberOfHosts ) ]
+		self.availableReducerList	= [ [ HostStates.Ready, HostStates.Ready ] for i in xrange( self.numberOfHosts ) ]
+		self.handleJobPipeThreadRunning = True
+		self.mapperPipes = [ [ PerProcessPipes(), PerProcessPipes() ] for i in xrange( self.numberOfHosts ) ]
+		
 		# create the pipes
 		for i in self.jobPipeList:
 			i.parentConnection, i.childConnection = Pipe()
-		for i in self.hostPipeList:
-			i.parentConnection, i.childConnection = Pipe()
+
+		for i in self.mapperPipes:
+			i[ 0 ].parentConnection, i[ 0 ].childConnection = Pipe()
+			i[ 1 ].parentConnection, i[ 1 ].childConnection = Pipe()
 
 		# create the hosts' map reduce clients
-		for i in self.hostList:
-			if counter == self.numberOfHosts :
-				break
-			else:
-				self.hostMapReduceList.append( HostMapReduce( host = i, schedularPipe = self.hostPipeList[ counter ].childConnection ) )
-			counter += 1
-
-		# create the map reduce jobs. It is half of the number of hosts because each job takes two hosts at a minimum
-		for i in xrange( self.numberOfHosts / 2 ):
-			job = MapReduceJob( schedulerPipe = self.jobPipeList[ i ].childConnection, hostMapReduceList = self.hostMapReduceList, hostPipeList = self.hostPipeList )
-			job.start()
-			self.jobList.append( job )
+		for i in xrange( self.numberOfHosts ):
+			self.hostMapReduceList.append( HostMapReduce( host = self.hostList[ i ], mapperOnePipe = self.mapperPipes[ i ][ 0 ].childConnection, mapperTwoPipe = self.mapperPipes[ i ][ 1 ].childConnection ) )
+		
 
 		# set the list to be updated, so the job can be scheduled
 		self.hasListBeenUpdated = True
@@ -71,10 +67,18 @@ class MapReduceScheduler( object ):
 		# start the thread
 		self.handleJobPipeThread.start()
 
-		# flush the hosts' buffer
-		for i in self.hostPipeList:
-			i.parentConnection.recv()
+		# create the map reduce jobs. It is half of the number of hosts because each job takes two hosts at a minimum
+		for i in xrange( numberOfJobProcesses ):
+			job = MapReduceJob( schedulerPipe = self.jobPipeList[ i ].childConnection, hostMapReduceList = self.hostMapReduceList, hostMapperPipes = self.mapperPipes )
+			job.start()
+			self.jobList.append( job )
 
+		print "JOBS!! %s" % len ( self.jobList )
+
+		# flush the hosts' buffer
+		for i in self.mapperPipes:
+			i[ 0 ].parentConnection.recv()
+			i[ 1 ].parentConnection.recv()
 
 	def terminate( self ):
 		"""
@@ -102,7 +106,7 @@ class MapReduceScheduler( object ):
 		"""
 		Get the stats back from the MapReduce job and add the appropriate data to the available lists
 		"""
-		time.sleep( 0.5 )
+		# time.sleep( 0.5 )
 		# while the thread should run
 		while self.handleJobPipeThreadRunning == True:
 			# loop through the job pipes
@@ -117,25 +121,35 @@ class MapReduceScheduler( object ):
 					# "cast" it to a jobStatistic
 					jobStatistic = message
 
+					# print "before %s" % self.availableMapperList
+
 					# set all the hosts back to available
-					for i in jobStatistic.hosts:
-						self.availableList[ i ] = 2
+					for i in jobStatistic.mapHostList:
+						self.availableMapperList[ i.hostName ][ i.hostIndex ] = HostStates.Ready
+
+					# set all the hosts back to available
+					for i in jobStatistic.reduceHostList:
+						self.availableReducerList[ i.hostName ][ i.hostIndex ] = HostStates.Ready
 
 					# set the job back to available
 					self.availableJobList[ jobStatistic.reduceJob ] = True
+
+					# print "Mappers are: %s" % self.availableMapperList
+					# print "Reducers are: %s" % self.availableReducerList
 
 					# find the job in the job list
 					for i in xrange( len( self.jobStats ) ):
 						if self.jobStats[ i ].job == jobStatistic.job:
 							# set the job equal to the appropriate list position
 							self.jobStats[ i ] = jobStatistic
-							print "job %s completed" % ( self.jobStats[ i ].job )
+							print "completed %s" % ( self.jobStats[ i ].job )
+							# print "after %s" %self.availableMapperList
 							break
 
 					# set the list to updated		
 					self.hasListBeenUpdated = True
 			# loop sleep time
-			time.sleep( 0.025 )
+			time.sleep( 0.0025 )
 
 	@staticmethod
 	def getTime():
@@ -198,48 +212,47 @@ class MapReduceScheduler( object ):
 			# add the job to the queue
 			self.workQueue.put( [ int ( hostsNeeded ), int ( jobComponents[ 2 ] ), jobComponents[ 0 ] ], block=False )
 
-	def findHosts( self, numberOfHosts, requiredHosts, counter ):
+	def findMapperHosts( self, requiredHosts, counter ):
 		"""
 		Find the hosts to run the jobs
 		"""
-		# loop through the hosts, 0 to max
-		for j in xrange( numberOfHosts ):
-			# if the host has the available reducers
-			if self.availableList[ j ] == 2:
-				# store the mapper
-				mapperHost = j
-				# loop through the hosts backwards, max to 0
-				for h in xrange( numberOfHosts - 1, 0, -1 ):
-					# if the host has the available reducers
-					if self.availableList[ h ] == 2:
-						# if h is equal to j, found the same host, break the loop
-						if h == j:
-							print "same host"
-							break
-						# if h has gone past h, break the loop
-						elif j > h:
-							print "wrap around"
-							break
+		if requiredHosts == 0:
+			return 0
 
-						# capture the second reducer
-						reducerHost = h
-						# decrement the required hosts
-						requiredHosts -= 2
-						# clear both hosts
-						self.availableList[ j ] = 0
-						self.availableList[ h ] = 0
-						# add the hosts to the job stats
-						self.jobStats[ counter ].hosts.append( reducerHost )
-						self.jobStats[ counter ].hosts.append( mapperHost )
-						# found everything needed, so break the loop
-						break
-					else:
-						# if we are at the end of the loop
-						if h == 0:
-							# reset the j value 
-							j = 0
-				# if the program get here, break the loop
-				break
+		for j in xrange( self.numberOfHosts ):
+			for h in xrange( HostMapReduce.MapReduceClassIndex.NumberOfMappers ):
+				if self.availableMapperList[ j ][ h ] == HostStates.Ready:
+					requiredHosts -= 1
+					self.availableMapperList[ j ][ h ] = HostStates.Busy
+					self.jobStats[ counter ].mapHostList.append( JobHost( j, h ) )
+					if requiredHosts == 0:
+						return requiredHosts
+
+		# return the required hosts
+		return requiredHosts
+
+	def findReducerHosts( self, requiredHosts, jobMappers, counter ):
+		"""
+		Find the hosts to run the jobs
+		"""
+		if requiredHosts == 0:
+			return 0
+		
+		mapCounter = 0
+		for j in xrange( self.numberOfHosts - 1, 0, -1  ):
+			for h in xrange( HostMapReduce.MapReduceClassIndex.NumberOfReducers ):
+				if self.availableReducerList[ j ][ h ] == HostStates.Ready:
+					if mapCounter < len ( jobMappers ):
+						if jobMappers[ mapCounter ].hostName == j:
+							print "SAME HOST!!!!"
+							continue
+
+					requiredHosts -= 1
+					self.availableReducerList[ j ][ h ] = HostStates.Busy
+					self.jobStats[ counter ].reduceHostList.append( JobHost( j, h ) )
+					if requiredHosts == 0:
+						return requiredHosts
+			mapCounter += 1
 		# return the required hosts
 		return requiredHosts
 		
@@ -288,6 +301,7 @@ class MapReduceScheduler( object ):
 		# preprocess the job list
 		self.__preprocessJobList( data )
 		# add the jobs to the queue
+
 		self.__processJobs( data )
 		
 		if self.workQueue.empty() == True:
@@ -297,7 +311,6 @@ class MapReduceScheduler( object ):
 
 		# clear the current job list, get the number of hosts, and clears the counter
 		currentJob = []
-		numberOfHosts = self.numberOfHosts
 		counter = 0
 
 		self.clearTestFolder( outputDirectory )
@@ -308,67 +321,100 @@ class MapReduceScheduler( object ):
 		for i in xrange( self.workQueue.qsize() ):
 			# get the current job
 			currentJob = self.workQueue.get_nowait()
+
 			# get the hosts
-			requiredHosts = currentJob[ 0 ]
+			requiredMapperHosts = currentJob[ 0 ]
+			requiredReducerHosts = currentJob[ 0 ]
+
 			# grab the required hosts and store it in a temp variable
-			tempHosts = requiredHosts
+			tempMappers = requiredMapperHosts
+			tempReducers = requiredReducerHosts
+
 			# grab the required hosts
 			totalRequiredHosts = currentJob[ 0 ]
+
 			# create the job statistics and add it to the list
 			self.jobStats.append( JobStatistic() )
 
 			# grab the job and bytes to send
 			self.jobStats[ counter ].job = currentJob[ 2 ]
 			self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
-			self.jobStats[ counter ].numberOfHosts = requiredHosts
+			self.jobStats[ counter ].numberOfHosts = totalRequiredHosts
+
 
 			# while there are hosts required 
-			while requiredHosts > 0:
+			while requiredMapperHosts > 0 or requiredReducerHosts > 0:
 				# turn off the list updated flag
 				self.hasListBeenUpdated = False
 
+				# print "Scheduling %s \nmapper: %s\n\nreducers: %s" % ( self.jobStats[ counter ], self.availableMapperList, self.availableReducerList )
 				# find the hosts
-				tempHosts = self.findHosts( numberOfHosts, requiredHosts, counter )
+				tempMappers = self.findMapperHosts( requiredMapperHosts, counter )
+				tempReducers = self.findReducerHosts( requiredReducerHosts, self.jobStats[ counter ].mapHostList, counter )
 
 				# if the hosts are the same, there are no available hosts
-				if requiredHosts == tempHosts:
+				if requiredMapperHosts == tempMappers or requiredReducerHosts == tempReducers:
 					timeCounter = 0
-					# print "WAITING for %i job %s queue %s" % ( requiredHosts, self.jobStats[ counter ], currentJob )
+					if requiredMapperHosts == tempMappers:
+						waitingOn = "Mapper"
+					elif requiredReducerHosts == tempReducers:
+						waitingOn = "Reducer"
+
+					print "WAITING on %s" % waitingOn # for %i job %s queue %s" % ( requiredMapperHosts, self.jobStats[ counter ], currentJob )
 					# wait forever
 					while ( timeCounter < 100 ):
+						# print timeCounter
+					# while ( True ):
 						# if the list has been updated, break the loop
 						if self.hasListBeenUpdated == True:
+							# print "broke"
 							break
 						# sleep
 						timeCounter += 1
 						time.sleep( 0.125 )
-				# found hosts, so set the variables equal
-				else:
-					requiredHosts = tempHosts
+
+
+				# if requiredMapperHosts != tempMappers:
+				requiredMapperHosts = tempMappers
+
+				# if requiredReducersHosts != tempReducers:
+				requiredReducerHosts = tempReducers
+
 				time.sleep( 0.125 )
 
-			# time to find the job process to run the job
-			for i in xrange( len( self.availableJobList ) ):
-				# if the element is available
-				if self.availableJobList[ i ] == True:
-					# grab job from the job stats
-					self.jobStats[ counter ].reduceJob = i
-					# set this element as unavailable
-					self.availableJobList[ i ] = False
-					# send it to the job process
-					self.jobPipeList[ i ].parentConnection.send( self.jobStats[ counter ] )
+			while True:
+				foundJob = False
+				# print "Finding Job"
+				# time to find the job process to run the job
+				for i in xrange( len( self.availableJobList ) ):
+					# if the element is available
+					if self.availableJobList[ i ] == True:
+						foundJob = True
+						# grab job from the job stats
+						self.jobStats[ counter ].reduceJob = i
+						# set this element as unavailable
+						self.availableJobList[ i ] = False
+						# send it to the job process
+						# print "Scheduled %s" % self.jobStats[ counter ]
+						self.jobPipeList[ i ].parentConnection.send( self.jobStats[ counter ] )
+						break
+
+				if foundJob == True:
 					break
+
+				time.sleep( 0.025 )		
 			# increment the job stats counter
 			counter += 1
 
 		# done scheduling the jobs
+		print "@@@@@@@@@@@@@@@checking for done"
 		while True:
 			# set the variable to true
 			done = True
 			# loop through the available job lists
-			for i in self.availableJobList:
+			for i in xrange( len( self.availableJobList ) ):
 				# if the element is false, set done to false, and break the loop
-				if i == False:
+				if self.availableJobList[ i ] == False:
 					done = False
 					break
 			# if the jobs are done, break the loop
@@ -382,6 +428,33 @@ class MapReduceScheduler( object ):
 
 		# log all of the job stats
 		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w') as f:
-			f.write("Job,NumberOfHosts,StartTime,EndTime,Hosts,BytesTransmitted,JobNumber\n");
+			f.write("Job,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,BytesTransmitted,JobNumber\n");
 			for item in self.jobStats:
 				f.write("%s\n" % item)
+
+
+
+
+
+
+
+
+
+			# # grab the job and bytes to send
+			# self.jobStats[ counter ].job = currentJob[ 2 ]
+			# self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
+			# self.jobStats[ counter ].numberOfHosts = requiredHosts
+
+
+
+
+			# self.jobStats[ counter ].mapHostList.append( JobHost( 2, 0 ) ) 
+			# self.jobStats[ counter ].mapHostList.append( JobHost( 1, 0 ) ) 
+			# self.jobStats[ counter ].reduceHostList.append( JobHost( self.numberOfHosts - 1 , 1 ) ) 
+			# self.jobStats[ counter ].reduceHostList.append( JobHost( ( self.numberOfHosts - 2 ), 0 ) ) 
+
+
+			# # self.jobStats[ counter ].mapHostList.append( JobHost( 0, 0 ) ) 
+			# # self.jobStats[ counter ].mapHostList.append( JobHost( 7, 1 ) ) 
+			# # self.jobStats[ counter ].reduceHostList.append( JobHost( self.numberOfHosts - 3 , 0 ) ) 
+			# # self.jobStats[ counter ].reduceHostList.append( JobHost( ( self.numberOfHosts - 4 ), 1 ) ) 

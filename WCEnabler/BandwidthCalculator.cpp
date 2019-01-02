@@ -211,7 +211,7 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 		bandwidthCalculator->parseTCFile( buffer, bytesRead );
 
 		// sleep for a second
-		sleep( 1 );
+		usleep( 250000 );
 	}
 
 	pthread_exit( NULL );

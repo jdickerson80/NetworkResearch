@@ -14,17 +14,17 @@ class MapReduceJob( Process ):
 	"""
 	This class runs a map reduce job and logs its stats
 	"""
-	def __init__( self, schedulerPipe, hostMapReduceList, hostPipeList ):
+	def __init__( self, schedulerPipe, hostMapReduceList, hostMapperPipes ):
 		# init the parent class
 		super( MapReduceJob, self ).__init__()
 		# grab the scheduler pipe, hosts list, and pipe list
 		self.schedulerPipe = schedulerPipe
 		self.hostMapReduceList = hostMapReduceList
-		self.hostPipeList = hostPipeList
+		self.hostMapperPipes = hostMapperPipes
 
-	def removeHostsBandwidthLog( self, hostList ):
+	def removeHostsBandwidthLog( self, hostList ):	
 		for host in hostList:
-			hostName = self.hostMapReduceList[ host ].getName()
+			hostName = self.hostMapReduceList[ host.hostName ].getName()
 			command = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
 			while True:			
 				try:
@@ -36,7 +36,7 @@ class MapReduceJob( Process ):
 
 	def logHostsBandwidth( self, hostList, filePrefix ):
 		for host in hostList:
-			hostName = self.hostMapReduceList[ host ].getName()
+			hostName = self.hostMapReduceList[ host.hostName ].getName()
 			originalFile = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
 			newFile = "%s%s/%s%s%s" % ( FileConstants.hostBaseDirectory, hostName, hostName, filePrefix, FileConstants.hostJobLogFile )
 			while True:			
@@ -45,99 +45,153 @@ class MapReduceJob( Process ):
 					break
 				except IOError as error:
 					continue
-					# print "log %s" % error		
+					print "log io %s" % error		
+				except os.error as error:
+					continue
+					print "log os %s" % error		
 				time.sleep( 0.025 )
-
-	def clearHostsPipes( self, hostList ):
-		for host in hostList:
-			# clear both hosts buffers
-			while True:
-				# get the poll value
-				poll = self.hostPipeList[ host ].parentConnection.poll()
-
-				# if there is data
-				if poll == True:
-					# get the message
-					message = self.hostPipeList[ host ].parentConnection.recv()
-					if message == 2:
-						# if the message is ready, leave the loop
-						break
-				else: # if there is no data, leave the loop
-					break
 
 	@staticmethod
 	def getTime():
 		# get the time
 		return time.time()
 
-	def setIperfPair( self, hostOne, hostTwo, numberOfBytesToSend, outputFile ):
+	def clearHostsPipes( self, mapperList ):
+		for host in mapperList:
+			# clear both hosts buffers
+			while True:
+				# get the poll value
+				poll = self.hostMapperPipes[ host.hostName ][ host.hostIndex ].parentConnection.poll()
+
+				# if there is data
+				if poll == True:
+					# get the message
+					message = self.hostMapperPipes[ host.hostName ][ host.hostIndex ].parentConnection.recv()
+					if message == HostStates.Ready:
+						# if the message is ready, leave the loop
+						break
+				else: # if there is no data, leave the loop
+					break
+
+	def startMappers( self, mapperList, reducerList, numberOfBytesToSend, outputFile ):
 		# get the ip address of both hosts
-		hostOneIP = self.hostMapReduceList[ hostOne ].getIP()
-		hostTwoIP = self.hostMapReduceList[ hostTwo ].getIP()
-		# divide the data in half
-		numberOfBytesToSend = numberOfBytesToSend / 2
+		numberOfBytesToSend = numberOfBytesToSend / len( mapperList )
+		mapCounter = 0
+		mapperPipes = []
+	
+		for host in mapperList:
+			# get what port to use
+			if reducerList[ mapCounter ].hostIndex % 2 == 0:
+				serverPort = 5001
+			else:
+				serverPort = 5002
 
-		# send the job to all the hosts
-		self.hostMapReduceList[ hostOne ].addMapper( 0, numberOfBytesToSend, hostTwoIP, outputFile )
-		self.hostMapReduceList[ hostTwo ].addMapper( 0, numberOfBytesToSend, hostOneIP, outputFile )
+			destIP = self.hostMapReduceList[ reducerList[ mapCounter ].hostName ].getIP()
+			self.hostMapReduceList[ host.hostName ].addMapper( host.hostIndex, numberOfBytesToSend, destIP, outputFile, serverPort )
+			mapperPipes.append( self.hostMapperPipes[ host.hostName ][ host.hostIndex ] )
 
-		self.hostMapReduceList[ hostOne ].addMapper( 1, numberOfBytesToSend, hostTwoIP, outputFile )
-		self.hostMapReduceList[ hostTwo ].addMapper( 1, numberOfBytesToSend, hostOneIP, outputFile )
+			mapCounter += 1
+
+		return mapperPipes
+
+	def terminateMappers( self, mapperList ):
+		for host in mapperList:
+			self.hostMapReduceList[ host.hostName ].terminateMapper( host.hostIndex )
+
+	def startReducers( self, reducerList ):
+		# get the ip address of both hosts
+		for host in reducerList:
+			self.hostMapReduceList[ host.hostName ].addReducer( host.hostIndex )
+
+	def terminateReducers( self, reducerList ):	
+		for host in reducerList:
+			self.hostMapReduceList[ host.hostName ].terminateReducer( host.hostIndex )
+
+	_retryThreshold = 5
 
 	def run( self ):
+		hasNoError = True
 		while True:
-			# clear the job pipes
-			jobPipes = []
-			# get the job from the scheduler
-			receiveMessage = self.schedulerPipe.recv()
+			mapperPipes = []
 
-			# "cast" the message to a job statistic
-			jobStatistic = receiveMessage
+			if hasNoError == True:
+				retryCount = 0
+				# get the job from the scheduler
+				receiveMessage = self.schedulerPipe.recv()
 
-			self.clearHostsPipes( jobStatistic.hosts )
-			self.removeHostsBandwidthLog( jobStatistic.hosts )
+				# "cast" the message to a job statistic
+				jobStatistic = receiveMessage
 
-			# log the start time
+				# print jobStatistic
+
+			hasNoError = True
+			self.clearHostsPipes( jobStatistic.mapHostList )
+			self.clearHostsPipes( jobStatistic.reduceHostList )
+
+			self.removeHostsBandwidthLog( jobStatistic.mapHostList )
+			# self.removeHostsBandwidthLog( jobStatistic.reduceHostList )
+
+			self.startReducers( jobStatistic.reduceHostList )
 			jobStatistic.startTime = self.getTime()
-
-			# loop through the hosts by two
-			for pair in xrange( 0, len( jobStatistic.hosts ), 2 ):
-				# add the hosts to the job pipes list
-				jobPipes.append( self.hostPipeList[ jobStatistic.hosts[ pair ] ] )
-				jobPipes.append( self.hostPipeList[ jobStatistic.hosts[ pair + 1 ]  ] )
-				# start the hosts' mappers
-				self.setIperfPair( jobStatistic.hosts[ pair ], jobStatistic.hosts[ pair + 1 ], jobStatistic.bytesToSend, jobStatistic.job )
-
+			mapperPipes = self.startMappers( jobStatistic.mapHostList, jobStatistic.reduceHostList, jobStatistic.bytesToSend, jobStatistic.job )
+					
+			# log the start time
 			# wait for the mappers to be completed
+
 			while True:
 				# clear the count variable
 				count = 0
 				# loop through the job pipes
-				for i in jobPipes:
+				for i in mapperPipes:
 					# get the poll value
 					poll = i.parentConnection.poll()
 					# if there is data
 					if poll == True:
 						# get the message
 						message = i.parentConnection.recv()
+						# print "%s got %s" % ( jobStatistic.job, message )
 						# if the message said both mappers are complete
-						if message == 2:
+						if message == HostStates.Ready:
 							# remove the pipe from the pipe list
-							del jobPipes[ count ]
+							# print "deling %s" % count
+							del mapperPipes[ count ]
+						elif message == HostStates.Error:
+							self.terminateMappers( jobStatistic.mapHostList )
+							self.terminateReducers( jobStatistic.reduceHostList )
+							hasNoError = False
+							time.sleep( 0.20 )
+							print "!!!!error job %s" % jobStatistic.job
+							break
 					# increment the counter
 					count += 1
 
 				# the pipes have been polled, so if the job pipes is empty
-				if len( jobPipes ) == 0:
+				if len( mapperPipes ) == 0 or hasNoError == False:
 					# job is complete, so break the loop
 					break
 				
-				time.sleep( 0.020 )
+				time.sleep( 0.0020 )
+
+			if hasNoError == False:
+				retryCount += 1
+				if retryCount > self._retryThreshold:
+					hasNoError = True
+					jobStatistic.endTime = 0
+					jobStatistic.startTime = 0		
+					self.terminateReducers( jobStatistic.reduceHostList )
+
+					# send the stat to the scheduler
+					self.schedulerPipe.send( jobStatistic )
+					print "%s MAX THRESHOLD MET!!!" % jobStatistic.job
+				continue
 
 			# get the end end time
 			jobStatistic.endTime = self.getTime()
 
-			self.logHostsBandwidth( jobStatistic.hosts, jobStatistic.job )
+			self.logHostsBandwidth( jobStatistic.mapHostList, jobStatistic.job )
+			# self.logHostsBandwidth( jobStatistic.reduceHostList, jobStatistic.job )
+
+			self.terminateReducers( jobStatistic.reduceHostList )
 
 			# send the stat to the scheduler
 			self.schedulerPipe.send( jobStatistic )

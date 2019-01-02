@@ -1,15 +1,25 @@
 #!/usr/bin/env python
 
-class JobStatistic( object ):
-	def __init__( self ):
-		self.job = "Empty"
-		self.startTime = 0
-		self.endTime = 0
-		self.hosts = []
-		self.bytesToSend = None
-		self.reduceJob = 0
-		self.numberOfHosts = 0
+class JobHost( object ):
+	def __init__( self, hostName, hostIndex ):
+		self.hostName = hostName
+		self.hostIndex = hostIndex
 
 	def __str__( self ):
-		hosts = '[%s]' % ' '.join( map( str, self.hosts ) )
-		return "%s, %s, %s, %s, %s, %i, %i" % ( self.job, self.numberOfHosts ,self.startTime, self.endTime, hosts, self.bytesToSend, self.reduceJob )
+		return "[ Host: %s Index: %s ]" % ( str( self.hostName ), str( self.hostIndex ) )
+
+class JobStatistic( object ):
+	def __init__( self ):
+		self.bytesToSend	= None
+		self.endTime 		= 0
+		self.mapHostList	= []
+		self.reduceHostList	= []
+		self.job 			= "Empty"
+		self.numberOfHosts 	= 0
+		self.reduceJob 		= 0
+		self.startTime 		= 0
+
+	def __str__( self ):
+		mapHosts = '[%s]' % ' '.join( map( str, self.mapHostList ) )
+		reduceHosts = '[%s]' % ' '.join( map( str, self.reduceHostList ) )
+		return "%s, %s, %s, %s, %s, %s, %s, %s" % ( self.job, self.numberOfHosts, self.startTime, self.endTime, mapHosts, reduceHosts, self.bytesToSend, self.reduceJob )
