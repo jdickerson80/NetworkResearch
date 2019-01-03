@@ -122,13 +122,13 @@ class MapReduceJob( Process ):
 				# "cast" the message to a job statistic
 				jobStatistic = receiveMessage
 
-				# print jobStatistic
+				# print "got %s" % jobStatistic
 
 			hasNoError = True
 			self.clearHostsPipes( jobStatistic.mapHostList )
 			self.clearHostsPipes( jobStatistic.reduceHostList )
 
-			self.removeHostsBandwidthLog( jobStatistic.mapHostList )
+			# self.removeHostsBandwidthLog( jobStatistic.mapHostList )
 			# self.removeHostsBandwidthLog( jobStatistic.reduceHostList )
 
 			self.startReducers( jobStatistic.reduceHostList )
@@ -188,7 +188,7 @@ class MapReduceJob( Process ):
 			# get the end end time
 			jobStatistic.endTime = self.getTime()
 
-			self.logHostsBandwidth( jobStatistic.mapHostList, jobStatistic.job )
+			# self.logHostsBandwidth( jobStatistic.mapHostList, jobStatistic.job )
 			# self.logHostsBandwidth( jobStatistic.reduceHostList, jobStatistic.job )
 
 			self.terminateReducers( jobStatistic.reduceHostList )
