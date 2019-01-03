@@ -197,8 +197,9 @@ if __name__ == '__main__':
 
 	host = partial( Host, privateDirs=privateDirs )
 
+	net = Mininet( topo=topology, host=host, link=TCLink, controller=None )
 	# net = Mininet( topo=topology, host=host, link=TCLink, controller=None, autoSetMacs=True, autoStaticArp=True )
-	net = Mininet( topo=topology, host=host, controller=None )
+	# net = Mininet( topo=topology, host=host, controller=None )
 
 	net.addController( 'c0', controller=RemoteController, ip=arguments.controllerIP, port=6633 )
 
@@ -209,21 +210,21 @@ if __name__ == '__main__':
 
 	setupSwitchQueues( net, arguments.switchPortSpeed )
 	startBWShare( net, arguments.bandwidthGuarantee )
+	mrs = MapReduceScheduler( net.hosts )
+	CLI( net )
 
-	net.pingAll()
+	# net.pingAll()
+	# time.sleep( 10 )
 
 	if arguments.traceFile and arguments.outputDirectory:
-
-		mrs = MapReduceScheduler( net.hosts )
-
 		try:
 			mrs.runTest( arguments.outputDirectory, arguments.traceFile,  )
 		except LookupError as error:
 			print error
 
-		mrs.terminate()
 
-	CLI( net )
+	
+	mrs.terminate()
 	net.stop()
 
 #   Ryu command
