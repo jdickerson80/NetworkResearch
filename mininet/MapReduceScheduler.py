@@ -8,9 +8,10 @@ from multiprocessing import Pipe
 from Queue import Queue
 from JobStatistic import *
 from FileConstants import *
+import json
+import sys
 import threading
 import time
-import sys
 import time
 
 class MapReduceScheduler( object ):
@@ -274,8 +275,69 @@ class MapReduceScheduler( object ):
 				hostDirectory = "%s%s/" % ( FileConstants.hostBaseDirectory, host )
 				# print hostDirectory
 				# print hostDirectory, jobDirectory, item.job
-				FileConstants.copyFiles( hostDirectory, jobDirectory, item.job )
+				# print item.job[3:]
+				self.copyJobLogs( hostDirectory, jobDirectory, item )
 
+	@staticmethod
+	def copyJobLogs( hostDirectory, jobDirectory, job ):
+		for f in os.listdir( hostDirectory ):
+			end = 0
+			start = f.find( job.job )
+			if start == -1:
+				continue
+
+			start += 3
+
+			end = start
+			while ( f[ end ] != 'P' ):
+				end += 1
+
+			jobNumber = f[ start : end ]
+
+			if jobNumber == job.job[ 3 : ]:
+				while True:         
+					try:
+						source = os.path.join( hostDirectory, f )
+						destination = os.path.join( jobDirectory, f ) 
+						shutil.copy2( source, destination )
+						# for log in logFiles:
+						try:
+							with open( destination, "r" ) as file:
+								# print file
+								try:
+									jsonObject = json.load( file )
+									MapReduceScheduler.fillSumReceived( job.receiveResults, jsonObject )
+									# print jsonObject
+									MapReduceScheduler.fillSumSent( job.sentResults, jsonObject )
+									# print jsonObject
+									# print json.dumps( jsonObject, sort_keys=True, indent=4 )
+								except ValueError as e:
+									print e
+						except IOError as error:
+							print "IOERROR %s" % error
+	
+						break
+
+					except IOError as error:
+						print "remove files %s" % error       
+					time.sleep( 0.025 )
+
+	@staticmethod
+	def fillSumReceived( results, jsonObject ):
+		byte = jsonObject[ 'end' ][ 'sum_received' ][ 'bytes' ]
+		duration = jsonObject[ 'end' ][ 'sum_received' ][ 'seconds' ]
+		retransmit = None
+		transmissionRate = jsonObject[ 'end' ][ 'sum_received' ][ 'bits_per_second' ]
+		results.append( IperfResults( byte, duration, retransmit, transmissionRate ) )
+
+	@staticmethod
+	def fillSumSent( results, jsonObject ):
+		byte = jsonObject[ 'end' ][ 'sum_sent' ][ 'bytes' ]
+		duration = jsonObject[ 'end' ][ 'sum_sent' ][ 'seconds' ]
+		retransmit = jsonObject[ 'end' ][ 'sum_sent' ][ 'retransmits' ]
+		transmissionRate = jsonObject[ 'end' ][ 'sum_sent' ][ 'bits_per_second' ]
+		results.append( IperfResults( byte, duration, retransmit, transmissionRate ) )
+		
 	@staticmethod
 	def clearTestFolder( outputDirectory ):
 		try:
@@ -407,7 +469,7 @@ class MapReduceScheduler( object ):
 			counter += 1
 
 		# done scheduling the jobs
-		print "@@@@@@@@@@@@@@@checking for done"
+		# print "@@@@@@@@@@@@@@@checking for done"
 		while True:
 			# set the variable to true
 			done = True
@@ -419,7 +481,7 @@ class MapReduceScheduler( object ):
 					break
 			# if the jobs are done, break the loop
 			if done == True:
-				print "BROKE!"
+				# print "BROKE!"
 				break
 			time.sleep( 0.125 )
 
@@ -427,34 +489,7 @@ class MapReduceScheduler( object ):
 		self.logTestResults( outputDirectory )
 
 		# log all of the job stats
-		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w') as f:
-			f.write("Job,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,BytesTransmitted,JobNumber\n");
+		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
+			f.write("Job#,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,BytesTransmitted,ReceiveResults(bytes duration retransmit transmissionRate),SentResults(bytes duration retransmit transmissionRate)\n");
 			for item in self.jobStats:
 				f.write("%s\n" % item)
-
-
-
-
-
-
-
-
-
-			# # grab the job and bytes to send
-			# self.jobStats[ counter ].job = currentJob[ 2 ]
-			# self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
-			# self.jobStats[ counter ].numberOfHosts = requiredHosts
-
-
-
-
-			# self.jobStats[ counter ].mapHostList.append( JobHost( 2, 0 ) ) 
-			# self.jobStats[ counter ].mapHostList.append( JobHost( 1, 0 ) ) 
-			# self.jobStats[ counter ].reduceHostList.append( JobHost( self.numberOfHosts - 1 , 1 ) ) 
-			# self.jobStats[ counter ].reduceHostList.append( JobHost( ( self.numberOfHosts - 2 ), 0 ) ) 
-
-
-			# # self.jobStats[ counter ].mapHostList.append( JobHost( 0, 0 ) ) 
-			# # self.jobStats[ counter ].mapHostList.append( JobHost( 7, 1 ) ) 
-			# # self.jobStats[ counter ].reduceHostList.append( JobHost( self.numberOfHosts - 3 , 0 ) ) 
-			# # self.jobStats[ counter ].reduceHostList.append( JobHost( ( self.numberOfHosts - 4 ), 1 ) ) 
