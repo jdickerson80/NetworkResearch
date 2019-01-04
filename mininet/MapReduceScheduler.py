@@ -273,11 +273,55 @@ class MapReduceScheduler( object ):
 
 			for host in self.hostList:
 				hostDirectory = "%s%s/" % ( FileConstants.hostBaseDirectory, host )
-				# print hostDirectory
-				# print hostDirectory, jobDirectory, item.job
-				# print item.job[3:]
 				self.copyJobLogs( hostDirectory, jobDirectory, item )
 
+	@staticmethod	
+	def findJobDirectory( jobDirectoryList, job ):
+		for j in jobDirectoryList:
+			if j == job.job:
+				return j
+		return None
+
+	@staticmethod
+	def logIperfResults( jobDirectory, job ):
+		directoryJobs = os.listdir( jobDirectory )
+		
+		for j in job:
+			jobFolder = MapReduceScheduler.findJobDirectory( directoryJobs, j )
+			sourceDirectory = os.path.join( jobDirectory, jobFolder ) 
+			sourceDirectory += "/"
+			fileList = os.listdir( sourceDirectory )
+	
+			for jobFile in fileList:
+				try:
+					with open( os.path.join( sourceDirectory, jobFile ) , "r" ) as file:
+						file.seek( 0 )
+						char = file.read( 1 )
+						if not char:
+							print "file is empty" #first character is the empty string..
+							continue
+						else:
+							file.seek( 0 ) #first character wasn't empty, return to start of file.
+
+						try:
+							jsonObject = json.load( file )
+						except ValueError as e:
+							print "IperfResults %s %s" % ( jobFile, e )
+							continue
+
+						if jsonObject == None:
+							print "object none"
+							continue
+
+						if MapReduceScheduler.fillSumReceived( j.receiveResults, jsonObject ) == False: 
+							print "%s receive HAS ERROR" % j.job
+
+						if MapReduceScheduler.fillSumSent( j.sentResults, jsonObject ) == False:
+							print "%s sent HAS ERROR" % j.job
+
+				except IOError as error:
+					print "IOERROR %s" % error
+		
 	@staticmethod
 	def copyJobLogs( hostDirectory, jobDirectory, job ):
 		for f in os.listdir( hostDirectory ):
@@ -300,43 +344,38 @@ class MapReduceScheduler( object ):
 						source = os.path.join( hostDirectory, f )
 						destination = os.path.join( jobDirectory, f ) 
 						shutil.copy2( source, destination )
-						# for log in logFiles:
-						try:
-							with open( destination, "r" ) as file:
-								# print file
-								try:
-									jsonObject = json.load( file )
-									MapReduceScheduler.fillSumReceived( job.receiveResults, jsonObject )
-									# print jsonObject
-									MapReduceScheduler.fillSumSent( job.sentResults, jsonObject )
-									# print jsonObject
-									# print json.dumps( jsonObject, sort_keys=True, indent=4 )
-								except ValueError as e:
-									print e
-						except IOError as error:
-							print "IOERROR %s" % error
-	
 						break
-
 					except IOError as error:
-						print "remove files %s" % error       
+						print "remove files %s" % error  
+
+
 					time.sleep( 0.025 )
 
 	@staticmethod
 	def fillSumReceived( results, jsonObject ):
+		asdf = jsonObject[ 'start' ][ 'connected' ]
+		if not asdf:
+			print "sum got none!!"
+			return False
 		byte = jsonObject[ 'end' ][ 'sum_received' ][ 'bytes' ]
 		duration = jsonObject[ 'end' ][ 'sum_received' ][ 'seconds' ]
 		retransmit = None
 		transmissionRate = jsonObject[ 'end' ][ 'sum_received' ][ 'bits_per_second' ]
 		results.append( IperfResults( byte, duration, retransmit, transmissionRate ) )
+		return True
 
 	@staticmethod
 	def fillSumSent( results, jsonObject ):
+		asdf = jsonObject[ 'start' ][ 'connected' ]
+		if not asdf:
+			print "sent got none!!"
+			return False
 		byte = jsonObject[ 'end' ][ 'sum_sent' ][ 'bytes' ]
 		duration = jsonObject[ 'end' ][ 'sum_sent' ][ 'seconds' ]
 		retransmit = jsonObject[ 'end' ][ 'sum_sent' ][ 'retransmits' ]
 		transmissionRate = jsonObject[ 'end' ][ 'sum_sent' ][ 'bits_per_second' ]
 		results.append( IperfResults( byte, duration, retransmit, transmissionRate ) )
+		return True
 		
 	@staticmethod
 	def clearTestFolder( outputDirectory ):
@@ -402,7 +441,6 @@ class MapReduceScheduler( object ):
 			self.jobStats[ counter ].job = currentJob[ 2 ]
 			self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
 			self.jobStats[ counter ].numberOfHosts = totalRequiredHosts
-
 
 			# while there are hosts required 
 			while requiredMapperHosts > 0 or requiredReducerHosts > 0:
@@ -485,8 +523,8 @@ class MapReduceScheduler( object ):
 				break
 			time.sleep( 0.125 )
 
-
 		self.logTestResults( outputDirectory )
+		self.logIperfResults( outputDirectory, self.jobStats )
 
 		# log all of the job stats
 		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:

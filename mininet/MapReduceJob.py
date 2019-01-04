@@ -107,7 +107,7 @@ class MapReduceJob( Process ):
 		for host in reducerList:
 			self.hostMapReduceList[ host.hostName ].terminateReducer( host.hostIndex )
 
-	_retryThreshold = 5
+	_retryThreshold = 4
 
 	def run( self ):
 		hasNoError = True
@@ -159,8 +159,8 @@ class MapReduceJob( Process ):
 							self.terminateMappers( jobStatistic.mapHostList )
 							self.terminateReducers( jobStatistic.reduceHostList )
 							hasNoError = False
-							time.sleep( 0.20 )
 							print "!!!!error job %s" % jobStatistic.job
+							time.sleep( 0.20 )
 							break
 					# increment the counter
 					count += 1
@@ -179,6 +179,7 @@ class MapReduceJob( Process ):
 					jobStatistic.endTime = 0
 					jobStatistic.startTime = 0		
 					self.terminateReducers( jobStatistic.reduceHostList )
+					time.sleep( 0.20 )
 
 					# send the stat to the scheduler
 					self.schedulerPipe.send( jobStatistic )

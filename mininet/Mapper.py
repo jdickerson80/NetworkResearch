@@ -32,12 +32,11 @@ class Mapper( multiprocessing.Process ):
 			# run the iperf client
 			returnValue = Mapper.handleIperf( self.connection, receiveMessage, self.host, self.ipAddress )
 
-			# print "%s mapper returned %s" % ( self.host, returnValue )
-
 			if returnValue == 0:	
 				# send the ready command
 				self.connection.send( HostStates.Ready )
 			else:
+				# print "ERROR!!! %s mapper returned %s" % ( self.host, returnValue )
 				self.connection.send( HostStates.Error )
 
 	@staticmethod
@@ -52,7 +51,7 @@ class Mapper( multiprocessing.Process ):
 		# create the command
 		# print list
 		logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, host, host, list[ 2 ], list[ 3 ] )
-		command = "iperf3 -c %s -n %s -p %s --logfile %s --get-server-output -V -J -f k 2>&1 > /dev/null" % ( list[ 0 ], list[ 1 ], list[ 3 ], logFile )
+		command = "iperf3 -c %s -n %s -p %s --logfile %s --get-server-output -J 2>&1 > /dev/null" % ( list[ 0 ], list[ 1 ], list[ 3 ], logFile )
 		# print "%s %s" % ( host, command )
 		pOpenObject = host.pexecNoWait( command )
 
@@ -62,7 +61,7 @@ class Mapper( multiprocessing.Process ):
 			returnCode = pOpenObject.poll()
 
 			if returnCode != None:
-				# print "got %s" % returnCode
+				out, err = pOpenObject.communicate()
 				return returnCode;	
 
 			# get the poll variable
@@ -83,7 +82,7 @@ class Mapper( multiprocessing.Process ):
 
 		pOpenObject.kill()
 		pOpenObject.wait()
-		# print "killed mapper"
+		# print "killed mapper %s" % host
 		return HostStates.Error
 
 	
