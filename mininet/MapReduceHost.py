@@ -91,7 +91,7 @@ class HostMapReduce( object ):
 			self.mapWorkers.append( mapper )
 
 		for i in xrange( self.MapReduceClassIndex.NumberOfReducers ):
-			command = "iperf3 -s -p %s 2>&1 > /dev/null" % portNumber
+			command = "iperf3 -s -J -p %s 2>&1 > /dev/null" % portNumber
 			pOpen = host.pexecNoWait( command )
 			# stdOut, stdError = pOpen.communicate()
 			# self.reduceWorkers.append( [ pOpen, stdOut, stdError ] )
