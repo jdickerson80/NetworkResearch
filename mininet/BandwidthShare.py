@@ -107,14 +107,19 @@ def setupSwitchQueues( net, switchPortSpeed ):
 			interface = switch.intf( intf=name )
 			setupTCCommand( interface, switch, switchPortSpeed )
 
-def setupHostMachine():
-	os.system( "sysctl -w net.mptcp.mptcp_enabled=1 >> commands.log" )
+def setupHostMachine( mptcpEnabled ):
+	if mptcpEnabled == True:
+		os.system( "sysctl -w net.mptcp.mptcp_enabled=1 >> commands.log" )
+		os.system( "sysctl -w net.mptcp.mptcp_path_manager=ndiffports >> commands.log" )
+		os.system( "sysctl -w net.mptcp.mptcp_scheduler=default >> commands.log" )
+		os.system( "sysctl -w net.mptcp.mptcp_debug=1 >> commands.log" )
+	else:
+		os.system( "sysctl -w net.mptcp.mptcp_enabled=0 >> commands.log" )
+		os.system( "sysctl -w net.mptcp.mptcp_debug=0 >> commands.log" )
+		
 	os.system( "sysctl -w net.ipv4.tcp_congestion_control=reno >> commands.log" )
 	os.system( "sysctl -w net.ipv4.tcp_ecn=1 >> commands.log" )
-	os.system( "sysctl -w net.mptcp.mptcp_scheduler=default >> commands.log" )
-	os.system( "sysctl -w net.mptcp.mptcp_path_manager=ndiffports >> commands.log" )
 	#   os.system( "echo 1 > /sys/module/mptcp_ndiffports/parameters/num_subflows >> commands.log" )
-	os.system( "sysctl -w net.mptcp.mptcp_debug=1 >> commands.log" )
 	os.system( "echo --------------------------------------- >> commands.log" )
 
 def createTopo( k = 4, speed = 1.0 ):
@@ -169,13 +174,18 @@ def parseCommandLineArgument():
 						help="IP address of the SDN controller",
 						default=None)
 
+	parser.add_argument('--mptcpEnabled', '-m',
+						action="store",
+						help="Whether mptcp enabled. Default: true",
+						default=True)
+
 	args = parser.parse_args()
 	args.pod = int( args.pod )
 	args.congestionAlgorithm = args.congestion
 	args.linkSpeed = float( args.linkSpeed )
 	args.bandwidthGuarantee = int( args.bandwidthGuarantee )
 	args.traceFile = args.traceFile 
-
+	
 	return args
 
 
@@ -191,7 +201,7 @@ if __name__ == '__main__':
 		sys.exit()
 
 	setLogLevel( 'info' )
-	setupHostMachine()
+	setupHostMachine( arguments.mptcpEnabled )
 	topology = createTopo( k = arguments.pod, speed = arguments.linkSpeed )
 	privateDirs = [ ( '/var/log', '/tmp/%(name)s/var/log' ), ( '/var/run', '/tmp/%(name)s/var/run' ), '/var/mn' ]
 
