@@ -51,6 +51,11 @@ class Mapper( multiprocessing.Process ):
 		# create the command
 		# print list
 		logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, host, host, list[ 2 ], list[ 3 ] )
+		try:
+			os.remove( logFile )
+		except os.error as error:
+			pass
+
 		command = "iperf3 -c %s -n %s -p %s --logfile %s --get-server-output -J 2>&1 > /dev/null" % ( list[ 0 ], list[ 1 ], list[ 3 ], logFile )
 		# print "%s %s" % ( host, command )
 		pOpenObject = host.pexecNoWait( command )

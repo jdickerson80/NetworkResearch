@@ -108,7 +108,8 @@ def setupSwitchQueues( net, switchPortSpeed ):
 			setupTCCommand( interface, switch, switchPortSpeed )
 
 def setupHostMachine( mptcpEnabled ):
-	if mptcpEnabled == True:
+	print "Setting up the host machine"
+	if mptcpEnabled == '1':
 		os.system( "sysctl -w net.mptcp.mptcp_enabled=1 >> commands.log" )
 		os.system( "sysctl -w net.mptcp.mptcp_path_manager=ndiffports >> commands.log" )
 		os.system( "sysctl -w net.mptcp.mptcp_scheduler=default >> commands.log" )
@@ -177,7 +178,7 @@ def parseCommandLineArgument():
 	parser.add_argument('--mptcpEnabled', '-m',
 						action="store",
 						help="Whether mptcp enabled. Default: true",
-						default=True)
+						default=1)
 
 	args = parser.parse_args()
 	args.pod = int( args.pod )
@@ -185,7 +186,7 @@ def parseCommandLineArgument():
 	args.linkSpeed = float( args.linkSpeed )
 	args.bandwidthGuarantee = int( args.bandwidthGuarantee )
 	args.traceFile = args.traceFile 
-	
+
 	return args
 
 
