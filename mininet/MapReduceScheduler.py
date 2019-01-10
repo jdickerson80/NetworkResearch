@@ -20,6 +20,7 @@ class MapReduceScheduler( object ):
 	run the job, and sends the info to the MapReduceJob to handle the running of the job.
 	"""
 	_maximumJobsPerTest = 10000
+	_jobLogHeader = "Job#,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,ErrorCounts,ErroredHost,BytesTransmitted,ReceiveResults(bytes duration retransmit transmissionRate),SentResults(bytes duration retransmit transmissionRate)\n"
 	# Bytes per host to divide up the job
 	class BytesPerHostEnum( IntEnum ):
 		BytesPerHost = 64000000
@@ -245,7 +246,7 @@ class MapReduceScheduler( object ):
 				if self.availableReducerList[ j ][ h ] == HostStates.Ready:
 					if mapCounter < len ( jobMappers ):
 						if jobMappers[ mapCounter ].hostName == j:
-							print "SAME HOST!!!!"
+							# print "SAME HOST!!!!"
 							continue
 
 					requiredHosts -= 1
@@ -283,6 +284,14 @@ class MapReduceScheduler( object ):
 		return None
 
 	@staticmethod
+	def deleteLinesInFile( file, lastLineToDelete ):
+		infile = open( file,'r' ).readlines()
+		with open( file,'w' ) as outfile:
+			for index,line in enumerate( infile ):
+				if index >= lastLineToDelete:
+					outfile.write(line)		
+			
+	@staticmethod
 	def logIperfResults( jobDirectory, job ):
 		directoryJobs = os.listdir( jobDirectory )
 		
@@ -306,8 +315,26 @@ class MapReduceScheduler( object ):
 						try:
 							jsonObject = json.load( file )
 						except ValueError as e:
-							print "IperfResults %s %s" % ( jobFile, e )
-							continue
+							# print "IperfResults %s %s" % ( jobFile, e )
+							stringError = str( e )
+							fileName = file.name
+
+							start = stringError.find( "line " )
+							start += 5
+							end = stringError.find( "column " )
+							end -= 1
+ 
+							seekPosition = int( stringError[ start : end ] )
+							file.close()
+							MapReduceScheduler.deleteLinesInFile( fileName, seekPosition - 1 )
+							print "file %s error %s %s " % ( jobFile, e, seekPosition )
+							file = open( fileName, "r" )
+							try:
+								jsonObject = json.load( file )
+							except ValueError as e:
+								print "gave up on file %s error %s" % ( jobFile, e )
+								continue
+
 
 						if jsonObject == None:
 							print "object none"
@@ -457,10 +484,13 @@ class MapReduceScheduler( object ):
 					timeCounter = 0
 					if requiredMapperHosts == tempMappers:
 						waitingOn = "Mapper"
+						lister =  self.availableMapperList
 					elif requiredReducerHosts == tempReducers:
 						waitingOn = "Reducer"
+						lister =  self.availableReducerList
 
-					print "WAITING on %s" % waitingOn # for %i job %s queue %s" % ( requiredMapperHosts, self.jobStats[ counter ], currentJob )
+
+					print "WAITING on %s" % ( waitingOn )#, lister )# for %i job %s queue %s" % ( requiredMapperHosts, self.jobStats[ counter ], currentJob )
 					# wait forever
 					while ( timeCounter < 100 ):
 						# print timeCounter
@@ -523,11 +553,25 @@ class MapReduceScheduler( object ):
 				break
 			time.sleep( 0.125 )
 
+			# log all of the job stats
+		with open('%sjobLog%sTEMP.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
+			f.write( self._jobLogHeader )
+			for item in self.jobStats:
+				try:
+					f.write("%s\n" % item)
+				except IOError as error:
+					print "writing csv error: %s" % error  
+					pass
+
 		self.logTestResults( outputDirectory )
 		self.logIperfResults( outputDirectory, self.jobStats )
 
 		# log all of the job stats
 		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
-			f.write("Job#,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,BytesTransmitted,ReceiveResults(bytes duration retransmit transmissionRate),SentResults(bytes duration retransmit transmissionRate)\n");
+			f.write(self._jobLogHeader )
 			for item in self.jobStats:
-				f.write("%s\n" % item)
+				try:
+					f.write("%s\n" % item)
+				except IOError as error:
+					print "writing csv error: %s" % error  
+					pass

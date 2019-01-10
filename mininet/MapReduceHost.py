@@ -5,6 +5,7 @@ from PerProcessPipes import *
 from HostStates import *
 from multiprocessing import *
 from Mapper import *
+from Queue import Queue
 from Reducer import *
 import time
 import sys
@@ -59,6 +60,7 @@ class HostMapReduce( object ):
 		self.availableMappers	= [ AvailabilityStatus( HostStates.Busy, HostStates.Busy )  for i in xrange( self.MapReduceClassIndex.NumberOfMappers ) ]
 		self.availableReducers	= [ AvailabilityStatus( HostStates.Ready, HostStates.Ready ) for i in xrange( self.MapReduceClassIndex.NumberOfReducers ) ]
 		self.mapPipes    		= [ PerProcessPipes() for i in range( self.MapReduceClassIndex.NumberOfMappers ) ]
+		self.reducePipe   		= PerProcessPipes()
 		self.mapWorkers  		= []
 		self.reduceWorkers 		= []
 		self.name 				= "%s" % host
@@ -66,8 +68,7 @@ class HostMapReduce( object ):
 		self.ipAddress 			= host.IP()
 		self.mapperOnePipe 		= mapperOnePipe
 		self.mapperTwoPipe 		= mapperTwoPipe
-		self.handlePollingReducersRunning = True
-
+		self.killQueue			= []
 
 
 		# for reducer in self.availableReducers:
@@ -79,10 +80,8 @@ class HostMapReduce( object ):
 		# init the map pipes
 		for i in self.mapPipes:
 			i.parentConnection, i.childConnection = Pipe()
-
-		# start the process for handling the mappers communication
-		self.handler = Process( target=self.monitorMappersAndReducers )
-		self.handler.start()
+		
+		self.reducePipe.parentConnection, self.reducePipe.childConnection = Pipe()
 
 		# create the list of mappers and reducers
 		for i in xrange( self.MapReduceClassIndex.NumberOfMappers ):
@@ -90,22 +89,13 @@ class HostMapReduce( object ):
 			mapper.start()
 			self.mapWorkers.append( mapper )
 
-		for i in xrange( self.MapReduceClassIndex.NumberOfReducers ):
-			command = "iperf3 -s -J -p %s 2>&1 > /dev/null" % portNumber
-			pOpen = host.pexecNoWait( command )
-			# stdOut, stdError = pOpen.communicate()
-			# self.reduceWorkers.append( [ pOpen, stdOut, stdError ] )
-			self.reduceWorkers.append( [ pOpen, command ] )
-			portNumber += 1
-
-		# get the thread to handle the MapReduceJob communications
-		self.handlePollingReducersThread = threading.Thread( target=self.pollReducers )
-
-		# start the thread
-		self.handlePollingReducersThread.start()
+		# start the process for handling the mappers communication
+		self.handler = Process( target=self.monitorMappersAndReducers )
+		self.handler.start()
 
 	def terminate( self ):
-		self.handlePollingReducersRunning = False
+		self.reducePipe.parentConnection.send( 100 )
+		time.sleep( 0.025 )
 
 		# terminate the mappers and reducers
 		for p in self.mapWorkers:
@@ -115,29 +105,11 @@ class HostMapReduce( object ):
 		for p in self.mapWorkers:
 			p.join()
 
-		for p in self.reduceWorkers:
-			# p.join()
-			p[ 0 ].kill()
-			p[ 0 ].wait()
+		# send the job to the mappers
 
 		# terminate host handler and join it	
 		self.handler.terminate()
 		self.handler.join()
-
-		self.handlePollingReducersThread.join()
-
-	def pollReducers( self ):
-		while self.handlePollingReducersRunning == True:
-			# print "handling polling"
-			for pOpenObject in self.reduceWorkers:
-				returnCode = pOpenObject[ 0 ].poll()
-
-				if returnCode != None:
-					out, err = pOpenObject[ 0 ].communicate()
-					print "RESTARTED REDUCER %s code %s out %s err %s" % ( self, returnCode, out, err )
-					pOpenObject[ 0 ] = self.host.pexecNoWait( pOpenObject[ 1 ] )
-	
-			time.sleep( 0.125 )
 
 	def getIP( self ):
 		# get the ip
@@ -175,11 +147,26 @@ class HostMapReduce( object ):
 		self.availableReducers[ whatReducer ] = HostStates.Ready
 		return 0
 
+	def killReducer( self, whatReducer ):
+		# send the job to the mappers
+		self.reducePipe.parentConnection.send( whatReducer )
+
+	def startAllReducers( self ):
+		portNumber = 5001
+
+		for i in xrange( self.MapReduceClassIndex.NumberOfReducers ):
+			command = "iperf3 -s -J -p %s 2>&1 > /dev/null" % portNumber
+			pOpen = self.host.pexecNoWait( command )
+			self.reduceWorkers.append( [ pOpen, command ] )
+			portNumber += 1
+
 	def monitorMappersAndReducers( self ):
 		# store the mappers in a temp variable to only send data when mappers have changed
 		availableMappers = [ i for i in self.availableMappers ]
 		# availableReducers = [ i for i in self.availableReducers ]
 
+		self.startAllReducers()
+		
 		while True:
 			counter = 0
 			# loop through the map pipes
@@ -196,21 +183,32 @@ class HostMapReduce( object ):
 
 				counter += 1
 
-			# counter = 0	
-			# # loop through the map pipes
-			# for i in self.reducePipes:
-			# 	# get the poll variable
-			# 	poll = i.parentConnection.poll()
+			# get the poll variable
+			poll = self.reducePipe.childConnection.poll()
 
-			# 	# if there is data to receive
-			# 	if poll == True:
-			# 		# get the message
-			# 		message = i.parentConnection.recv()
+			# if there is data to receive
+			if poll == True:
+				# get the message
+				message = self.reducePipe.childConnection.recv()
 
-			# 		availableReducers[ counter ] = message
-			# 		# print "got %s message" % message
+				if message == 100:
+					print "%s shutting down reducers" % self.host
+					self.reduceWorkers[ 0 ][ 0 ].kill()
+					self.reduceWorkers[ 0 ][ 0 ].wait()	
+					self.reduceWorkers[ 1 ][ 0 ].kill()
+					self.reduceWorkers[ 1 ][ 0 ].wait()	
+					break
 
-			# 	counter += 1
+				command = self.reduceWorkers[ message ][ 1 ]
+				self.reduceWorkers[ message ][ 0 ].kill()
+				self.reduceWorkers[ message ][ 0 ].wait()
+
+
+				self.reduceWorkers[ message ][ 0 ] = self.host.pexecNoWait( command )
+				print "%s killed and restarted reducer %s" % ( self.host, message )
+				# stdOut, stdError = pOpen.communicate()
+				# self.reduceWorkers.append( [ pOpen, stdOut, stdError ] )
+					
 
 			# if the mappers has changed this scan
 			if self.availableMappers != availableMappers:
@@ -220,11 +218,5 @@ class HostMapReduce( object ):
 				self.mapperTwoPipe.send( self.availableMappers[ self.MapReduceClassIndex.MapperTwo ] ) 
 				# print "mappers %s %s" % ( self.name, self.availableMappers )
 
-			# if the mappers has changed this scan
-			# if self.availableReducers != availableReducers:
-			# 	# set the lists equal and send it
-			# 	self.availableReducers = [ i for i in availableReducers ]
-				# print "reducers %s %s" % ( self.name, self.availableReducers )
-	
 			time.sleep( 0.02 )
 

@@ -9,6 +9,7 @@ import shutil
 import os
 import time
 import sys
+from random import shuffle
 
 class MapReduceJob( Process ):
 	"""
@@ -88,7 +89,7 @@ class MapReduceJob( Process ):
 
 			destIP = self.hostMapReduceList[ reducerList[ mapCounter ].hostName ].getIP()
 			self.hostMapReduceList[ host.hostName ].addMapper( host.hostIndex, numberOfBytesToSend, destIP, outputFile, serverPort )
-			mapperPipes.append( self.hostMapperPipes[ host.hostName ][ host.hostIndex ] )
+			mapperPipes.append( [ self.hostMapperPipes[ host.hostName ][ host.hostIndex ], host.hostName, host.hostIndex ] )
 
 			mapCounter += 1
 
@@ -97,6 +98,11 @@ class MapReduceJob( Process ):
 	def terminateMappers( self, mapperList ):
 		for host in mapperList:
 			self.hostMapReduceList[ host.hostName ].terminateMapper( host.hostIndex )
+
+	@staticmethod
+	def terminateMappersPipes( mapperPipes ):
+		for host in mapperPipes:
+			host[ 0 ].parentConnection.send( HostStates.Terminate )
 
 	def startReducers( self, reducerList ):
 		# get the ip address of both hosts
@@ -107,7 +113,11 @@ class MapReduceJob( Process ):
 		for host in reducerList:
 			self.hostMapReduceList[ host.hostName ].terminateReducer( host.hostIndex )
 
-	_retryThreshold = 4
+	def killReducers( self, reducerList ):
+		for host in reducerList:
+			self.hostMapReduceList[ host.hostName ].killReducer( host.hostIndex )
+
+	_retryThreshold = 2
 
 	def run( self ):
 		hasNoError = True
@@ -122,7 +132,11 @@ class MapReduceJob( Process ):
 				# "cast" the message to a job statistic
 				jobStatistic = receiveMessage
 
-				# print "got %s" % jobStatistic
+
+				printCounter = 0
+				
+			sameCounter = 0
+			# print "got %s" % jobStatistic
 
 			hasNoError = True
 			self.clearHostsPipes( jobStatistic.mapHostList )
@@ -134,6 +148,7 @@ class MapReduceJob( Process ):
 			self.startReducers( jobStatistic.reduceHostList )
 			jobStatistic.startTime = self.getTime()
 			mapperPipes = self.startMappers( jobStatistic.mapHostList, jobStatistic.reduceHostList, jobStatistic.bytesToSend, jobStatistic.job )
+			mapperPipesLength = len( mapperPipes )
 					
 			# log the start time
 			# wait for the mappers to be completed
@@ -144,11 +159,11 @@ class MapReduceJob( Process ):
 				# loop through the job pipes
 				for i in mapperPipes:
 					# get the poll value
-					poll = i.parentConnection.poll()
+					poll = i[0].parentConnection.poll()
 					# if there is data
 					if poll == True:
 						# get the message
-						message = i.parentConnection.recv()
+						message = i[0].parentConnection.recv()
 						# print "%s got %s" % ( jobStatistic.job, message )
 						# if the message said both mappers are complete
 						if message == HostStates.Ready:
@@ -156,30 +171,55 @@ class MapReduceJob( Process ):
 							# print "deling %s" % count
 							del mapperPipes[ count ]
 						elif message == HostStates.Error:
-							self.terminateMappers( jobStatistic.mapHostList )
-							self.terminateReducers( jobStatistic.reduceHostList )
+							# print "mapper %s failed" % mapperPipes[ count ][ 1 ]
+							jobStatistic.failedHostList.append( "%s:%s"% ( mapperPipes[ count ][ 1 ], mapperPipes[ count ][ 2 ] ) )
+							jobStatistic.errorCounts += 1
+							del mapperPipes[ count ]
+
+							# self.terminateMappersPipes( mapperPipes )
+							# self.terminateReducers( jobStatistic.reduceHostList )
+							# shuffle( jobStatistic.mapHostList )
+							# shuffle( jobStatistic.reduceHostList )
 							hasNoError = False
 							print "!!!!error job %s" % jobStatistic.job
-							time.sleep( 0.20 )
-							break
+							# time.sleep( 2 )
+							# break
 					# increment the counter
 					count += 1
 
+				if mapperPipesLength == len( mapperPipes ):
+					sameCounter += 1
+				else:
+					mapperPipesLength = len( mapperPipes )
+
 				# the pipes have been polled, so if the job pipes is empty
-				if len( mapperPipes ) == 0 or hasNoError == False:
+				if len( mapperPipes ) == 0:# or hasNoError == False:
 					# job is complete, so break the loop
 					break
 				
+				if sameCounter >= 1000000:
+					print "!!!!!!!SAME ERROR!!!!!!"
+					hasNoError = False
+					break
+				# if printCounter % 10000 == 0:
+					# print "%s waiting on %s pipes" % ( jobStatistic.job, len( mapperPipes ) )
 				time.sleep( 0.0020 )
+
+				printCounter += 1
 
 			if hasNoError == False:
 				retryCount += 1
-				if retryCount > self._retryThreshold:
+				self.terminateMappers( jobStatistic.mapHostList )
+
+				if retryCount == self._retryThreshold - 1 and self._retryThreshold > 1:
+					self.killReducers( jobStatistic.reduceHostList )
+
+				time.sleep( 2 )
+				
+				if retryCount >= self._retryThreshold:
 					hasNoError = True
 					jobStatistic.endTime = 0
 					jobStatistic.startTime = 0		
-					self.terminateReducers( jobStatistic.reduceHostList )
-					time.sleep( 0.20 )
 
 					# send the stat to the scheduler
 					self.schedulerPipe.send( jobStatistic )
@@ -193,6 +233,9 @@ class MapReduceJob( Process ):
 			# self.logHostsBandwidth( jobStatistic.reduceHostList, jobStatistic.job )
 
 			self.terminateReducers( jobStatistic.reduceHostList )
+			# self.terminateMappers( jobStatistic.mapHostList )
+
+			time.sleep( 1 )
 
 			# send the stat to the scheduler
 			self.schedulerPipe.send( jobStatistic )

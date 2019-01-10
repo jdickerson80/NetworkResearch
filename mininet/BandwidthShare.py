@@ -113,11 +113,11 @@ def setupHostMachine( mptcpEnabled ):
 		os.system( "sysctl -w net.mptcp.mptcp_enabled=1 >> commands.log" )
 		os.system( "sysctl -w net.mptcp.mptcp_path_manager=ndiffports >> commands.log" )
 		os.system( "sysctl -w net.mptcp.mptcp_scheduler=default >> commands.log" )
-		os.system( "sysctl -w net.mptcp.mptcp_debug=1 >> commands.log" )
+		# os.system( "sysctl -w net.mptcp.mptcp_debug=1 >> commands.log" )
 	else:
 		os.system( "sysctl -w net.mptcp.mptcp_enabled=0 >> commands.log" )
-		os.system( "sysctl -w net.mptcp.mptcp_debug=0 >> commands.log" )
 		
+	os.system( "sysctl -w net.mptcp.mptcp_debug=1 >> commands.log" )
 	os.system( "sysctl -w net.ipv4.tcp_congestion_control=reno >> commands.log" )
 	os.system( "sysctl -w net.ipv4.tcp_ecn=1 >> commands.log" )
 	#   os.system( "echo 1 > /sys/module/mptcp_ndiffports/parameters/num_subflows >> commands.log" )
@@ -234,7 +234,7 @@ if __name__ == '__main__':
 			print error
 
 
-	
+	CLI( net )	
 	mrs.terminate()
 	net.stop()
 

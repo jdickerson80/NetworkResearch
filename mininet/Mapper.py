@@ -29,6 +29,7 @@ class Mapper( multiprocessing.Process ):
 
 			# send busy command
 			self.connection.send( HostStates.Busy )
+			
 			# run the iperf client
 			returnValue = Mapper.handleIperf( self.connection, receiveMessage, self.host, self.ipAddress )
 
@@ -51,14 +52,20 @@ class Mapper( multiprocessing.Process ):
 		# create the command
 		# print list
 		logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, host, host, list[ 2 ], list[ 3 ] )
-		try:
-			os.remove( logFile )
-		except os.error as error:
-			pass
+		if os.path.isfile( logFile ):
+			# print "%s found file %s" % ( host, logFile )
+			try:
+				os.remove( logFile )
+			except os.error as error:
+				pass
+		# else:
+			# print "%s did not find file %s" % ( host, logFile )
+		
 
 		command = "iperf3 -c %s -n %s -p %s --logfile %s --get-server-output -J 2>&1 > /dev/null" % ( list[ 0 ], list[ 1 ], list[ 3 ], logFile )
 		# print "%s %s" % ( host, command )
 		pOpenObject = host.pexecNoWait( command )
+		# out, err = pOpenObject.communicate()
 
 		# print out, err
 		timeCounter = 0
@@ -66,7 +73,11 @@ class Mapper( multiprocessing.Process ):
 			returnCode = pOpenObject.poll()
 
 			if returnCode != None:
-				out, err = pOpenObject.communicate()
+				if not os.path.isfile( logFile ):
+					print "!!!!!!!!!!!!!!!!%s HAS NO FILE" % host
+					return -1
+				# print "%s got %s %s" % ( host, out, err ) 
+				# print out, err
 				return returnCode;	
 
 			# get the poll variable
@@ -85,9 +96,20 @@ class Mapper( multiprocessing.Process ):
 			time.sleep( 0.0125 )
 
 
+
 		pOpenObject.kill()
 		pOpenObject.wait()
-		# print "killed mapper %s" % host
+		if os.path.isfile( logFile ):
+			# print "%s found file %s" % ( host, logFile )
+			try:
+				os.remove( logFile )
+			except os.error as error:
+				pass
+
+		if timeCounter >= 10000:
+			print "mapper %s timed out" % host
+		# else:
+			# print "killed mapper %s" % host
 		return HostStates.Error
 
 	
