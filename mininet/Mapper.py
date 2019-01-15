@@ -53,10 +53,11 @@ class Mapper( multiprocessing.Process ):
 		# print list
 		logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, host, host, list[ 2 ], list[ 3 ] )
 		if os.path.isfile( logFile ):
-			# print "%s found file %s" % ( host, logFile )
+			print "init %s found file %s" % ( host, logFile )
 			try:
 				os.remove( logFile )
 			except os.error as error:
+				print "@@@@@@@@@@@@@@@@@@@@@@@@MAPPER REMOVE ERROR %s" % error
 				pass
 		# else:
 			# print "%s did not find file %s" % ( host, logFile )
@@ -100,7 +101,7 @@ class Mapper( multiprocessing.Process ):
 		pOpenObject.kill()
 		pOpenObject.wait()
 		if os.path.isfile( logFile ):
-			# print "%s found file %s" % ( host, logFile )
+			print "latter %s found file %s" % ( host, logFile )
 			try:
 				os.remove( logFile )
 			except os.error as error:

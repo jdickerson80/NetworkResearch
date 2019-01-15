@@ -5,7 +5,6 @@ from PerProcessPipes import *
 from HostStates import *
 from multiprocessing import *
 from Mapper import *
-from Queue import Queue
 from Reducer import *
 import time
 import sys
@@ -192,7 +191,6 @@ class HostMapReduce( object ):
 				message = self.reducePipe.childConnection.recv()
 
 				if message == 100:
-					print "%s shutting down reducers" % self.host
 					self.reduceWorkers[ 0 ][ 0 ].kill()
 					self.reduceWorkers[ 0 ][ 0 ].wait()	
 					self.reduceWorkers[ 1 ][ 0 ].kill()
