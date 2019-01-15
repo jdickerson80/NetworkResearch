@@ -8,7 +8,7 @@ from multiprocessing import Pipe
 from Queue import Queue
 from JobStatistic import *
 from FileConstants import *
-import json
+from JSONParser import *
 import sys
 import threading
 import time
@@ -170,6 +170,15 @@ class MapReduceScheduler( object ):
 			job = job.replace( "job ", "" )
 			job = job.replace( " ", "" )
 
+	@staticmethod
+	def __fixOutputFilePermissions( outputDirectory ):
+		os.system( "chmod 777 -R %s" % outputDirectory )
+		
+		for f in os.listdir( outputDirectory ):
+			# if re.search( "*.csv", f ) or re.search( "*.dat", f ):
+			if re.search( ".csv", f ):
+				os.system( "chmod 666 %s/%s" % ( outputDirectory, f ) )
+
 	def __processJobs( self, workFile ):
 		"""
 		Compute the proper values from the work file
@@ -263,147 +272,8 @@ class MapReduceScheduler( object ):
 			hostDirectory = "%s%s/" % ( FileConstants.hostBaseDirectory, host )
 			# print hostDirectory
 			FileConstants.removeFiles( hostDirectory, ".csv" )
-			FileConstants.removeFiles( hostDirectory, ".log" )
-
-	def logTestResults( self, outputDirectory ):
-		for item in self.jobStats:
-			jobDirectory = "%s%s/" % ( outputDirectory, item.job )
-			# print jobDirectory
-			if not os.path.exists( jobDirectory ):
-				os.mkdir( jobDirectory )
-
-			for host in self.hostList:
-				hostDirectory = "%s%s/" % ( FileConstants.hostBaseDirectory, host )
-				self.copyJobLogs( hostDirectory, jobDirectory, item )
-
-	@staticmethod	
-	def findJobDirectory( jobDirectoryList, job ):
-		for j in jobDirectoryList:
-			if j == job.job:
-				return j
-		return None
-
-	@staticmethod
-	def deleteLinesInFile( file, lastLineToDelete ):
-		infile = open( file,'r' ).readlines()
-		with open( file,'w' ) as outfile:
-			for index,line in enumerate( infile ):
-				if index >= lastLineToDelete:
-					outfile.write(line)		
-			
-	@staticmethod
-	def logIperfResults( jobDirectory, job ):
-		directoryJobs = os.listdir( jobDirectory )
-		
-		for j in job:
-			jobFolder = MapReduceScheduler.findJobDirectory( directoryJobs, j )
-			sourceDirectory = os.path.join( jobDirectory, jobFolder ) 
-			sourceDirectory += "/"
-			fileList = os.listdir( sourceDirectory )
+			FileConstants.removeFiles( hostDirectory, ".log" )	
 	
-			for jobFile in fileList:
-				try:
-					with open( os.path.join( sourceDirectory, jobFile ) , "r" ) as file:
-						file.seek( 0 )
-						char = file.read( 1 )
-						if not char:
-							print "file is empty" #first character is the empty string..
-							continue
-						else:
-							file.seek( 0 ) #first character wasn't empty, return to start of file.
-
-						try:
-							jsonObject = json.load( file )
-						except ValueError as e:
-							# print "IperfResults %s %s" % ( jobFile, e )
-							stringError = str( e )
-							fileName = file.name
-
-							start = stringError.find( "line " )
-							start += 5
-							end = stringError.find( "column " )
-							end -= 1
- 
-							seekPosition = int( stringError[ start : end ] )
-							file.close()
-							MapReduceScheduler.deleteLinesInFile( fileName, seekPosition - 1 )
-							print "file %s error %s %s " % ( jobFile, e, seekPosition )
-							file = open( fileName, "r" )
-							try:
-								jsonObject = json.load( file )
-							except ValueError as e:
-								print "gave up on file %s error %s" % ( jobFile, e )
-								continue
-
-
-						if jsonObject == None:
-							print "object none"
-							continue
-
-						if MapReduceScheduler.fillSumReceived( j.receiveResults, jsonObject ) == False: 
-							print "%s receive HAS ERROR" % j.job
-
-						if MapReduceScheduler.fillSumSent( j.sentResults, jsonObject ) == False:
-							print "%s sent HAS ERROR" % j.job
-
-				except IOError as error:
-					print "IOERROR %s" % error
-		
-	@staticmethod
-	def copyJobLogs( hostDirectory, jobDirectory, job ):
-		for f in os.listdir( hostDirectory ):
-			end = 0
-			start = f.find( job.job )
-			if start == -1:
-				continue
-
-			start += 3
-
-			end = start
-			while ( f[ end ] != 'P' ):
-				end += 1
-
-			jobNumber = f[ start : end ]
-
-			if jobNumber == job.job[ 3 : ]:
-				while True:         
-					try:
-						source = os.path.join( hostDirectory, f )
-						destination = os.path.join( jobDirectory, f ) 
-						shutil.copy2( source, destination )
-						break
-					except IOError as error:
-						print "remove files %s" % error  
-
-
-					time.sleep( 0.025 )
-
-	@staticmethod
-	def fillSumReceived( results, jsonObject ):
-		asdf = jsonObject[ 'start' ][ 'connected' ]
-		if not asdf:
-			print "sum got none!!"
-			return False
-		byte = jsonObject[ 'end' ][ 'sum_received' ][ 'bytes' ]
-		duration = jsonObject[ 'end' ][ 'sum_received' ][ 'seconds' ]
-		retransmit = None
-		transmissionRate = jsonObject[ 'end' ][ 'sum_received' ][ 'bits_per_second' ]
-		results.append( IperfResults( byte, duration, retransmit, transmissionRate ) )
-		return True
-
-	@staticmethod
-	def fillSumSent( results, jsonObject ):
-		asdf = jsonObject[ 'start' ][ 'connected' ]
-		if not asdf:
-			print "sent got none!!"
-			return False
-		byte = jsonObject[ 'end' ][ 'sum_sent' ][ 'bytes' ]
-		duration = jsonObject[ 'end' ][ 'sum_sent' ][ 'seconds' ]
-		retransmit = jsonObject[ 'end' ][ 'sum_sent' ][ 'retransmits' ]
-		transmissionRate = jsonObject[ 'end' ][ 'sum_sent' ][ 'bits_per_second' ]
-		results.append( IperfResults( byte, duration, retransmit, transmissionRate ) )
-		return True
-		
 	@staticmethod
 	def clearTestFolder( outputDirectory ):
 		try:
@@ -553,6 +423,12 @@ class MapReduceScheduler( object ):
 				break
 			time.sleep( 0.125 )
 
+		print "DONE!!!!!!"
+		time.sleep( 4 )
+
+		JSONParser.storeJobStatInFile( outputDirectory, self.jobStats )
+		self.jobStats = JSONParser.getJobStatFromFile( outputDirectory )
+
 			# log all of the job stats
 		with open('%sjobLog%sTEMP.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
 			f.write( self._jobLogHeader )
@@ -563,8 +439,8 @@ class MapReduceScheduler( object ):
 					print "writing csv error: %s" % error  
 					pass
 
-		self.logTestResults( outputDirectory )
-		self.logIperfResults( outputDirectory, self.jobStats )
+		JSONParser.logTestResults( self.jobStats, outputDirectory, self.hostList )
+		JSONParser.logIperfResults( outputDirectory, self.jobStats )
 
 		# log all of the job stats
 		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
@@ -575,3 +451,6 @@ class MapReduceScheduler( object ):
 				except IOError as error:
 					print "writing csv error: %s" % error  
 					pass
+
+		MapReduceScheduler.__fixOutputFilePermissions( outputDirectory )
+		
