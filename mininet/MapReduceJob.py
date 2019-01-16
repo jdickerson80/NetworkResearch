@@ -3,7 +3,8 @@
 from mininet.node import *
 from JobStatistic import *
 from MapReduceHost import *
-from multiprocessing import Process
+# from multiprocessing import Process
+import threading
 from FileConstants import *
 import shutil
 import os
@@ -11,17 +12,18 @@ import time
 import sys
 from random import shuffle
 
-class MapReduceJob( Process ):
+class MapReduceJob( threading.Thread ):
 	"""
 	This class runs a map reduce job and logs its stats
 	"""
-	def __init__( self, schedulerPipe, hostMapReduceList, hostMapperPipes ):
+	def __init__( self, jobQueue, jobStatistic, hostMapReduceList, hostMapperPipes ):
 		# init the parent class
 		super( MapReduceJob, self ).__init__()
 		# grab the scheduler pipe, hosts list, and pipe list
-		self.schedulerPipe = schedulerPipe
+		self.jobStatistic 		   = jobStatistic
 		self.hostMapReduceList = hostMapReduceList
 		self.hostMapperPipes = hostMapperPipes
+		self.jobQueue = jobQueue
 
 	def removeHostsBandwidthLog( self, hostList ):	
 		for host in hostList:
@@ -121,33 +123,23 @@ class MapReduceJob( Process ):
 
 	def run( self ):
 		hasNoError = True
-		while True:
-			mapperPipes = []
-
-			if hasNoError == True:
-				retryCount = 0
-				# get the job from the scheduler
-				receiveMessage = self.schedulerPipe.recv()
-
-				# "cast" the message to a job statistic
-				jobStatistic = receiveMessage
-
-
-				printCounter = 0
-				
+		notComplete = True
+		retryCount = 0
+		while notComplete:
+			mapperPipes = []		
 			sameCounter = 0
 			# print "got %s" % jobStatistic
 
 			hasNoError = True
-			self.clearHostsPipes( jobStatistic.mapHostList )
-			self.clearHostsPipes( jobStatistic.reduceHostList )
+			self.clearHostsPipes( self.jobStatistic.mapHostList )
+			self.clearHostsPipes( self.jobStatistic.reduceHostList )
 
 			# self.removeHostsBandwidthLog( jobStatistic.mapHostList )
 			# self.removeHostsBandwidthLog( jobStatistic.reduceHostList )
 
-			self.startReducers( jobStatistic.reduceHostList )
-			jobStatistic.startTime = self.getTime()
-			mapperPipes = self.startMappers( jobStatistic.mapHostList, jobStatistic.reduceHostList, jobStatistic.bytesToSend, jobStatistic.job )
+			self.startReducers( self.jobStatistic.reduceHostList )
+			self.jobStatistic.startTime = self.getTime()
+			mapperPipes = self.startMappers( self.jobStatistic.mapHostList, self.jobStatistic.reduceHostList, self.jobStatistic.bytesToSend, self.jobStatistic.job )
 			mapperPipesLength = len( mapperPipes )
 					
 			# log the start time
@@ -172,8 +164,8 @@ class MapReduceJob( Process ):
 							del mapperPipes[ count ]
 						elif message == HostStates.Error:
 							# print "mapper %s failed" % mapperPipes[ count ][ 1 ]
-							jobStatistic.failedHostList.append( "%s:%s"% ( mapperPipes[ count ][ 1 ], mapperPipes[ count ][ 2 ] ) )
-							jobStatistic.errorCounts += 1
+							self.jobStatistic.failedHostList.append( "%s:%s"% ( mapperPipes[ count ][ 1 ], mapperPipes[ count ][ 2 ] ) )
+							self.jobStatistic.errorCounts += 1
 							del mapperPipes[ count ]
 
 							# self.terminateMappersPipes( mapperPipes )
@@ -181,7 +173,7 @@ class MapReduceJob( Process ):
 							# shuffle( jobStatistic.mapHostList )
 							# shuffle( jobStatistic.reduceHostList )
 							hasNoError = False
-							print "!!!!error job %s" % jobStatistic.job
+							print "!!!!error job %s" % self.jobStatistic.job
 							# time.sleep( 2 )
 							# break
 					# increment the counter
@@ -205,37 +197,37 @@ class MapReduceJob( Process ):
 					# print "%s waiting on %s pipes" % ( jobStatistic.job, len( mapperPipes ) )
 				time.sleep( 0.0020 )
 
-				printCounter += 1
-
 			if hasNoError == False:
 				retryCount += 1
-				self.terminateMappers( jobStatistic.mapHostList )
+				self.terminateMappers( self.jobStatistic.mapHostList )
 
 				if retryCount == self._retryThreshold - 1 and self._retryThreshold > 1:
-					self.killReducers( jobStatistic.reduceHostList )
+					self.killReducers( self.jobStatistic.reduceHostList )
 
 				time.sleep( 2 )
 				
 				if retryCount >= self._retryThreshold:
-					hasNoError = True
-					jobStatistic.endTime = 0
-					jobStatistic.startTime = 0		
+					self.jobStatistic.endTime = 0
+					self.jobStatistic.startTime = 0		
 
 					# send the stat to the scheduler
-					self.schedulerPipe.send( jobStatistic )
-					print "%s MAX THRESHOLD MET!!!" % jobStatistic.job
+					notComplete = False
+					self.jobQueue.put( self.jobStatistic )
+					print "%s MAX THRESHOLD MET!!!" % self.jobStatistic.job
+					return
+
 				continue
 
 			# get the end end time
-			jobStatistic.endTime = self.getTime()
+			self.jobStatistic.endTime = self.getTime()
 
 			# self.logHostsBandwidth( jobStatistic.mapHostList, jobStatistic.job )
 			# self.logHostsBandwidth( jobStatistic.reduceHostList, jobStatistic.job )
 
-			self.terminateReducers( jobStatistic.reduceHostList )
+			self.terminateReducers( self.jobStatistic.reduceHostList )
 			# self.terminateMappers( jobStatistic.mapHostList )
 
 			time.sleep( 1 )
 
-			# send the stat to the scheduler
-			self.schedulerPipe.send( jobStatistic )
+			notComplete = False
+			self.jobQueue.put( self.jobStatistic )
