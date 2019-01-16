@@ -122,6 +122,7 @@ class MapReduceJob( threading.Thread ):
 	_retryThreshold = 2
 
 	def run( self ):
+		super( MapReduceJob, self ).run()
 		hasNoError = True
 		notComplete = True
 		retryCount = 0

@@ -14,6 +14,7 @@ class Mapper( multiprocessing.Process ):
 		self.ipAddress = ipAddress
 
 	def run( self ):
+		super( Mapper, self ).run()
 		# send ready
 		self.connection.send( HostStates.Ready )
 

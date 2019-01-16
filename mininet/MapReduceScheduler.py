@@ -89,14 +89,15 @@ class MapReduceScheduler( object ):
 		self.handleJobQueueThread.join()
 
 	def handleJobThreads( self ):
-		while self.handleJobQueueThreadRunning == True: #or len( self.jobThreads ) > 0:
+		while self.handleJobQueueThreadRunning == True or len( self.jobThreads ) > 0:
+			counter = 0
 			for thread in self.jobThreads:
 				thread.join
+				del( self.jobThreads[ counter ] )
+				counter += 1
 
-			time.sleep( 1 )
+			time.sleep( 0.5 )
 
-			# if self.handleJobThreadsThreadRunning == False:
-			# 	print "len of threads is %s" % len( self.jobThreads )
 		print "JOB THREADS EXITED"
 			
 	def handleJobQueue( self ):
