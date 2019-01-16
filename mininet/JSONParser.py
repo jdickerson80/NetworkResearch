@@ -70,7 +70,7 @@ class JSONParser( object ):
 	
 			for jobFile in fileList:
 				try:
-					with open( os.path.join( sourceDirectory, jobFile ) , "r" ) as file:
+					with open( os.path.join( sourceDirectory, jobFile ), "r" ) as file:
 						file.seek( 0 )
 						char = file.read( 1 )
 						if not char:
@@ -112,8 +112,8 @@ class JSONParser( object ):
 							print "%s receive HAS ERROR" % j.job
 						
 						# SOMETHING WRONG WITH METHOD!!!!!!
-						# if JSONParser.fillIperfResults( j.sentResults, jsonObject, 'sum_sent' ) == False:
-						# 	print "%s sent HAS ERROR" % j.job
+						if JSONParser.fillIperfResults( j.sentResults, jsonObject, 'sum_sent' ) == False:
+							print "%s sent HAS ERROR" % j.job
 
 				except IOError as error:
 					print "IOERROR %s" % error
