@@ -180,8 +180,14 @@ def parseCommandLineArgument():
 						help="Whether mptcp enabled. Default: true",
 						default=1)
 
+	parser.add_argument('--maxJobs', '-x',
+						action="store",
+						help="Max number of jobs to run",
+						default=0)
+
 	args = parser.parse_args()
 	args.pod = int( args.pod )
+	args.maxJobs = int( args.maxJobs )
 	args.congestionAlgorithm = args.congestion
 	args.linkSpeed = float( args.linkSpeed )
 	args.bandwidthGuarantee = int( args.bandwidthGuarantee )
@@ -199,6 +205,10 @@ if __name__ == '__main__':
 
 	if not arguments.controllerIP:
 		print "You did not give the IP address of the SDN Controller"
+		sys.exit()
+
+	if not arguments.maxJobs:
+		print "You did not give the number of jobs to run"
 		sys.exit()
 
 	setLogLevel( 'info' )
@@ -229,7 +239,7 @@ if __name__ == '__main__':
 
 	if arguments.traceFile and arguments.outputDirectory:
 		try:
-			mrs.runTest( arguments.outputDirectory, arguments.traceFile,  )
+			mrs.runTest( arguments.outputDirectory, arguments.traceFile, arguments.maxJobs )
 		except LookupError as error:
 			print error
 

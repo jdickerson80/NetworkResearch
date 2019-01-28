@@ -2,32 +2,29 @@
 
 from mininet.node import *
 from JobStatistic import *
-from MapReduceHost import *
-# from multiprocessing import Process
 import threading
 from FileConstants import *
 import shutil
 import os
 import time
 import sys
-from random import shuffle
 
 class MapReduceJob( threading.Thread ):
 	"""
 	This class runs a map reduce job and logs its stats
 	"""
-	def __init__( self, jobQueue, jobStatistic, hostMapReduceList, hostMapperPipes ):
+	def __init__( self, jobQueue, jobStatistic, reducerManager, hostList ):
 		# init the parent class
 		super( MapReduceJob, self ).__init__()
 		# grab the scheduler pipe, hosts list, and pipe list
 		self.jobStatistic 		   = jobStatistic
-		self.hostMapReduceList = hostMapReduceList
-		self.hostMapperPipes = hostMapperPipes
+		self.reducerManager = reducerManager
+		self.hostList = hostList
 		self.jobQueue = jobQueue
 
 	def removeHostsBandwidthLog( self, hostList ):	
 		for host in hostList:
-			hostName = self.hostMapReduceList[ host.hostName ].getName()
+			hostName = "%s" % self.hostList[ host.hostName ]
 			command = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
 			while True:			
 				try:
@@ -39,7 +36,7 @@ class MapReduceJob( threading.Thread ):
 
 	def logHostsBandwidth( self, hostList, filePrefix ):
 		for host in hostList:
-			hostName = self.hostMapReduceList[ host.hostName ].getName()
+			hostName = "%s" % self.hostList[ host.hostName ]
 			originalFile = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
 			newFile = "%s%s/%s%s%s" % ( FileConstants.hostBaseDirectory, hostName, hostName, filePrefix, FileConstants.hostJobLogFile )
 			while True:			
@@ -76,7 +73,7 @@ class MapReduceJob( threading.Thread ):
 				else: # if there is no data, leave the loop
 					break
 
-	def startMappers( self, mapperList, reducerList, numberOfBytesToSend, outputFile ):
+	def startMappers( self, mapperList, reducerList, numberOfBytesToSend, job ):
 		# get the ip address of both hosts
 		numberOfBytesToSend = numberOfBytesToSend / len( mapperList )
 		mapCounter = 0
@@ -88,10 +85,12 @@ class MapReduceJob( threading.Thread ):
 				serverPort = 5001
 			else:
 				serverPort = 5002
-
-			destIP = self.hostMapReduceList[ reducerList[ mapCounter ].hostName ].getIP()
-			self.hostMapReduceList[ host.hostName ].addMapper( host.hostIndex, numberOfBytesToSend, destIP, outputFile, serverPort )
-			mapperPipes.append( [ self.hostMapperPipes[ host.hostName ][ host.hostIndex ], host.hostName, host.hostIndex ] )
+			node = self.hostList[ host.hostName ]
+			logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, node, node, job, serverPort )
+			destIP = self.hostList[ reducerList[ mapCounter ].hostName ].IP()
+			command = "iperf3 -c %s -n %s -p %s --logfile %s --get-server-output -J 2>&1 > /dev/null" % ( destIP, numberOfBytesToSend, serverPort, logFile )
+			# print "%s %s" % ( node, command )
+			mapperPipes.append( node.pexecNoWait( command ) )
 
 			mapCounter += 1
 
@@ -99,25 +98,17 @@ class MapReduceJob( threading.Thread ):
 
 	def terminateMappers( self, mapperList ):
 		for host in mapperList:
-			self.hostMapReduceList[ host.hostName ].terminateMapper( host.hostIndex )
+			host.kill()
+			host.wait()
 
 	@staticmethod
-	def terminateMappersPipes( mapperPipes ):
-		for host in mapperPipes:
+	def terminateMappers( mappers ):
+		for host in mappers:
 			host[ 0 ].parentConnection.send( HostStates.Terminate )
-
-	def startReducers( self, reducerList ):
-		# get the ip address of both hosts
-		for host in reducerList:
-			self.hostMapReduceList[ host.hostName ].addReducer( host.hostIndex )
-
-	def terminateReducers( self, reducerList ):	
-		for host in reducerList:
-			self.hostMapReduceList[ host.hostName ].terminateReducer( host.hostIndex )
 
 	def killReducers( self, reducerList ):
 		for host in reducerList:
-			self.hostMapReduceList[ host.hostName ].killReducer( host.hostIndex )
+			self.reducerManager.killAndRestartReducer( host.hostName, host.hostIndex )
 
 	_retryThreshold = 2
 
@@ -132,16 +123,16 @@ class MapReduceJob( threading.Thread ):
 			# print "got %s" % jobStatistic
 
 			hasNoError = True
-			self.clearHostsPipes( self.jobStatistic.mapHostList )
-			self.clearHostsPipes( self.jobStatistic.reduceHostList )
+			# self.clearHostsPipes( self.jobStatistic.mapHostList )
+			# self.clearHostsPipes( self.jobStatistic.reduceHostList )
 
 			# self.removeHostsBandwidthLog( jobStatistic.mapHostList )
 			# self.removeHostsBandwidthLog( jobStatistic.reduceHostList )
 
-			self.startReducers( self.jobStatistic.reduceHostList )
+			# self.startReducers( self.jobStatistic.reduceHostList )
 			self.jobStatistic.startTime = self.getTime()
-			mapperPipes = self.startMappers( self.jobStatistic.mapHostList, self.jobStatistic.reduceHostList, self.jobStatistic.bytesToSend, self.jobStatistic.job )
-			mapperPipesLength = len( mapperPipes )
+			mappers = self.startMappers( self.jobStatistic.mapHostList, self.jobStatistic.reduceHostList, self.jobStatistic.bytesToSend, self.jobStatistic.job )
+			mappersLength = len( mappers )
 					
 			# log the start time
 			# wait for the mappers to be completed
@@ -150,43 +141,24 @@ class MapReduceJob( threading.Thread ):
 				# clear the count variable
 				count = 0
 				# loop through the job pipes
-				for i in mapperPipes:
+				for i in mappers:
 					# get the poll value
-					poll = i[0].parentConnection.poll()
+					poll = i.poll()
 					# if there is data
-					if poll == True:
-						# get the message
-						message = i[0].parentConnection.recv()
-						# print "%s got %s" % ( jobStatistic.job, message )
-						# if the message said both mappers are complete
-						if message == HostStates.Ready:
-							# remove the pipe from the pipe list
-							# print "deling %s" % count
-							del mapperPipes[ count ]
-						elif message == HostStates.Error:
-							# print "mapper %s failed" % mapperPipes[ count ][ 1 ]
-							self.jobStatistic.failedHostList.append( "%s:%s"% ( mapperPipes[ count ][ 1 ], mapperPipes[ count ][ 2 ] ) )
-							self.jobStatistic.errorCounts += 1
-							del mapperPipes[ count ]
-
-							# self.terminateMappersPipes( mapperPipes )
-							# self.terminateReducers( jobStatistic.reduceHostList )
-							# shuffle( jobStatistic.mapHostList )
-							# shuffle( jobStatistic.reduceHostList )
-							hasNoError = False
-							print "!!!!error job %s" % self.jobStatistic.job
-							# time.sleep( 2 )
-							# break
-					# increment the counter
+					if poll != None:
+						del mappers[ count ]
+						if poll != 0:
+							hasNoError = False		
+						
 					count += 1
 
-				if mapperPipesLength == len( mapperPipes ):
+				if mappersLength == len( mappers ):
 					sameCounter += 1
 				else:
-					mapperPipesLength = len( mapperPipes )
+					mappersLength = len( mappers )
 
 				# the pipes have been polled, so if the job pipes is empty
-				if len( mapperPipes ) == 0:# or hasNoError == False:
+				if len( mappers ) == 0:# or hasNoError == False:
 					# job is complete, so break the loop
 					break
 				
@@ -200,7 +172,7 @@ class MapReduceJob( threading.Thread ):
 
 			if hasNoError == False:
 				retryCount += 1
-				self.terminateMappers( self.jobStatistic.mapHostList )
+				self.terminateMappers( mappers )
 
 				if retryCount == self._retryThreshold - 1 and self._retryThreshold > 1:
 					self.killReducers( self.jobStatistic.reduceHostList )
@@ -225,7 +197,7 @@ class MapReduceJob( threading.Thread ):
 			# self.logHostsBandwidth( jobStatistic.mapHostList, jobStatistic.job )
 			# self.logHostsBandwidth( jobStatistic.reduceHostList, jobStatistic.job )
 
-			self.terminateReducers( self.jobStatistic.reduceHostList )
+			# self.terminateReducers( self.jobStatistic.reduceHostList )
 			# self.terminateMappers( jobStatistic.mapHostList )
 
 			time.sleep( 1 )

@@ -1,17 +1,14 @@
 #!/usr/bin/python
 
-from enum import IntEnum
 from MapReduceJob import *
-from MapReduceHost import *
-from PerProcessPipes import *
-from multiprocessing import Pipe, Queue
-# from Queue import Queue
+from ReducerManager import *
+from multiprocessing import Queue
 from JobStatistic import *
 from FileConstants import *
 from JSONParser import *
+from HostStates import *
 import sys
 import threading
-import time
 import time
 
 class MapReduceScheduler( object ):
@@ -19,7 +16,6 @@ class MapReduceScheduler( object ):
 	This class handles the scheduling of the map reduce jobs. It figures out the hosts to 
 	run the job, and sends the info to the MapReduceJob to handle the running of the job.
 	"""
-	_maximumJobsPerTest = 10000
 	_jobLogHeader = "Job#,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,ErrorCounts,ErroredHost,BytesTransmitted,ReceiveResults(bytes duration retransmit transmissionRate),SentResults(bytes duration retransmit transmissionRate)\n"
 	# Bytes per host to divide up the job
 	class BytesPerHostEnum( IntEnum ):
@@ -34,26 +30,11 @@ class MapReduceScheduler( object ):
 		self.numberOfHosts = int ( len( hostList ) - 1 )
 		self.hostList = hostList
 
-		numberOfJobProcesses = self.numberOfHosts * 2 
-		# create the available job list, which is used to figure out what map reduce job to assign the job
-		self.jobPipeList = [ PerProcessPipes() for i in xrange( numberOfJobProcesses ) ]
-		self.hostMapReduceList = []
-
 		# available hosts. two mappers per host
 		self.availableMapperList	= [ [ HostStates.Ready, HostStates.Ready ] for i in xrange( self.numberOfHosts ) ]
 		self.availableReducerList	= [ [ HostStates.Ready, HostStates.Ready ] for i in xrange( self.numberOfHosts ) ]
 		self.handleJobQueueThreadRunning = True
-		self.mapperPipes = [ [ PerProcessPipes(), PerProcessPipes() ] for i in xrange( self.numberOfHosts ) ]
 		
-		for i in self.mapperPipes:
-			i[ 0 ].parentConnection, i[ 0 ].childConnection = Pipe()
-			i[ 1 ].parentConnection, i[ 1 ].childConnection = Pipe()
-
-		# create the hosts' map reduce clients
-		for i in xrange( self.numberOfHosts ):
-			self.hostMapReduceList.append( HostMapReduce( host = self.hostList[ i ], mapperOnePipe = self.mapperPipes[ i ][ 0 ].childConnection, mapperTwoPipe = self.mapperPipes[ i ][ 1 ].childConnection ) )
-		
-
 		# set the list to be updated, so the job can be scheduled
 		self.hasListBeenUpdated = True
 		self.handleJobThreadsThreadRunning = True
@@ -64,15 +45,19 @@ class MapReduceScheduler( object ):
 		self.handleJobQueueThread = threading.Thread( target=self.handleJobQueue )
 
 		self.handleJobThread = threading.Thread( target=self.handleJobThreads )
+		self.reducerManager = ReducerManager( hostList )
+		self.reducerManager.start()
 
 		# start the thread
 		self.handleJobQueueThread.start()
 		self.handleJobThread.start()
 
-		# flush the hosts' buffer
-		for i in self.mapperPipes:
-			i[ 0 ].parentConnection.recv()
-			i[ 1 ].parentConnection.recv()
+		# # flush the hosts' buffer
+		# for i in self.mapperPipes:
+		# 	i[ 0 ].parentConnection.recv()
+		# 	i[ 1 ].parentConnection.recv()
+
+		print "scheduler done"
 
 	def terminate( self ):
 		"""
@@ -81,12 +66,11 @@ class MapReduceScheduler( object ):
 		# set the pipe thread running to false to shut it down
 		self.handleJobQueueThreadRunning = False
 
-		# turn off all of the hosts' map reduce list
-		for i in self.hostMapReduceList:
-			i.terminate()
-
 		# join the pipe thread
 		self.handleJobQueueThread.join()
+
+		self.reducerManager.terminate()
+		self.reducerManager.join()
 
 	def handleJobThreads( self ):
 		while self.handleJobQueueThreadRunning == True or len( self.jobThreads ) > 0:
@@ -172,7 +156,7 @@ class MapReduceScheduler( object ):
 			if re.search( ".csv", f ):
 				os.system( "chmod 666 %s/%s" % ( outputDirectory, f ) )
 
-	def __processJobs( self, workFile ):
+	def __processJobs( self, workFile, maximumJobsPerTest ):
 		"""
 		Compute the proper values from the work file
 		"""
@@ -181,7 +165,7 @@ class MapReduceScheduler( object ):
 
 		# for each job in the file
 		for job in workFile:
-			if len ( self.workQueue )  >= self._maximumJobsPerTest:
+			if len ( self.workQueue )  >= maximumJobsPerTest:
 				print "MAX JOBS REACHED!!!!"
 				break
 
@@ -224,7 +208,7 @@ class MapReduceScheduler( object ):
 			return 0
 
 		for j in xrange( self.numberOfHosts ):
-			for h in xrange( HostMapReduce.MapReduceClassIndex.NumberOfMappers ):
+			for h in xrange( 2 ):
 				if self.availableMapperList[ j ][ h ] == HostStates.Ready:
 					requiredHosts -= 1
 					self.availableMapperList[ j ][ h ] = HostStates.Busy
@@ -244,7 +228,7 @@ class MapReduceScheduler( object ):
 		
 		mapCounter = 0
 		for j in xrange( self.numberOfHosts - 1, 0, -1  ):
-			for h in xrange( HostMapReduce.MapReduceClassIndex.NumberOfReducers ):
+			for h in xrange( 2 ):
 				if self.availableReducerList[ j ][ h ] == HostStates.Ready:
 					if mapCounter < len ( jobMappers ):
 						if jobMappers[ mapCounter ].hostName == j:
@@ -279,7 +263,7 @@ class MapReduceScheduler( object ):
 		except OSError as error:
 			print "mkdir folders got %s error" % error
 
-	def runTest( self, outputDirectory, workFile ):
+	def runTest( self, outputDirectory, workFile, maximumJobsPerTest ):
 		"""
 		This method runs the tests in the file
 		"""
@@ -293,7 +277,7 @@ class MapReduceScheduler( object ):
 		self.__preprocessJobList( data )
 		# add the jobs to the queue
 
-		self.__processJobs( data )
+		self.__processJobs( data, maximumJobsPerTest )
 		
 		if len ( self.workQueue ) == True:
 			raise LookupError( "Running test on an empty queue" )
@@ -328,7 +312,7 @@ class MapReduceScheduler( object ):
 
 			# grab the job and bytes to send
 			self.jobStats[ counter ].job = currentJob[ 2 ]
-			self.jobStats[ counter ].bytesToSend = currentJob[ 1 ] / totalRequiredHosts
+			self.jobStats[ counter ].bytesToSend = currentJob[ 1 ]
 			self.jobStats[ counter ].numberOfHosts = totalRequiredHosts
 
 			# while there are hosts required 
@@ -374,7 +358,7 @@ class MapReduceScheduler( object ):
 
 				time.sleep( 0.125 )
 
-			job = MapReduceJob( self.finishJobQueue, self.jobStats[ counter ], self.hostMapReduceList, self.mapperPipes )
+			job = MapReduceJob( self.finishJobQueue, self.jobStats[ counter ], self.reducerManager, self.hostList )
 			job.start()
 			self.jobThreads.append( job ) 
 			
