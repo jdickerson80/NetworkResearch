@@ -8,7 +8,6 @@ class ReducerManager( threading.Thread ):
 
 	def __init__( self, hostList ):
 		super( ReducerManager, self ).__init__()
-		# self.connection			= PerProcessPipes()
 		self.hostList 			= hostList	
 		self.handleReducersThreadRunning = True
 		self.reducerList		= []

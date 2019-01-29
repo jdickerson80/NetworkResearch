@@ -52,13 +52,6 @@ class MapReduceScheduler( object ):
 		self.handleJobQueueThread.start()
 		self.handleJobThread.start()
 
-		# # flush the hosts' buffer
-		# for i in self.mapperPipes:
-		# 	i[ 0 ].parentConnection.recv()
-		# 	i[ 1 ].parentConnection.recv()
-
-		print "scheduler done"
-
 	def terminate( self ):
 		"""
 		Shut down all of threads and processes	
@@ -80,7 +73,11 @@ class MapReduceScheduler( object ):
 				del( self.jobThreads[ counter ] )
 				counter += 1
 
-			time.sleep( 0.5 )
+			time.sleep( 0.25 )
+
+		time.sleep( 2 )
+
+		print "%s %s" % ( self.handleJobQueueThreadRunning, len( self.jobThreads ) )
 
 		print "JOB THREADS EXITED"
 			
@@ -95,7 +92,7 @@ class MapReduceScheduler( object ):
 			try:
 				jobStatistic = self.finishJobQueue.get( .1 )
 			except Empty as e:
-				print "Queue!!!!" % e
+				print "%s Queue!!!!" % e
 				pass
 			# print "before %s" % self.availableMapperList
 
@@ -391,6 +388,8 @@ class MapReduceScheduler( object ):
 
 		JSONParser.logTestResults( self.jobStats, outputDirectory, self.hostList )
 		JSONParser.logIperfResults( outputDirectory, self.jobStats )
+
+		JSONParser.logPerJobResults( outputDirectory )
 
 		# log all of the job stats
 		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
