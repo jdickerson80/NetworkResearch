@@ -90,7 +90,7 @@ class MapReduceJob( threading.Thread ):
 		for host in reducerList:
 			self.reducerManager.killAndRestartReducer( host.hostName, host.hostIndex )
 
-	_retryThreshold = 2
+	_retryThreshold = 6
 
 	def run( self ):
 		super( MapReduceJob, self ).run()
@@ -98,6 +98,7 @@ class MapReduceJob( threading.Thread ):
 		notComplete = True
 		retryCount = 0
 		while notComplete:
+			self.removeHostsBandwidthLog( self.jobStatistic.mapHostList )
 			sameCounter = 0
 			# print "got %s" % jobStatistic
 
@@ -116,6 +117,7 @@ class MapReduceJob( threading.Thread ):
 					poll = i.poll()
 					# if there is data
 					if poll != None:
+						# print "%s got %s from %s" % ( self.jobStatistic.job, poll, count )
 						del mappers[ count ]
 						if poll != 0:
 							hasNoError = False		
@@ -128,11 +130,11 @@ class MapReduceJob( threading.Thread ):
 					mappersLength = len( mappers )
 
 				# the pipes have been polled, so if the job pipes is empty
-				if len( mappers ) == 0:# or hasNoError == False:
+				if len( mappers ) == 0 or hasNoError == False:
 					# job is complete, so break the loop
 					break
 				
-				if sameCounter >= 10000:
+				if sameCounter >= 100000:
 					print "!!!!!!!SAME ERROR!!!!!!"
 					hasNoError = False
 					break
@@ -149,14 +151,16 @@ class MapReduceJob( threading.Thread ):
 				time.sleep( 2 )
 				
 				if retryCount >= self._retryThreshold:
+					self.killReducers( self.jobStatistic.reduceHostList )
+					time.sleep( 1 )
 					self.jobStatistic.endTime = 0
 					self.jobStatistic.startTime = 0		
-
 					# send the stat to the scheduler
 					notComplete = False
 					self.jobQueue.put( self.jobStatistic )
 					print "%s MAX THRESHOLD MET!!!" % self.jobStatistic.job
-					return
+					# print "%s exited" % self.jobStatistic.job
+					break
 
 				continue
 
@@ -168,3 +172,4 @@ class MapReduceJob( threading.Thread ):
 
 			notComplete = False
 			self.jobQueue.put( self.jobStatistic )
+			# print "%s exited" % self.jobStatistic.job

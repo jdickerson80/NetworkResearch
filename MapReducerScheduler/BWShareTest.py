@@ -113,6 +113,7 @@ def Test( net ):
 
 
 def startBWShare( net, bandwidthGuarantee ):
+    print "Starting BG and WC"
     counter = 0
     bgAdaptorAddress = net.hosts[ len( net.hosts ) - 1 ].IP()
 
@@ -122,7 +123,7 @@ def startBWShare( net, bandwidthGuarantee ):
         else:
             command = './WCEnabler -b %s 2>&1 > /dev/null &' % bgAdaptorAddress
             host.cmd( command )
-            counter += 1 
+        counter += 1 
 
 if __name__ == '__main__':
     os.system( "sysctl -w net.mptcp.mptcp_enabled=1 >> commands.log" )
@@ -139,7 +140,7 @@ if __name__ == '__main__':
     os.system( "echo --------------------------------------- >> commands.log" )
 
     setLogLevel( 'info' )
-    mytopo = MySingleSwitch( 11 )
+    mytopo = MySingleSwitch( 101 )
     privateDirs = [ ( '/var/log', '/tmp/%(name)s/var/log' ),
     ( '/var/run', '/tmp/%(name)s/var/run' ),
     '/var/mn' ]
@@ -153,7 +154,7 @@ if __name__ == '__main__':
 #    ip="127.0.0.1", port=6633)
 
     net.start()
-    startBWShare( net, 100000 )
+    # startBWShare( net, 100000 )
     directories = [ directory[ 0 ] if isinstance( directory, tuple )
     else directory for directory in privateDirs ]
 
@@ -190,7 +191,7 @@ if __name__ == '__main__':
     
     CLI( net )
     try:
-        mrs.runTest( "test/", "WholeTest.tsv", 300 )
+        mrs.runTest( "test/", "WholeTest.tsv", 100 )
     except LookupError as error:
         print error
 #    net.pingAll()
@@ -205,6 +206,11 @@ if __name__ == '__main__':
 #	    print message
   #  CLI( net )
     mrs.terminate()
+
+    # for i in processes:
+    #     i.kill()
+    #     i.wait()
+            
 
     time.sleep( 1 )
     net.stop()

@@ -105,7 +105,7 @@ def setupSwitchQueues( net, switchPortSpeed ):
 				continue
 
 			interface = switch.intf( intf=name )
-			setupTCCommand( interface, switch, switchPortSpeed )
+			# setupTCCommand( interface, switch, switchPortSpeed )
 
 def setupHostMachine( mptcpEnabled ):
 	print "Setting up the host machine"
@@ -212,7 +212,7 @@ if __name__ == '__main__':
 		sys.exit()
 
 	setLogLevel( 'info' )
-	setupHostMachine( arguments.mptcpEnabled )
+	# setupHostMachine( arguments.mptcpEnabled )
 	topology = createTopo( k = arguments.pod, speed = arguments.linkSpeed )
 	privateDirs = [ ( '/var/log', '/tmp/%(name)s/var/log' ), ( '/var/run', '/tmp/%(name)s/var/run' ), '/var/mn' ]
 
@@ -230,12 +230,13 @@ if __name__ == '__main__':
 					else directory for directory in privateDirs ]
 
 	setupSwitchQueues( net, arguments.switchPortSpeed )
-	startBWShare( net, arguments.bandwidthGuarantee )
+
 	mrs = MapReduceScheduler( net.hosts )
 	CLI( net )
-
+	startBWShare( net, arguments.bandwidthGuarantee )
+	CLI( net )
 	# net.pingAll()
-	# time.sleep( 10 )
+	# time.sleep( 3 )
 
 	if arguments.traceFile and arguments.outputDirectory:
 		try:
@@ -243,9 +244,9 @@ if __name__ == '__main__':
 		except LookupError as error:
 			print error
 
-
-	# CLI( net )	
 	mrs.terminate()
+
+	# # CLI( net )	
 	net.stop()
 
 #   Ryu command

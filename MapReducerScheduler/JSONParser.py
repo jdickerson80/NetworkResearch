@@ -137,12 +137,20 @@ class JSONParser( object ):
 				with open( os.path.join( sourceDirectory, jobFile ), "r" ) as file:
 					try:
 						jsonObject = json.load( file )
-					except ValueError as e:
-						print "ERROR!!! %s" % e
-						pass
+						try:
+							totalBandwidth += jsonObject[ 'end' ][ 'sum_sent' ][ 'bits_per_second' ]	
+						except KeyError as k:
+							print "logPerJobResults %s" % k
 
-					totalBandwidth += jsonObject[ 'end' ][ 'sum_sent' ][ 'bits_per_second' ]	
-					totalCompletionTime += jsonObject[ 'end' ][ 'sum_received' ][ 'seconds' ]	
+						try:
+							totalCompletionTime += jsonObject[ 'end' ][ 'sum_received' ][ 'seconds' ]	
+						except KeyError as k:
+							print "logPerJobResults %s" % k
+						
+					except ValueError as e:
+						print "logPerJobResults %s" % e
+						continue
+
 
 			results.append( [ job, totalHost, totalCompletionTime / totalHost, totalBandwidth / totalHost ] )
 

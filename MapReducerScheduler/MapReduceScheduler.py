@@ -3,6 +3,7 @@
 from MapReduceJob import *
 from ReducerManager import *
 from multiprocessing import Queue
+from Queue import Empty
 from JobStatistic import *
 from FileConstants import *
 from JSONParser import *
@@ -58,26 +59,31 @@ class MapReduceScheduler( object ):
 		"""
 		# set the pipe thread running to false to shut it down
 		self.handleJobQueueThreadRunning = False
+		self.handleJobThreadsThreadRunning = False
 
 		# join the pipe thread
 		self.handleJobQueueThread.join()
+		self.handleJobThread.join()
 
 		self.reducerManager.terminate()
 		self.reducerManager.join()
 
 	def handleJobThreads( self ):
-		while self.handleJobQueueThreadRunning == True or len( self.jobThreads ) > 0:
+		while self.handleJobThreadsThreadRunning == True or len( self.jobThreads ) > 0:
 			counter = 0
 			for thread in self.jobThreads:
-				thread.join
+				thread.join()
+				# thread.join( 0.025 )
+				# if not thread.isAlive():
 				del( self.jobThreads[ counter ] )
+					# print "Deleted %i thread" % counter
 				counter += 1
 
-			time.sleep( 0.25 )
+			time.sleep( 0.025 )
 
-		time.sleep( 2 )
+		# time.sleep( 2 )
 
-		print "%s %s" % ( self.handleJobQueueThreadRunning, len( self.jobThreads ) )
+		# print "%s %s" % ( self.handleJobThreadsThreadRunning, len( self.jobThreads ) )
 
 		print "JOB THREADS EXITED"
 			
@@ -89,11 +95,12 @@ class MapReduceScheduler( object ):
 		# while the thread should run
 		while self.handleJobQueueThreadRunning == True or self.finishJobQueue.qsize() > 0:
 			# loop through the job pipes
+
 			try:
-				jobStatistic = self.finishJobQueue.get( .1 )
-			except Empty as e:
-				print "%s Queue!!!!" % e
-				pass
+				jobStatistic = self.finishJobQueue.get( block=True, timeout=0.1 )
+			except Empty:
+				# print "%s Queue!!!!" % Empty
+				continue
 			# print "before %s" % self.availableMapperList
 
 			# set all the hosts back to available
@@ -163,7 +170,7 @@ class MapReduceScheduler( object ):
 		# for each job in the file
 		for job in workFile:
 			if len ( self.workQueue )  >= maximumJobsPerTest:
-				print "MAX JOBS REACHED!!!!"
+				# print "MAX JOBS REACHED!!!!"
 				break
 
 			# split line by tabs
@@ -277,6 +284,7 @@ class MapReduceScheduler( object ):
 		self.__processJobs( data, maximumJobsPerTest )
 		
 		if len ( self.workQueue ) == True:
+			self.terminate()
 			raise LookupError( "Running test on an empty queue" )
 
 		print "Queue size: %i" % len ( self.workQueue )
@@ -362,12 +370,21 @@ class MapReduceScheduler( object ):
 			# increment the job stats counter
 			counter += 1
 
+		print "Done scheduling"
+		time.sleep( 3 )		
+		# while len( self.jobThreads ) > 0 or self.finishJobQueue.qsize() > 0:
+		# 	time.sleep( 0.125 )	
+
+		self.handleJobThreadsThreadRunning = False
+		self.handleJobThread.join()				
+		# print self.handleJobThread.isAlive()
+
 		self.handleJobQueueThreadRunning = False
+		# print "WAITING ON JOB QUEUE"
+		# print self.handleJobQueueThread.isAlive()
 		self.handleJobQueueThread.join()
 		
-		self.handleJobThreadsThreadRunning = False
-		self.handleJobThread.join()
-		# ADD JOINING OF JOB THREAD WATCHER TO SIGNAL ALL DONE
+
 		endTime = self.getTimeTics()
 		print "DONE!!!!!!"
 		time.sleep( 4 )
@@ -388,8 +405,8 @@ class MapReduceScheduler( object ):
 
 		JSONParser.logTestResults( self.jobStats, outputDirectory, self.hostList )
 		JSONParser.logIperfResults( outputDirectory, self.jobStats )
-
 		JSONParser.logPerJobResults( outputDirectory )
+
 
 		# log all of the job stats
 		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
