@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "WCPrintHandler.h"
 #define UseTC ( 1 )
 using namespace std;
 
@@ -12,7 +13,7 @@ namespace Common {
 void TCControl::setEgressBandwidth( const std::string& interface, const std::string& desiredBandwidth )
 {
 #if defined( UseTC )
-	setEgressBandwidth( interface, desiredBandwidth );
+	setEgressBandwidth( interface, atoi( desiredBandwidth.c_str() ) );
 #endif
 }
 
@@ -60,18 +61,9 @@ void TCControl::setEgressBandwidth( const std::string& interface, const int desi
 			  " parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 1:11;\n";
 
 	command = stream.str();
+	PRINT( "egress: %s\n", command.c_str() );
 	system( command.c_str() );
 #endif
-}
-
-void TCControl::setIgressBandwidth( const std::string& interface, const std::string& desiredBandwidth )
-{
-	/// @todo fill this method in
-}
-
-void TCControl::setIgressBandwidth( const std::string& interface, const int desiredBandwidth )
-{
-	/// @todo fill this method in
 }
 
 void TCControl::clearTCCommands( const string& interface )
@@ -83,6 +75,7 @@ void TCControl::clearTCCommands( const string& interface )
 	stream << "tc qdisc del dev " << interface << " root;";
 
 	command = stream.str();
+	PRINT( "clear: %s\n", command.c_str() );
 	system( command.c_str() );
 #endif
 }

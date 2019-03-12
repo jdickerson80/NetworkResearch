@@ -30,6 +30,7 @@ std::string CommandLineArgumentParser::parseCommandLineArgument( int argc, char*
 		{
 		case UsageArguments::BGAdaptorAddress:
 			bgAdaptorRate = optarg;
+			printf("%s\n", optarg );
 			break;
 		}
 	}

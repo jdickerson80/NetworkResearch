@@ -64,6 +64,7 @@ private:
 	std::string _multipathNonBackupCommand;
 	Common::LoggingHandler* _logger;
 
+	char* _interface;
 public:
 
 	/**

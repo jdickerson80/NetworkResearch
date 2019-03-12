@@ -132,6 +132,7 @@ class JSONParser( object ):
 			fileList = os.listdir( sourceDirectory )
 			totalBandwidth = 0
 			totalCompletionTime = 0
+			perJobDataTransfer = 0
 			totalHost = len( fileList )
 			for jobFile in fileList:
 				with open( os.path.join( sourceDirectory, jobFile ), "r" ) as file:
@@ -139,6 +140,11 @@ class JSONParser( object ):
 						jsonObject = json.load( file )
 						try:
 							totalBandwidth += jsonObject[ 'end' ][ 'sum_sent' ][ 'bits_per_second' ]	
+						except KeyError as k:
+							print "logPerJobResults %s" % k
+
+						try:
+							perJobDataTransfer = jsonObject[ 'start' ][ 'test_start' ][ 'bytes' ]	
 						except KeyError as k:
 							print "logPerJobResults %s" % k
 
@@ -152,12 +158,12 @@ class JSONParser( object ):
 						continue
 
 
-			results.append( [ job, totalHost, totalCompletionTime / totalHost, totalBandwidth / totalHost ] )
+			results.append( [ job, totalHost, perJobDataTransfer, totalCompletionTime / totalHost, totalBandwidth / totalHost ] )
 
 		with open('%sResults.csv' % jobDirectory, 'w' ) as f:
-			f.write( "Job,Host,Avg Completion Time,Avg Bandwidth (bits/sec),Avg Bandwidth (bytes/sec)\n")
+			f.write( "Job,Host,PerJobDataTransfer,Avg Completion Time,Avg Bandwidth (bits/sec),Avg Bandwidth (bytes/sec)\n")
 			for r in results:
-				f.write( "%s,%s,%s,%s,%s\n" % ( r[0], r[1], r[2], r[3], float( r[3] ) / 8.0 ) )
+				f.write( "%s,%s,%s,%s,%s,%s\n" % ( r[0], r[1], r[2], r[3], r[4], float( r[4] ) / 8.0 ) )
 	
 	@staticmethod
 	def fillIperfResults( results, jsonObject, whatResults ):

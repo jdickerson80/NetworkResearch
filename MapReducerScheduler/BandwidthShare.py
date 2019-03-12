@@ -46,8 +46,8 @@ def setupTCCommand( interface, host, switchPortSpeed ):
 	commandReturns = host.cmd( command )
 
 	# add qdisc to class 1:11 that is r.e.d. with ECN enabled
-	command = "tc qdisc add dev %s parent 1:11 handle 2: red limit 1000000 min 30000 max 35000 avpkt 1500 burst 20 bandwidth %smbit probability 1 ecn" % ( interface, switchPortSpeed )
-	commandReturns = host.cmd( command )
+	# command = "tc qdisc add dev %s parent 1:11 handle 2: red limit 1000000 min 30000 max 35000 avpkt 1500 burst 20 bandwidth %smbit probability 1 ecn" % ( interface, switchPortSpeed )
+	# commandReturns = host.cmd( command )
 
 	# add class to root qdisc with id 1:12 with htb with the ceiling given as an argument
 	# with the lowest priority.This is the WC flow, so it does not have a rate limit!!!!!!!!
@@ -56,39 +56,34 @@ def setupTCCommand( interface, host, switchPortSpeed ):
 
 	# create a filter for root class that matches all tcp protocols with tos of 0, send it to flow 1:11
 	# this filters all BwG tcp packets into class 1:11
-	command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11" % interface
+	command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11;" % interface
+	print command
 	commandReturns = host.cmd( command )
 
 	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
 	# this filters all WC tcp packets into class 1:12
-	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12" % interface
+	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12;" % interface
+	print command
 	commandReturns = host.cmd( command )
 
-	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
-	# this filters all WC tcp packets into class 1:12
-	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x39 0xff flowid 1:12" % interface
-	commandReturns = host.cmd( command )
-
-	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
-	# this filters all WC tcp packets into class 1:12
-	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x3A 0xff flowid 1:12" % interface
-	commandReturns = host.cmd( command )
-
-	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
-	# this filters all WC tcp packets into class 1:12
-	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x3B 0xff flowid 1:12" % interface
-	commandReturns = host.cmd( command )
+	command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x11 0xff match ip tos 0x00 0xff flowid 1:11" % interface
+	print command
+	commandReturns = host.cmd( command ) 
 
 	return commandReturns
 
-def startBWShare( net, bandwidthGuarantee ):
+def startBWShare( net, bandwidthGuarantee, dynamicAllocation ):
 	print "Starting BG and WC"
 	counter = 0
-	bgAdaptorAddress = net.hosts[ len( net.hosts ) - 1 ].IP()
+	numberOfWCEnablerHosts = len( net.hosts ) - 1
+	bgAdaptorAddress = net.hosts[ numberOfWCEnablerHosts ].IP()
+	print numberOfWCEnablerHosts, dynamicAllocation
 
 	for host in net.hosts:
-		if counter == len( net.hosts ) - 1:
-			host.cmd( './BGAdaptor %s 2>&1 > /dev/null &' % bandwidthGuarantee )
+		if counter == numberOfWCEnablerHosts:
+			command = './BGAdaptor -b %s -n %s -d %s 2>&1 > /dev/null &' % ( bandwidthGuarantee, numberOfWCEnablerHosts, dynamicAllocation )
+			print command
+			host.cmd( command )
 		else:
 			command = './WCEnabler -b %s 2>&1 > /dev/null &' % bgAdaptorAddress
 			host.cmd( command )
@@ -105,7 +100,7 @@ def setupSwitchQueues( net, switchPortSpeed ):
 				continue
 
 			interface = switch.intf( intf=name )
-			# setupTCCommand( interface, switch, switchPortSpeed )
+			setupTCCommand( interface, switch, switchPortSpeed )
 
 def setupHostMachine( mptcpEnabled ):
 	print "Setting up the host machine"
@@ -183,7 +178,12 @@ def parseCommandLineArgument():
 	parser.add_argument('--maxJobs', '-x',
 						action="store",
 						help="Max number of jobs to run",
-						default=0)
+						default=0 )
+
+	parser.add_argument('--dynamicAllocation', '-a',
+						action="store",
+						help="Whether the BGAdaptor divides bandwidth evenly for uses its dynamic allocation.",
+						default=0 )
 
 	args = parser.parse_args()
 	args.pod = int( args.pod )
@@ -192,6 +192,7 @@ def parseCommandLineArgument():
 	args.linkSpeed = float( args.linkSpeed )
 	args.bandwidthGuarantee = int( args.bandwidthGuarantee )
 	args.traceFile = args.traceFile 
+	args.dynamicAllocation = int( args.dynamicAllocation )
 
 	return args
 
@@ -212,7 +213,7 @@ if __name__ == '__main__':
 		sys.exit()
 
 	setLogLevel( 'info' )
-	# setupHostMachine( arguments.mptcpEnabled )
+	setupHostMachine( arguments.mptcpEnabled )
 	topology = createTopo( k = arguments.pod, speed = arguments.linkSpeed )
 	privateDirs = [ ( '/var/log', '/tmp/%(name)s/var/log' ), ( '/var/run', '/tmp/%(name)s/var/run' ), '/var/mn' ]
 
@@ -232,10 +233,11 @@ if __name__ == '__main__':
 	setupSwitchQueues( net, arguments.switchPortSpeed )
 
 	mrs = MapReduceScheduler( net.hosts )
-	CLI( net )
-	startBWShare( net, arguments.bandwidthGuarantee )
-	CLI( net )
-	# net.pingAll()
+	net.pingAll()
+	# CLI( net )
+	startBWShare( net, arguments.bandwidthGuarantee, arguments.dynamicAllocation )
+	net.pingAll()
+	# CLI( net )
 	# time.sleep( 3 )
 
 	if arguments.traceFile and arguments.outputDirectory:
@@ -251,3 +253,67 @@ if __name__ == '__main__':
 
 #   Ryu command
 #   ryu-manager ryu.app.rest_qos ryu.app.qos_simple_switch_13 ryu.app.rest_conf_switch
+
+
+
+
+# def setupTCCommand( interface, host, switchPortSpeed ):
+# 	"""
+# 	Setup the priority queues on each switchs' port
+# 	"""
+# 	commandReturns = []
+
+# 	# delete root qdisc
+# 	command = "tc qdisc del dev %s root" % interface
+# 	commandReturns = host.cmd( command )
+
+# 	# create qdisc for eth0 device as the root queue with handle 1:0 htb queueing discipline
+# 	# where all traffic not covered in the filters goes to flow 11
+# 	command = "tc qdisc add dev %s root handle 1: htb default 11" % interface
+# 	commandReturns = host.cmd( command )
+
+# 	# add class to root qdisc with id 1:1 with htb with the max rate given as the argument
+# 	command = "tc class add dev %s parent 1: classid 1:1 htb rate %smbit" % ( interface, switchPortSpeed )
+# 	commandReturns = host.cmd( command )
+
+# 	# add class to root qdisc with id 1:2 with htb with a the rate given as the argument with a ceiling
+# 	# as high as the max rate where the queue has the highest priority.
+# 	# This is the BwG flow, so it has a ceiling to enforce BGAdaptors rate
+# 	command = "tc class add dev %s parent 1:1 classid 1:11 htb rate %smbit ceil 1mbit prio 0" % ( interface, switchPortSpeed )
+# 	commandReturns = host.cmd( command )
+
+# 	# add qdisc to class 1:11 that is r.e.d. with ECN enabled
+# 	command = "tc qdisc add dev %s parent 1:11 handle 2: red limit 1000000 min 30000 max 35000 avpkt 1500 burst 20 bandwidth %smbit probability 1 ecn" % ( interface, switchPortSpeed )
+# 	commandReturns = host.cmd( command )
+
+# 	# add class to root qdisc with id 1:12 with htb with the ceiling given as an argument
+# 	# with the lowest priority.This is the WC flow, so it does not have a rate limit!!!!!!!!
+# 	command = "tc class add dev %s parent 1:1 classid 1:12 htb rate 0.1kbit ceil %smbit prio 1" % ( interface, switchPortSpeed )
+# 	commandReturns = host.cmd( command )
+
+# 	# create a filter for root class that matches all tcp protocols with tos of 0, send it to flow 1:11
+# 	# this filters all BwG tcp packets into class 1:11
+# 	command = "tc filter add dev %s parent 1: protocol ip prio 0 u32 match ip protocol 0x06 0xff match ip tos 0x00 0xff flowid 1:11" % interface
+# 	commandReturns = host.cmd( command )
+
+# 	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
+# 	# this filters all WC tcp packets into class 1:12
+# 	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x38 0xff flowid 1:12" % interface
+# 	commandReturns = host.cmd( command )
+
+# 	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
+# 	# this filters all WC tcp packets into class 1:12
+# 	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x39 0xff flowid 1:12" % interface
+# 	commandReturns = host.cmd( command )
+
+# 	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
+# 	# this filters all WC tcp packets into class 1:12
+# 	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x3A 0xff flowid 1:12" % interface
+# 	commandReturns = host.cmd( command )
+
+# 	# create a filter for root class that matches all tcp protocols with tos of 0x38, send it to flow 1:12
+# 	# this filters all WC tcp packets into class 1:12
+# 	command = "tc filter add dev %s parent 1: protocol ip prio 1 u32 match ip protocol 0x06 0xff match ip tos 0x3B 0xff flowid 1:12" % interface
+# 	commandReturns = host.cmd( command )
+
+# 	return commandReturns

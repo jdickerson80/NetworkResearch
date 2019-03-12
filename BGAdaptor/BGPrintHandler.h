@@ -1,14 +1,14 @@
-#ifndef PRINTHANDLER_H
-#define PRINTHANDLER_H
+#ifndef BGPRINTHANDLER_H
+#define BGPRINTHANDLER_H
 
 #include <stdio.h>
 
-//#define ALLOWPRINTING
+#define ALLOWPRINTING
 
 #if defined( ALLOWPRINTING )
 	#define PRINT( format, args... ) fprintf( stdout, format, ##args );
 #else
-	#define PRINT( format, args... );
+#define PRINT( format, args... );
 #endif
 
 #endif // PRINTHANDLER_H

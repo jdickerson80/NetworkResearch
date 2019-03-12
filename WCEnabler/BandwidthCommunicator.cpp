@@ -96,6 +96,7 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 		/// @todo add checking of address to make sure it is coming from BGAdaptor
 		/// instead of some random sender
 
+		printf("%u\n", localBandwidthGuarantee );
 		// check for error
 		if ( receiveLength != bandwidthLength )
 		{

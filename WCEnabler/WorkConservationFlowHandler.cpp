@@ -4,13 +4,15 @@
 #include <sstream>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "BandwidthValues.h"
 #include "LoggingHandler.h"
 #include "Macros.h"
 #include "ThreadHelper.h"
+#include "WCPrintHandler.h"
 
-//#define ModifyIPLink ( 1 )
+#define ModifyIPLink ( 1 )
 namespace WCEnabler {
 WorkConservationFlowHandler::WorkConservationFlowHandler(const std::string& interface
 		, float beta
@@ -28,7 +30,7 @@ WorkConservationFlowHandler::WorkConservationFlowHandler(const std::string& inte
 	// init the stream
 	std::ostringstream stream1;
 	std::ostringstream stream2;
-
+	_interface = const_cast<char*>(interface.c_str());
 	// stream the multipath off command
 	stream1 << "ip link set dev " << interface << " multipath off &> /dev/null";
 	_multipathBackupCommand = stream1.str();
@@ -60,16 +62,66 @@ WorkConservationFlowHandler::FlowState::Enum WorkConservationFlowHandler::curren
 
 void WorkConservationFlowHandler::setWCSubFlowEnabled( bool isEnabled )
 {
-#if defined ( ModifyIPLink )
+//	pid_t pid;
+//	int    status;
+//	if ( ( pid = fork() ) == -1 )
+//	{
+//		// print the error
+//		printf( "%s", "Fork failed, exiting\n " );
+//	}
+
+//	// is this the child
+//	else if ( pid == 0 )
+//	{
+//		const char* command = "ip link set dev";
+//		char* argv[ 8 ];
+//		argv[ 0 ] = "ip";
+//		argv[ 1 ] = "link";
+//		argv[ 2 ] = "set";
+//		argv[ 3 ] = "dev";
+//		argv[ 4 ] = _interface;
+//		argv[ 5 ] = "multipath";
+////	#if defined ( ModifyIPLink )
+//		if ( isEnabled )
+//		{
+//			argv[ 6 ] = "on";
+//		}
+//		else
+//		{
+//			argv[ 6 ] = "off";
+//		}
+
+//		argv[ 7 ] = "\0";
+//		for ( size_t i = 0; i < 7; ++i)
+//		{
+//			printf( "%s, ", argv[ i ]);
+
+//		}
+
+//		if (execvp( command, argv ) < 0) {     /* execute the command  */
+//					   printf("*** ERROR: exec failed\n");
+//					   exit(1);
+//				  }
+//	}
+//	else
+//	{
+//		while (wait(&status) != pid);
+//		printf("LEFT\n");
+//	}
+
+//	printf("Parent pid = %d\n", getpid());
+//	printf("Child pid = %d\n", pid);
 	if ( isEnabled )
 	{
+		PRINT("turning on mptcp\n");
 		system( _multipathNonBackupCommand.c_str() );
 	}
 	else
 	{
+		PRINT("turning on mptcp\n");
 		system( _multipathBackupCommand.c_str() );
 	}
-#endif
+//#endif
 }
 
 std::string WorkConservationFlowHandler::stateToString( FlowState::Enum currentState )
@@ -128,7 +180,7 @@ void WorkConservationFlowHandler::setState( FlowState::Enum flowState )
 		break;
 	}
 
-	_logger->log( stateToString( _currentState ) );
+//	_logger->log( stateToString( _currentState ) );
 }
 
 bool WorkConservationFlowHandler::vmLevelCheck( float bandwidthGuarantee )
@@ -213,8 +265,7 @@ void* WorkConservationFlowHandler::updateWorkConservation( void* input )
 		usleep( 250000 );
 	}
 
-	pthread_exit( NULL );
-	return NULL;
+	pthread_exit( nullptr );
 }
 
 } // namespace WCEnabler

@@ -160,7 +160,7 @@ class MapReduceScheduler( object ):
 			if re.search( ".csv", f ):
 				os.system( "chmod 666 %s/%s" % ( outputDirectory, f ) )
 
-	def __processJobs( self, workFile, maximumJobsPerTest ):
+	def __processJobs( self, workFile, maximumJobsPerTest, outputDirectory ):
 		"""
 		Compute the proper values from the work file
 		"""
@@ -170,7 +170,8 @@ class MapReduceScheduler( object ):
 		# for each job in the file
 		for job in workFile:
 			if len ( self.workQueue )  >= maximumJobsPerTest:
-				# print "MAX JOBS REACHED!!!!"
+				with open('%slastJob.txt' % ( outputDirectory ), 'w' ) as f:
+					f.write( "%s\n" % ( self.workQueue[ len ( self.workQueue ) - 1 ] ) )
 				break
 
 			# split line by tabs
@@ -277,11 +278,13 @@ class MapReduceScheduler( object ):
 		except IOError as error:
 			raise LookupError( "Caching work file failed." )
 
+		self.clearTestFolder( outputDirectory )
+
 		# preprocess the job list
 		self.__preprocessJobList( data )
 		# add the jobs to the queue
 
-		self.__processJobs( data, maximumJobsPerTest )
+		self.__processJobs( data, maximumJobsPerTest, outputDirectory )
 		
 		if len ( self.workQueue ) == True:
 			self.terminate()
@@ -293,7 +296,6 @@ class MapReduceScheduler( object ):
 		currentJob = []
 		counter = 0
 
-		self.clearTestFolder( outputDirectory )
 
 		self.clearHostsBandwidthLogs()
 
@@ -406,7 +408,6 @@ class MapReduceScheduler( object ):
 		JSONParser.logTestResults( self.jobStats, outputDirectory, self.hostList )
 		JSONParser.logIperfResults( outputDirectory, self.jobStats )
 		JSONParser.logPerJobResults( outputDirectory )
-
 
 		# log all of the job stats
 		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:

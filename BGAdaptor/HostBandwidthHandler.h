@@ -1,10 +1,12 @@
-#ifndef HANDLEHOSTBANDWIDTH_H
-#define HANDLEHOSTBANDWIDTH_H
+#ifndef HOSTBANDWIDTHHANDLER_H
+#define HOSTBANDWIDTHHANDLER_H
 
 #include <arpa/inet.h>
 #include <atomic>
 #include <map>
 #include <pthread.h>
+
+#include "BandwidthGuaranteeHost.h"
 
 // Forward declarations
 namespace Common {
@@ -16,43 +18,27 @@ namespace BGAdaptor {
  * @brief	The HandleHostBandwidth class handles all of the hosts bandwidth. This class collects and stores
  *			each hosts bandwidth. Then, calculates each VM's bandwidth limit and sends it to the VM.
  */
-class HandleHostBandwidth
+class HostBandwidthHandler
 {
-private:
+public:
 
-	/**
-	 * @brief The HostBandwidthStatistics struct holds statistics of each VM
-	 */
-	struct HostBandwidthStatistics
-	{
-		std::atomic_uint demand;
-		std::atomic_uint guarantee;
-		std::atomic_uint lastDemand;
-		std::atomic_uint lastGuarantee;
-		sockaddr_in address;
-
-		HostBandwidthStatistics()
-			: demand( 0 )
-			, guarantee( 0 )
-			, lastDemand( 0 )
-			, lastGuarantee( 0 )
-		{}
-	};
+	typedef std::map< in_addr_t, BandwidthGuaranteeHost > BandwidthMap;
 
 private:
 
-	typedef std::map< in_addr_t, HostBandwidthStatistics > BandwidthMap;
-
-	std::atomic_bool _incomingBandwidthRunning;
-	std::atomic_bool _outgoingBandwidthRunning;
-	Common::LoggingHandler* _incomingBandwidthlogger;
-	Common::LoggingHandler* _outgoingBandwidthlogger;
-	unsigned int _totalBandwidth;
 	BandwidthMap _bandwidthMap;
+	uint _dynamicAllocation;
+	std::atomic_bool _incomingBandwidthRunning;
+	unsigned int _numberOfHosts;
+	std::atomic_bool _outgoingBandwidthRunning;
+	unsigned int _totalBandwidth;
 	int _socketFileDescriptor;
 	sockaddr_in _localAddresses;
 	pthread_t _receiveThread;
 	pthread_t _sendThread;
+
+	Common::LoggingHandler* _incomingBandwidthlogger;
+	Common::LoggingHandler* _outgoingBandwidthlogger;
 
 public:
 
@@ -60,9 +46,9 @@ public:
 	 * @brief HandleHostBandwidth constructor
 	 * @param totalBandwidth total bandwidth of the tenant
 	 */
-	HandleHostBandwidth( unsigned int totalBandwidth );
+	HostBandwidthHandler( uint totalBandwidth, uint dynamicAllocation, uint numberOfHost );
 
-	~HandleHostBandwidth();
+	~HostBandwidthHandler();
 
 private:
 
@@ -84,8 +70,9 @@ private:
 	 * @brief calculateHostBandwidth methods calculates each VMs bandwidth limit
 	 * @param hostStatistics pointer to the bandwidth statistics
 	 */
-	void calculateHostBandwidth( HostBandwidthStatistics* hostStatistics );
+	void calculateHostBandwidth( BandwidthGuaranteeHost* hostStatistics );
 };
 
 } // namespace BGAdaptor
-#endif // HANDLEHOSTBANDWIDTH_H
+
+#endif // HOSTBANDWIDTHHANDLER_H

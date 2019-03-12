@@ -5,7 +5,10 @@
 
 #include <stdio.h>
 
-#include "HandleHostBandwidth.h"
+#include "BGPrintHandler.h"
+#include "CommandLineArgumentParser.h"
+#include "HostBandwidthHandler.h"
+
 using namespace std;
 
 static bool isRunning = true;
@@ -27,9 +30,9 @@ int main( int argc, char* argv[] )
 		exit( EXIT_FAILURE );
 	}
 
-	if ( argc != 2 )
+	if ( argc != 7 )
 	{
-		perror( "You must give the tenant's total bandwidth in kilobytes as a command line argument. Exiting.\n" );
+		CommandLineArgumentParser::printUsage();
 		exit( EXIT_FAILURE );
 	}
 
@@ -37,13 +40,26 @@ int main( int argc, char* argv[] )
 	signal( SIGTERM, signalHandler );
 
 	setlocale( LC_ALL, "" );
+	uint numberOfHosts = 0;
+	uint bandwidthGuarantee = 0;
+	uint dynamicAllocation = 0;
 
-	BGAdaptor::HandleHostBandwidth hostBandwidth( atoi( argv[ 1 ] ) );
+	CommandLineArgumentParser::parseCommandLineArgument( argc, argv, &dynamicAllocation, &numberOfHosts, &bandwidthGuarantee );
+
+	if ( !numberOfHosts || !bandwidthGuarantee )
+	{
+		CommandLineArgumentParser::printUsage();
+		exit( EXIT_FAILURE );
+	}
+
+	BGAdaptor::HostBandwidthHandler handler( bandwidthGuarantee, dynamicAllocation, numberOfHosts );
 
 	while ( isRunning )
 	{
 		sleep( 1 );
 	}
+
+	handler.~HostBandwidthHandler();
 
 	exit( EXIT_SUCCESS );
 }
@@ -53,17 +69,17 @@ void signalHandler( int signal )
 	switch ( signal )
 	{
 	case SIGINT:
-		printf( "Caught Ctrl + C\r\n" );
+		PRINT( "Caught Ctrl + C\r\n" );
 		isRunning = false;
 		break;
 
 	case SIGTERM:
-		printf( "Caught Terminate\r\n" );
+		PRINT( "Caught Terminate\r\n" );
 		isRunning = false;
 		break;
 
 	default:
-		printf( "In default signal\n" );
+		PRINT( "In default signal\n" );
 		break;
 	}
 }

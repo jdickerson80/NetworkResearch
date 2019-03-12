@@ -36,20 +36,6 @@ public:
 	static void setEgressBandwidth( const std::string& interface, const int desiredBandwidth );
 
 	/**
-	 * @brief setIgressBandwidth
-	 * @param interface to limit the incoming rate
-	 * @param desiredBandwidth in megabits
-	 */
-	static void setIgressBandwidth( const std::string& interface, const std::string& desiredBandwidth );
-
-	/**
-	 * @brief setIgressBandwidth
-	 * @param interface to limit the incoming rate
-	 * @param desiredBandwidth in megabits
-	 */
-	static void setIgressBandwidth( const std::string& interface, const int desiredBandwidth );
-
-	/**
 	 * @brief clearTCCommands clears the current tc settings
 	 * @param interface to limit the incoming rate
 	 */
