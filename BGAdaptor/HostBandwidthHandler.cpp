@@ -13,7 +13,9 @@
 #include "LoggerFactory.h"
 #include "ThreadHelper.h"
 
-//#define LogPackets ( 1 )
+#define LogPackets ( 1 )
+#define LogBufferSize ( 1024 )
+
 namespace BGAdaptor {
 
 HostBandwidthHandler::HostBandwidthHandler( uint totalBandwidth, uint dynamicAllocation, uint numberOfHost )
@@ -60,6 +62,9 @@ HostBandwidthHandler::~HostBandwidthHandler()
 	_incomingBandwidthRunning = false;
 	_outgoingBandwidthRunning = false;
 
+	delete _incomingBandwidthlogger;
+	delete _outgoingBandwidthlogger;
+
 	close( _socketFileDescriptor );
 	pthread_join( _receiveThread, nullptr );
 	pthread_join( _sendThread, nullptr );
@@ -80,6 +85,7 @@ void* HostBandwidthHandler::handleHostsIncomingBandwidth( void* input )
 	inet_aton( "127.0.0.1", &loopBack );
 #if defined( LogPackets )
 	Common::LoggingHandler* logger = bandwidthManager->_incomingBandwidthlogger;
+	char logBuffer[ LogBufferSize ];
 #endif
 
 	while ( threadRunning.load() )
@@ -112,11 +118,12 @@ void* HostBandwidthHandler::handleHostsIncomingBandwidth( void* input )
 
 #if defined( LogPackets )
 		// create the stream
-		std::ostringstream stream;
-		stream << inet_ntoa( receiveAddress.sin_addr ) << " " << bandwidth << "\n";
+		snprintf( logBuffer, LogBufferSize, "%s, %u\n"
+				  , inet_ntoa( receiveAddress.sin_addr )
+				  , bandwidth );
 
 		// log the bandwidth limit
-		logger->log( stream.str() );
+		logger->log( logBuffer );
 #endif
 	}
 
@@ -136,7 +143,7 @@ void* HostBandwidthHandler::handleHostsOutgoingBandwidth( void* input )
 
 #if defined( LogPackets )
 	Common::LoggingHandler* logger = bandwidthManager->_outgoingBandwidthlogger;
-	std::stringstream stream;
+	char logBuffer[ LogBufferSize ];
 #endif
 
 //	unsigned int rate = 1000;
@@ -146,13 +153,34 @@ void* HostBandwidthHandler::handleHostsOutgoingBandwidth( void* input )
 	int totalBandwidthContribution;
 	int perHostDonation = 0;
 
+	snprintf( logBuffer, LogBufferSize, "%s", "STARTING\n" );
+
+	// log the bandwidth limit
+	logger->log( logBuffer );
+
 	while ( bandwidthMap.size() != bandwidthManager->_numberOfHosts )
 	{
-		PRINT("WAITING %lu\n", bandwidthMap.size() );
+#if defined( LogPackets )
+		snprintf( logBuffer, LogBufferSize, "%s %lu\n"
+				  , "WAITING"
+				  , bandwidthMap.size() );
+
+		// log the bandwidth limit
+		logger->log( logBuffer );
+#endif
+		PRINT("WAITING!!!! %lu\n", bandwidthMap.size() );
 		usleep( 500000 );
 	}
 
-	PRINT("GOT ALL HOSTS\n");
+#if defined( LogPackets )
+	snprintf( logBuffer, sizeof( "GOT ALL HOSTS\n" ), "%s"
+			  , "GOT ALL HOSTS\n" );
+
+	// log the bandwidth limit
+	logger->log( logBuffer );
+#endif
+
+	PRINT( "GOT ALL HOSTS\n" );
 
 	for ( BandwidthMap::iterator it = bandwidthMap.begin(); it != bandwidthMap.end(); ++it )
 	{
@@ -165,35 +193,51 @@ void* HostBandwidthHandler::handleHostsOutgoingBandwidth( void* input )
 
 	if ( !bandwidthManager->_dynamicAllocation )
 	{
+#if defined( LogPackets )
+		snprintf( logBuffer, sizeof( "Dynamic exit\n" ), "%s\n"
+				  , "Dynamic exit\n" );
+
+		// log the bandwidth limit
+		logger->log( logBuffer );
+#endif
 		PRINT("Dynamic exit\n");
 		pthread_exit( nullptr );
 	}
 
+	// since we are running dynamic guarantee, run the thread loop
 	while ( threadRunning.load() )
 	{
+		// clear bandwidth contribution
 		totalBandwidthContribution = 0;
+
+		// loop through the hosts
 		for ( BandwidthMap::iterator it = bandwidthMap.begin(); it != bandwidthMap.end(); ++it )
 		{
+			// get the delta
 			delta = it->second.delta().load();
 
-			if ( delta < 0 ) // receiver
+			// if the delta is negative
+			if ( delta < 0 )
 			{
+				// add the host to the receivers, because demand is > than limit
 				bandwidthReceivers.push_back( &it->second );
-//				PRINT("adding a receiver\n");
 			}
-			else if ( delta > 1000 )
+			else if ( delta > 1000 ) // delta is positive and greater than a safety factor
 			{
+				// add the delta to the contribution
 				totalBandwidthContribution += delta;
+
+				// add the node to the donor list
 				bandwidthDonors.push_back( &it->second );
-//				PRINT("adding a donor\n");
 			}
 		}
 
+		// if there are no donors or receivers or nothing to contribute
 		if ( !bandwidthDonors.size() || !bandwidthReceivers.size() || totalBandwidthContribution <= 0 )
 		{
+			// clear the list, go to sleep, repeat
 			bandwidthDonors.clear();
 			bandwidthReceivers.clear();
-//			PRINT("CONT!!!!!\n");
 			usleep( 500000 );
 			continue;
 		}
@@ -201,36 +245,38 @@ void* HostBandwidthHandler::handleHostsOutgoingBandwidth( void* input )
 		// more donors than receivers
 		if ( bandwidthDonors.size() >= bandwidthReceivers.size() )
 		{
+			// since there are more donors than receivers, we can divide the donations by the donors,
+			// ensuring we take the bandwidth evenly between donors
 			perHostDonation = totalBandwidthContribution / static_cast< int >( bandwidthDonors.size() );
-			PRINT("!!!!!!!!!!!!!!!!!!!!!!!!!!donor > receiver %i\n", perHostDonation );
 
+			// set the new guarantee, which is just the guarantee - the perHostDonation
 			for ( BandwidthGuaranteeVector::iterator it = bandwidthDonors.begin(); it != bandwidthDonors.end(); ++it )
 			{
 				(*it)->setGuarantee( (*it)->guarantee() - (int)perHostDonation );
-				PRINT("donors %s sent %u\n", inet_ntoa( (*it)->address().sin_addr ), (*it)->guarantee().load() );
+//				PRINT("donors %s sent %u\n", inet_ntoa( (*it)->address().sin_addr ), (*it)->guarantee().load() );
 			}
 		}
 		else // more receivers than donors
 		{
+
 			for ( BandwidthGuaranteeVector::iterator it = bandwidthDonors.begin(); it != bandwidthDonors.end(); ++it )
 			{
 				(*it)->setGuarantee( (*it)->demand().load() );
-//				PRINT("donors %s sent %u\n", inet_ntoa( (*it)->address().sin_addr ), (*it)->guarantee().load() );
 			}
 		}
 
-		PRINT("total %u per host %u\n", totalBandwidthContribution, perHostDonation );
+//		PRINT("total %u per host %u\n", totalBandwidthContribution, perHostDonation );
 		perHostDonation = totalBandwidthContribution / static_cast< int >( bandwidthReceivers.size() );
 
 		for ( BandwidthGuaranteeVector::iterator it = bandwidthReceivers.begin(); it != bandwidthReceivers.end(); ++it )
 		{
+			// since there are more donors than receivers, we can divide the donations by the donors,
+			// ensuring we take the bandwidth evenly between donors
 			(*it)->setGuarantee( (*it)->guarantee() + static_cast< int >( perHostDonation ) );
-//			PRINT("rec %s sent %u\n", inet_ntoa( (*it)->address().sin_addr ), (*it)->guarantee().load() );
 		}
 
 		for ( BandwidthMap::iterator it = bandwidthMap.begin(); it != bandwidthMap.end(); ++it )
 		{
-			PRINT("%s sent %u\n", inet_ntoa( it->second.address().sin_addr ), it->second.guarantee().load() );
 			if ( sendto( bandwidthManager->_socketFileDescriptor, &it->second.guarantee(), rateSize, 0, (sockaddr*)&it->second.address(), size ) <= 0 )
 			{
 				PRINT( "Send failed with %s\n", strerror( errno ) );

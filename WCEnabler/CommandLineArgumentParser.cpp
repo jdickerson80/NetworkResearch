@@ -3,6 +3,8 @@
 #include <getopt.h>
 #include <stdio.h>
 
+#include "WCPrintHandler.h"
+
 using namespace std;
 
 static char usage[] = \
@@ -30,7 +32,7 @@ std::string CommandLineArgumentParser::parseCommandLineArgument( int argc, char*
 		{
 		case UsageArguments::BGAdaptorAddress:
 			bgAdaptorRate = optarg;
-			printf("%s\n", optarg );
+			PRINT("%s\n", optarg );
 			break;
 		}
 	}

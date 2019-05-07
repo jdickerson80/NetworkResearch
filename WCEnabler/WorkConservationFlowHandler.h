@@ -51,7 +51,7 @@ private:
 	typedef Common::Math::ExponentialSmoothingCalculator< float, float > RateCalculator;
 
 private:
-
+#define LogBuffer ( 1024 )
 	float _beta;
 	float _safetyFactor;
 	std::atomic_bool _updateThreadRunning;
@@ -63,6 +63,7 @@ private:
 	std::string _multipathBackupCommand;
 	std::string _multipathNonBackupCommand;
 	Common::LoggingHandler* _logger;
+	char _logBuffer[ LogBuffer ];
 
 	char* _interface;
 public:
@@ -93,7 +94,7 @@ public:
 	 * @param currentState current state
 	 * @return current state as a string
 	 */
-	static std::string stateToString( FlowState::Enum currentState );
+	static char* stateToString( FlowState::Enum currentState );
 
 private:
 

@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-//#define ALLOWPRINTING
+#define ALLOWPRINTING
 
 #if defined( ALLOWPRINTING )
 	#define PRINT( format, args... ) fprintf( stdout, format, ##args );

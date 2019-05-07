@@ -140,16 +140,8 @@ class JSONParser( object ):
 						jsonObject = json.load( file )
 						try:
 							totalBandwidth += jsonObject[ 'end' ][ 'sum_sent' ][ 'bits_per_second' ]	
-						except KeyError as k:
-							print "logPerJobResults %s" % k
-
-						try:
+							totalCompletionTime += jsonObject[ 'end' ][ 'sum_sent' ][ 'seconds' ]	
 							perJobDataTransfer = jsonObject[ 'start' ][ 'test_start' ][ 'bytes' ]	
-						except KeyError as k:
-							print "logPerJobResults %s" % k
-
-						try:
-							totalCompletionTime += jsonObject[ 'end' ][ 'sum_received' ][ 'seconds' ]	
 						except KeyError as k:
 							print "logPerJobResults %s" % k
 						
@@ -161,9 +153,14 @@ class JSONParser( object ):
 			results.append( [ job, totalHost, perJobDataTransfer, totalCompletionTime / totalHost, totalBandwidth / totalHost ] )
 
 		with open('%sResults.csv' % jobDirectory, 'w' ) as f:
-			f.write( "Job,Host,PerJobDataTransfer,Avg Completion Time,Avg Bandwidth (bits/sec),Avg Bandwidth (bytes/sec)\n")
+			f.write( "Job,Host,PerJobDataTransfer,Avg Completion Time,Avg Bandwidth (bits/sec),Avg Bandwidth (bytes/sec),CalculatedRate (bits/sec)\n")
 			for r in results:
-				f.write( "%s,%s,%s,%s,%s,%s\n" % ( r[0], r[1], r[2], r[3], r[4], float( r[4] ) / 8.0 ) )
+				try:
+					f.write( "%s,%s,%s,%s,%s,%f,%f\n" % ( r[0], r[1], r[2], r[3], r[4], float( r[4] / 8.0 ), float( ( r[2] / r[3] ) * 8.0 ) ) )
+				except ZeroDivisionError as z:
+					print "%s" % z
+					f.write( "%s,%s,%s,%s,%s,%f,%f\n" % ( r[0], r[1], r[2], r[3], r[4], float( r[4] / 8.0 ), 0 ) ) 
+
 	
 	@staticmethod
 	def fillIperfResults( results, jsonObject, whatResults ):

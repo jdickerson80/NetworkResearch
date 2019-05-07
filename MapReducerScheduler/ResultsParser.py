@@ -2,8 +2,9 @@
 
 import argparse
 import os
+import sys
 
-from JSONParser import *
+from IperfResultsParser import *
 
 def parseCommandLineArgument():
 	parser = argparse.ArgumentParser( description="Results Parser" )
@@ -22,4 +23,5 @@ if __name__ == '__main__':
 		sys.exit()
 	arguments = parseCommandLineArgument()
 
-	JSONParser.logPerJobResults( arguments.directory )
+#	job = IperfResultsParser.getJobStatFromFile( arguments.directory )
+	IperfResultsParser.logPerJobResults( arguments.directory )

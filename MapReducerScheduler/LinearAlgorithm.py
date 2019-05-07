@@ -1,24 +1,28 @@
 #!/usr/bin/python
 
+class Range( object ):
+	def __init__( self, low, high ):
+		self.low = float( low )
+		self.high = float( high )
+		self.range = self.high - self.low
+
 class LinearAlgorithm( object ):
-	def __init__( self, startingX, endingX, startingY, endingY ):
-		self.startingX = float( startingX )
-		self.endingX = float( endingX )
-		self.startingY = float( startingY )
-		self.endingY = float( endingY )
-		self.slope = ( self.endingX - self.endingY ) / ( self.startingX - self.startingY )
-		self.yintercept = self.endingX - ( self.slope * self.startingX )
+	def __init__( self, xRange, yRange ):
+		self.numerator = yRange.range
+		self.denominator = xRange.range
+		self.yintercept = -xRange.low * self.numerator / self.denominator + yRange.low
+		print yRange.range, xRange.range, self.yintercept
 
 	def __str__( self ):
-		return "slope %f yintercept %s start x %s ending x %s start y %s ending y %s" % ( self.slope, self.yintercept, self.startingX, self.endingX, self.startingY, self.endingY )
+		return "numerator %f denominator %f y intercept %f" % ( self.numerator, self.denominator, self.yintercept )
 
 	def yFromX( self, x ):
-		return ( x * self.slope ) + self.yintercept
+		return int( x * self.numerator / self.denominator + self.yintercept )
 
 
 if __name__ == '__main__':
-	line = LinearAlgorithm( 4000, 20000, 0, 1000 )
+	line = LinearAlgorithm( Range( 4000, 20000 ), Range( 0, 1000 ) )
 	print line
 
-	for i in xrange( 4000, 4500 ):
-		print "%s %s" % ( i, line.yFromX( i ) )
+	for i in xrange( 4000, 5000 ):
+		print "%i %f" % ( i, line.yFromX( i ) )

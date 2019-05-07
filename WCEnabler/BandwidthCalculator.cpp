@@ -10,10 +10,10 @@
 #include <unistd.h>
 
 #include "BandwidthValues.h"
-#include "PrintHandler.h"
 #include "LoggingHandler.h"
 #include "Macros.h"
 #include "ThreadHelper.h"
+#include "WCPrintHandler.h"
 
 // macros to avoid "magic numbers"
 #define BufferSize ( 1024 )
@@ -22,7 +22,7 @@
 #define PacketBufferSize ( 65536 )
 
 #define BandwidthGuaranteeLine ( 1 )
-#define WorkConservationLine ( 12 )
+#define WorkConservationLine ( 13 )
 
 #define StatisticTCCommand ( "tc -s class show dev " )
 
@@ -110,6 +110,15 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 	// while the thread should run
 	while ( threadRunning.load() )
 	{
+		// if there is already an ecn, just continue
+		if ( ecn.load() )
+		{
+			// sleep for a second
+			usleep( 25000 );
+			continue;
+		}
+
+		// receive the BG Adaptor's rate
 		dataSize = recvfrom( bandwidthCalculator->_socketFileDescriptor
 							 , packetBuffer
 							 , PacketBufferSize
@@ -122,12 +131,6 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 		{
 			// log the error and continue
 			logger->log( strerror( errno ) );
-			continue;
-		}
-
-		// if there is already an ecn, just continue
-		if ( ecn.load() )
-		{
 			continue;
 		}
 
@@ -162,12 +165,39 @@ void* BandwidthCalculator::handlePacketSniffing( void* input )
 #endif
 	}
 
-	pthread_exit( NULL );
-	return NULL;
+	pthread_exit( nullptr );
+}
+
+unsigned int BandwidthCalculator::findValueAfterCharacter( char* buffer, const char deliminatingCharacter, size_t startLoopPosition )
+{
+#define BuffSize ( 10 )
+	// init variables
+	char loopBuffer[ BuffSize ] = {'\0'};
+	size_t loopVariable = 0;
+
+	// skip the space at the beginning of the line
+	++startLoopPosition;
+
+	// find the deliminating character
+	while ( buffer[ ++startLoopPosition ] != deliminatingCharacter )
+	{}
+
+	// decrement one, since it is a post fix ++ above
+//	--startLoopPosition;
+
+	// add all non-spaces to the integer
+	while ( buffer[ ++startLoopPosition ] != ' ' )
+	{
+		loopBuffer[ loopVariable++ ] = buffer[ startLoopPosition ];
+	}
+
+	// cast the buffer to a uint data type
+	return static_cast< uint >( atoi( loopBuffer ) );
 }
 
 void* BandwidthCalculator::handleRateCalculation( void* input )
 {
+#define TCFileSize ( 673 )
 	// init the variables
 	BandwidthCalculator* bandwidthCalculator = static_cast< BandwidthCalculator* >( input );
 	std::atomic_bool& threadRunning = bandwidthCalculator->_calculationThreadRunning;
@@ -202,116 +232,90 @@ void* BandwidthCalculator::handleRateCalculation( void* input )
 		close( fileDescriptor );
 
 		// error check
-		if ( bytesRead <= 300 )
+		if ( bytesRead < TCFileSize )
 		{
+			PRINT("CONT!!!\n");
+			// sleep for a second
+			usleep( 125000 );
 			continue;
 		}
 
 		// parse the file
-		bandwidthCalculator->parseTCFile( buffer, bytesRead );
+		bandwidthCalculator->parseTCFile( buffer );
 
 		// sleep for a second
 		usleep( 250000 );
 	}
 
-	pthread_exit( NULL );
-	return NULL;
+	pthread_exit( nullptr );
 }
 
-void BandwidthCalculator::parseTCFile( char* buffer, unsigned int bufferSize )
+void BandwidthCalculator::parseTCFile( char* buffer )
 {
-#define NewlineCharacter ( 1 )
-#define MovePastSent ( 6 )
-#define TotalOffset ( NewlineCharacter + MovePastSent )
 #define IntBufferSize ( 10 )
-	size_t bufferIndex;
-	char intBuffer[ IntBufferSize ];
-	unsigned int numberOfNewLines = 0;
-	unsigned int tempBandwidth = 0;
-
+#define BWGNewLineOffset ( 0 )
+#define WCNewLineOffset ( 10 )
+#define WCFlowID ( 12 )
+#define BWGFlowID ( 11 )
 	std::atomic_uint& bandwidthGuaranteeRate = _bandwidthValues->bandwidthGuaranteeRate;
 	std::atomic_uint& totalRate = _bandwidthValues->totalRate;
 	std::atomic_uint& workConservingRate = _bandwidthValues->workConservingRate;
+	size_t loop = 0;
+	unsigned int tempBandwidth = 0;
 
-	// loop through the buffer
-	for ( size_t loop = 0; loop < bufferSize; ++loop )
+	int newLineCounter = 0;
+
+	while ( newLineCounter != BWGNewLineOffset )
 	{
-		// if there is a new line
-		if ( buffer[ loop ] == '\n' )
-		{
-			// increment the variable
-			++numberOfNewLines;
-
-			// if this is the bandwidth guarantee or work conservation line
-			if ( numberOfNewLines == BandwidthGuaranteeLine || numberOfNewLines == WorkConservationLine )
-			{
-				// clear the index
-				bufferIndex = 0;
-
-				// add the \n and offset to account for the sent
-				loop += TotalOffset;
-
-				// while the buffer does not contain a space
-				while ( buffer[ loop ] != ' ' )
-				{
-					if ( bufferIndex >= IntBufferSize )
-					{
-						break;
-					}
-
-					// add the character to the buffer
-					intBuffer[ bufferIndex++ ] = buffer[ loop ];
-
-					// increment the variable
-					loop++;
-				}
-
-				// convert the characters into an integer
-				tempBandwidth = (uint) atoi( intBuffer );
-
-				// convert it from bytes to bits
-				tempBandwidth *= 8;
-
-				// if this is the bandwidth guarantee line
-				if ( numberOfNewLines == BandwidthGuaranteeLine )
-				{
-					// set the counter equal to the temp bandwidth
-					_bandwidthGuaranteeCounter = tempBandwidth;
-
-					// calculate the rate
-					tempBandwidth = _bandwidthGuaranteeRateCalculator.calculateRate( _bandwidthGuaranteeCounter.load( ) );
-
-					// set it equal to temp variable
-					bandwidthGuaranteeRate = tempBandwidth;
-				}
-				// if this is the work conservation line
-				else if ( numberOfNewLines == WorkConservationLine )
-				{
-					// set the counter equal to the temp bandwidth
-					_workConservingCounter = tempBandwidth;
-
-					// calculate the rate
-					tempBandwidth = _workConservingRateCalculator.calculateRate( _workConservingCounter.load( ) );
-
-					// set it equal to temp variable
-					workConservingRate = tempBandwidth;
-
-					// last value, so calculate total rate
-					tempBandwidth = bandwidthGuaranteeRate.load() + workConservingRate.load();
-					totalRate = tempBandwidth;
-
-					// we have what is necessary, so leave
-					break;
-				}
-			}
-		}
+		while ( buffer[ loop++ ] != '\n' );
+		++loop;
+		++newLineCounter;
 	}
 
-	PRINT("bwg %u wc %u tot %u\n"
+	if ( findValueAfterCharacter( buffer, ':', loop ) == BWGFlowID )
+	{
+		while ( buffer[ loop++ ] != '\n' );
+		++loop;
+		++newLineCounter;
+		_bandwidthGuaranteeCounter = findValueAfterCharacter( buffer, ' ', ++loop );
+	}
+
+	while ( newLineCounter != WCNewLineOffset )
+	{
+		while ( buffer[ loop++ ] != '\n' );
+		++loop;
+		++newLineCounter;
+	}
+
+	if ( findValueAfterCharacter( buffer, ':', loop ) == WCFlowID )
+	{
+		while ( buffer[ loop++ ] != '\n' );
+		++loop;
+		++newLineCounter;
+		_workConservingCounter = findValueAfterCharacter( buffer, ' ', ++loop );
+	}
+
+//	PRINT("%u %u ", _bandwidthGuaranteeCounter.load(), _workConservingCounter.load() );
+	// calculate the rate
+	tempBandwidth = _bandwidthGuaranteeRateCalculator.calculateRate( _bandwidthGuaranteeCounter.load( ) );
+
+	// set it equal to temp variable
+	bandwidthGuaranteeRate = tempBandwidth;
+
+	// calculate the rate
+	tempBandwidth = _workConservingRateCalculator.calculateRate( _workConservingCounter.load( ) );
+
+	// set it equal to temp variable
+	workConservingRate = tempBandwidth;
+
+	// last value, so calculate total rate
+	tempBandwidth = bandwidthGuaranteeRate.load() + workConservingRate.load();
+	totalRate = tempBandwidth;
+
+	PRINT("bwg %u\twc %u\ttot %u\n"
 		   , bandwidthGuaranteeRate.load()
 		   , workConservingRate.load()
 		   , totalRate.load() );
 }
-
 
 } // namespace WCEnabler

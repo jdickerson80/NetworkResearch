@@ -1,6 +1,7 @@
 #include "MainObject.h"
 
 #include <sstream>
+#include <string.h>
 
 #include "BandwidthCalculator.h"
 #include "BandwidthCommunicator.h"
@@ -10,6 +11,7 @@
 #include "LoggingHandler.h"
 #include "Macros.h"
 #include "WorkConservationFlowHandler.h"
+#include "WCPrintHandler.h"
 
 namespace WCEnabler {
 
@@ -21,6 +23,11 @@ MainObject::MainObject( std::string& bgAdaptorAddress )
 	Common::HelperMethods::InterfaceInfo interface = Common::HelperMethods::getInterfaceName();
 
 	_bandwidthValues = new BandwidthValues();
+	char usageName[ 100 ] = {0};
+
+//	strcat( usageName, interface.interfaceName.c_str() );
+	strcat( usageName, "BandwidthUsage" );
+	PRINT("%s\n", usageName );
 
 	// create the threads
 	_bandwidthCommunicator = new BandwidthCommunicator(
@@ -28,7 +35,7 @@ MainObject::MainObject( std::string& bgAdaptorAddress )
 				, interface.interfaceName
 				, _bandwidthValues
 				, Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthLimit", false )
-				, Common::LoggerFactory::buildLogger( interface.interfaceName, "BandwidthUsage", false ) );
+				, Common::LoggerFactory::buildLogger( interface.interfaceName, usageName, false ) );
 
 	_workConservationFlowHandler = new WorkConservationFlowHandler(
 				interface.interfaceName

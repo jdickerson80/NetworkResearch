@@ -2,9 +2,11 @@
 
 from mininet.node import *
 from JobStatistic import *
-import threading
 from FileConstants import *
+from LinearAlgorithm import *
+
 import shutil
+import threading
 import os
 import time
 import sys
@@ -13,7 +15,7 @@ class MapReduceJob( threading.Thread ):
 	"""
 	This class runs a map reduce job and logs its stats
 	"""
-	def __init__( self, jobQueue, jobStatistic, reducerManager, hostList ):
+	def __init__( self, jobQueue, jobStatistic, reducerManager, hostList, linearAlgorithm ):
 		# init the parent class
 		super( MapReduceJob, self ).__init__()
 		# grab the scheduler pipe, hosts list, and pipe list
@@ -21,17 +23,18 @@ class MapReduceJob( threading.Thread ):
 		self.reducerManager = reducerManager
 		self.hostList = hostList
 		self.jobQueue = jobQueue
+		self.converter = linearAlgorithm 
 
 	def removeHostsBandwidthLog( self, hostList ):	
 		for host in hostList:
 			hostName = "%s" % self.hostList[ host.hostName ]
 			command = "%s%s/%s" % ( FileConstants.hostBaseDirectory, hostName, FileConstants.hostBandwidthLogFile )
-			while True:			
-				try:
-					os.remove( command )
-					break
-				except os.error as error:
-					continue
+			# while True:			
+			try:
+				os.remove( command )
+			except os.error as error:
+				continue
+				# break
 				time.sleep( 0.025 )
 
 	def logHostsBandwidth( self, hostList, filePrefix ):
@@ -56,26 +59,34 @@ class MapReduceJob( threading.Thread ):
 		# get the time
 		return time.time()
 
-	def startMappers( self, mapperList, reducerList, numberOfBytesToSend, job ):
-		# get the ip address of both hosts
+	def startMappers( self, mapperList, reducerList, numberOfBytesToSend, job, bitrateInKila ):
 		numberOfBytesToSend = numberOfBytesToSend / len( mapperList )
 		mapCounter = 0
 		mappers = []
 	
 		for host in mapperList:
 			# get what port to use
+			node = self.hostList[ host.hostName ]
+			destIP = self.hostList[ reducerList[ mapCounter ].hostName ].IP()
+			if node.IP() == destIP:
+				print "%s @@@@@@@@SAME!!!!!!!!!!!!" % job
+				# continue
+
 			if reducerList[ mapCounter ].hostIndex % 2 == 0:
 				serverPort = 5001
 			else:
 				serverPort = 5002
-			node = self.hostList[ host.hostName ]
+
 			logFile = "%s%s/%s%sPort%s.log" % ( FileConstants.hostBaseDirectory, node, node, job, serverPort )
-			destIP = self.hostList[ reducerList[ mapCounter ].hostName ].IP()
-			command = "iperf3 -c %s -n %s -p %s --logfile %s --get-server-output -J 2>&1 > /dev/null" % ( destIP, numberOfBytesToSend, serverPort, logFile )
+			if bitrateInKila == None:
+				command = "iperf3 -c %s -n %s -p %s -f M --logfile %s --get-server-output 2>&1 > /dev/null" % ( destIP, numberOfBytesToSend, serverPort, logFile )
+			else:
+				command = "iperf3 -c %s -n %s -b %sK -p %s -f M --logfile %s --get-server-output 2>&1 > /dev/null" % ( destIP, numberOfBytesToSend, bitrateInKila, serverPort, logFile )
 			# print "%s %s" % ( node, command )
 			mappers.append( node.pexecNoWait( command ) )
 
 			mapCounter += 1
+			time.sleep( 0.0025 )
 
 		return mappers
 
@@ -83,29 +94,38 @@ class MapReduceJob( threading.Thread ):
 	def terminateMappers( mapperList ):
 		# print "terminating %s" % mapperList 
 		for host in mapperList:
+			# print "killing %s" % host
 			host.kill()
 			host.wait()
 
 	def killReducers( self, reducerList ):
+		# print  "terminating %s" % reducerList
 		for host in reducerList:
 			self.reducerManager.killAndRestartReducer( host.hostName, host.hostIndex )
 
-	_retryThreshold = 6
+	_retryThreshold = 4
 
 	def run( self ):
 		super( MapReduceJob, self ).run()
 		hasNoError = True
 		notComplete = True
 		retryCount = 0
-		while notComplete:
-			self.removeHostsBandwidthLog( self.jobStatistic.mapHostList )
-			sameCounter = 0
-			# print "got %s" % jobStatistic
+		if self.converter == None:
+			bitrateInKila = None
+		else:	
+			bitrateInKila = self.converter.yFromX( self.jobStatistic.bytesToSend )
 
+		self.jobStatistic.bitrate = bitrateInKila
+		
+		while notComplete:
+			self.removeHostsBandwidthLog( self.jobStatistic.mapHostList )			
+			sameCounter = 0
+	
 			hasNoError = True
 
 			self.jobStatistic.startTime = self.getTime()
-			mappers = self.startMappers( self.jobStatistic.mapHostList, self.jobStatistic.reduceHostList, self.jobStatistic.bytesToSend, self.jobStatistic.job )
+			
+			mappers = self.startMappers( self.jobStatistic.mapHostList, self.jobStatistic.reduceHostList, self.jobStatistic.bytesToSend, self.jobStatistic.job, bitrateInKila )
 			mappersLength = len( mappers )
 				
 			while True:
@@ -117,6 +137,7 @@ class MapReduceJob( threading.Thread ):
 					poll = i.poll()
 					# if there is data
 					if poll != None:
+						i.wait()
 						# print "%s got %s from %s" % ( self.jobStatistic.job, poll, count )
 						del mappers[ count ]
 						if poll != 0:
@@ -135,24 +156,26 @@ class MapReduceJob( threading.Thread ):
 					break
 				
 				if sameCounter >= 100000:
-					print "!!!!!!!SAME ERROR!!!!!!"
+					print "!!!!!!!TIMEOUT ERROR!!!!!! %s" % self.jobStatistic.job
 					hasNoError = False
 					break
 				
 				time.sleep( 0.0020 )
 
 			if hasNoError == False:
+				self.removeHostsBandwidthLog( self.jobStatistic.mapHostList )
 				retryCount += 1
 				MapReduceJob.terminateMappers( mappers )
 
+				time.sleep( 2 )
+
 				if retryCount == self._retryThreshold - 1 and self._retryThreshold > 1:
 					self.killReducers( self.jobStatistic.reduceHostList )
-
-				time.sleep( 2 )
+					time.sleep( 2 )
 				
 				if retryCount >= self._retryThreshold:
 					self.killReducers( self.jobStatistic.reduceHostList )
-					time.sleep( 1 )
+					time.sleep( 2 )
 					self.jobStatistic.endTime = 0
 					self.jobStatistic.startTime = 0		
 					# send the stat to the scheduler
@@ -167,9 +190,10 @@ class MapReduceJob( threading.Thread ):
 			# get the end end time
 			self.jobStatistic.endTime = self.getTime()
 
-			# self.logHostsBandwidth( jobStatistic.mapHostList, jobStatistic.job )
+			# self.logHostsBandwidth( self.jobStatistic.mapHostList, self.jobStatistic.job )
 			# self.logHostsBandwidth( jobStatistic.reduceHostList, jobStatistic.job )
 
+			time.sleep( 0.25 )
 			notComplete = False
 			self.jobQueue.put( self.jobStatistic )
 			# print "%s exited" % self.jobStatistic.job

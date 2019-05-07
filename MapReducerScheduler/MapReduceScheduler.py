@@ -6,8 +6,12 @@ from multiprocessing import Queue
 from Queue import Empty
 from JobStatistic import *
 from FileConstants import *
+from LinearAlgorithm import *
 from JSONParser import *
+from IperfResultsParser import *
 from HostStates import *
+
+import datetime
 import sys
 import threading
 import time
@@ -17,14 +21,15 @@ class MapReduceScheduler( object ):
 	This class handles the scheduling of the map reduce jobs. It figures out the hosts to 
 	run the job, and sends the info to the MapReduceJob to handle the running of the job.
 	"""
-	_jobLogHeader = "Job#,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,ErrorCounts,ErroredHost,BytesTransmitted,ReceiveResults(bytes duration retransmit transmissionRate),SentResults(bytes duration retransmit transmissionRate)\n"
+	_jobLogHeader = "Job#,NumberOfHosts,StartTime,EndTime,MapperHosts,ReducerHosts,BytesTransmitted,IperfBitRate\n"
 	# Bytes per host to divide up the job
 	class BytesPerHostEnum( IntEnum ):
 		BytesPerHost = 64000000
 
 	# constructor
-	def __init__( self, hostList ):
+	def __init__( self, hostList, dynamicBWG ):
 		# create the queue
+		self.dynamicBWG = dynamicBWG
 		self.workQueue = []
 		self.finishJobQueue = Queue()
 		# get the length of the hosts list, which is the number of the hosts
@@ -34,11 +39,9 @@ class MapReduceScheduler( object ):
 		# available hosts. two mappers per host
 		self.availableMapperList	= [ [ HostStates.Ready, HostStates.Ready ] for i in xrange( self.numberOfHosts ) ]
 		self.availableReducerList	= [ [ HostStates.Ready, HostStates.Ready ] for i in xrange( self.numberOfHosts ) ]
-		self.handleJobQueueThreadRunning = True
 		
 		# set the list to be updated, so the job can be scheduled
-		self.hasListBeenUpdated = True
-		self.handleJobThreadsThreadRunning = True
+		# self.hasListBeenUpdated = True
 		self.jobStats = []
 		self.jobThreads = []
 
@@ -46,24 +49,30 @@ class MapReduceScheduler( object ):
 		self.handleJobQueueThread = threading.Thread( target=self.handleJobQueue )
 
 		self.handleJobThread = threading.Thread( target=self.handleJobThreads )
+
+		self.handleJobQueueThreadRunning = False
+		self.handleJobThreadsThreadRunning = False
 		self.reducerManager = ReducerManager( hostList )
 		self.reducerManager.start()
 
-		# start the thread
-		self.handleJobQueueThread.start()
-		self.handleJobThread.start()
+		# # start the thread
+		# self.handleJobQueueThread.start()
+		# self.handleJobThread.start()
 
 	def terminate( self ):
 		"""
 		Shut down all of threads and processes	
 		"""
 		# set the pipe thread running to false to shut it down
-		self.handleJobQueueThreadRunning = False
-		self.handleJobThreadsThreadRunning = False
 
 		# join the pipe thread
-		self.handleJobQueueThread.join()
-		self.handleJobThread.join()
+		if self.handleJobQueueThreadRunning == True:
+			self.handleJobQueueThreadRunning = False
+			self.handleJobQueueThread.join()
+
+		if self.handleJobThreadsThreadRunning == True:
+			self.handleJobThreadsThreadRunning = False
+			self.handleJobThread.join()
 
 		self.reducerManager.terminate()
 		self.reducerManager.join()
@@ -72,18 +81,15 @@ class MapReduceScheduler( object ):
 		while self.handleJobThreadsThreadRunning == True or len( self.jobThreads ) > 0:
 			counter = 0
 			for thread in self.jobThreads:
-				thread.join()
-				# thread.join( 0.025 )
+				# thread.join()
+				thread.join( 0.025 )
+				if thread.isAlive():
+					counter += 1
+					continue
 				# if not thread.isAlive():
 				del( self.jobThreads[ counter ] )
 					# print "Deleted %i thread" % counter
 				counter += 1
-
-			time.sleep( 0.025 )
-
-		# time.sleep( 2 )
-
-		# print "%s %s" % ( self.handleJobThreadsThreadRunning, len( self.jobThreads ) )
 
 		print "JOB THREADS EXITED"
 			
@@ -97,12 +103,10 @@ class MapReduceScheduler( object ):
 			# loop through the job pipes
 
 			try:
-				jobStatistic = self.finishJobQueue.get( block=True, timeout=0.1 )
+				jobStatistic = self.finishJobQueue.get( block=True, timeout=0.025 )
 			except Empty:
-				# print "%s Queue!!!!" % Empty
 				continue
-			# print "before %s" % self.availableMapperList
-
+	
 			# set all the hosts back to available
 			for i in jobStatistic.mapHostList:
 				self.availableMapperList[ i.hostName ][ i.hostIndex ] = HostStates.Ready
@@ -111,21 +115,15 @@ class MapReduceScheduler( object ):
 			for i in jobStatistic.reduceHostList:
 				self.availableReducerList[ i.hostName ][ i.hostIndex ] = HostStates.Ready
 
-			# print "Mappers are: %s" % self.availableMapperList
-			# print "Reducers are: %s" % self.availableReducerList
-
 			# find the job in the job list
 			for i in xrange( len( self.jobStats ) ):
 				if self.jobStats[ i ].job == jobStatistic.job:
 					# set the job equal to the appropriate list position
 					self.jobStats[ i ] = jobStatistic
-					print "completed %s" % ( self.jobStats[ i ].job )
+					print "completed %s %s" % ( self.jobStats[ i ].job, self.jobStats[ i ].bytesToSend )
 					# print "after %s" %self.availableMapperList
 					break
-
-			# set the list to updated		
-			self.hasListBeenUpdated = True
-
+					
 		print "JOB QUEUE EXITED"
 
 	@staticmethod
@@ -156,9 +154,8 @@ class MapReduceScheduler( object ):
 		os.system( "chmod 777 -R %s" % outputDirectory )
 		
 		for f in os.listdir( outputDirectory ):
-			# if re.search( "*.csv", f ) or re.search( "*.dat", f ):
 			if re.search( ".csv", f ):
-				os.system( "chmod 666 %s/%s" % ( outputDirectory, f ) )
+				os.system( "chmod 666 %s%s" % ( outputDirectory, f ) )
 
 	def __processJobs( self, workFile, maximumJobsPerTest, outputDirectory ):
 		"""
@@ -166,10 +163,13 @@ class MapReduceScheduler( object ):
 		"""
 		inputBytes = 0
 		hostNeeded = 0
+		minJobSize = sys.maxint
+		maxJobSize = 0
 
 		# for each job in the file
 		for job in workFile:
 			if len ( self.workQueue )  >= maximumJobsPerTest:
+				print self.workQueue[ len ( self.workQueue ) - 1 ] 
 				with open('%slastJob.txt' % ( outputDirectory ), 'w' ) as f:
 					f.write( "%s\n" % ( self.workQueue[ len ( self.workQueue ) - 1 ] ) )
 				break
@@ -188,6 +188,7 @@ class MapReduceScheduler( object ):
 			# convert the string to an int
 			inputBytes = int( jobComponents[ 1 ] )
 
+
 			# get the remainder of dividing the inputBytes / BytesPerHost
 			remainder = inputBytes % self.BytesPerHostEnum.BytesPerHost
 
@@ -202,52 +203,58 @@ class MapReduceScheduler( object ):
 			if int ( hostsNeeded ) > int ( self.numberOfHosts ):
 				continue
 
+			if int ( jobComponents[ 2 ] ) > maxJobSize:
+				maxJobSize =  int ( jobComponents[ 2 ] ) 
+			if int ( jobComponents[ 2 ] ) < minJobSize:
+				minJobSize =  int ( jobComponents[ 2 ] ) 
+
 			# add the job to the queue
 			self.workQueue.append( [ int ( hostsNeeded ), int ( jobComponents[ 2 ] ), jobComponents[ 0 ] ] )
+		return minJobSize, maxJobSize
 
-	def findMapperHosts( self, requiredHosts, counter ):
+	def findContributingPair( self, requiredMappers, requiredReducers, counter ):
 		"""
 		Find the hosts to run the jobs
 		"""
-		if requiredHosts == 0:
-			return 0
+		mapperHost = -1
+		mapperIndex = -1
+		reducerHost = -1
+		reducerIndex = -1
 
+		# if requiredMappers > 0:
 		for j in xrange( self.numberOfHosts ):
 			for h in xrange( 2 ):
 				if self.availableMapperList[ j ][ h ] == HostStates.Ready:
-					requiredHosts -= 1
-					self.availableMapperList[ j ][ h ] = HostStates.Busy
-					self.jobStats[ counter ].mapHostList.append( JobHost( j, h ) )
-					if requiredHosts == 0:
-						return requiredHosts
-
-		# return the required hosts
-		return requiredHosts
-
-	def findReducerHosts( self, requiredHosts, jobMappers, counter ):
-		"""
-		Find the hosts to run the jobs
-		"""
-		if requiredHosts == 0:
-			return 0
+					mapperHost = j
+					mapperIndex = h
+					break
+			if mapperHost >= 0:
+				break
 		
-		mapCounter = 0
+		if mapperHost == -1:
+			return requiredMappers, requiredReducers
+
 		for j in xrange( self.numberOfHosts - 1, 0, -1  ):
 			for h in xrange( 2 ):
 				if self.availableReducerList[ j ][ h ] == HostStates.Ready:
-					if mapCounter < len ( jobMappers ):
-						if jobMappers[ mapCounter ].hostName == j:
-							# print "SAME HOST!!!!"
-							continue
+					reducerHost = j
+					reducerIndex = h
+					break
+			if reducerHost >= 0:
+				break
 
-					requiredHosts -= 1
-					self.availableReducerList[ j ][ h ] = HostStates.Busy
-					self.jobStats[ counter ].reduceHostList.append( JobHost( j, h ) )
-					if requiredHosts == 0:
-						return requiredHosts
-			mapCounter += 1
-		# return the required hosts
-		return requiredHosts
+		if mapperHost == reducerHost or reducerHost == -1:
+			return requiredMappers, requiredReducers
+
+		self.jobStats[ counter ].mapHostList.append( JobHost( mapperHost, mapperIndex ) )
+		self.availableMapperList[ mapperHost ][ mapperIndex ] = HostStates.Busy
+		requiredMappers -= 1
+
+		self.jobStats[ counter ].reduceHostList.append( JobHost( reducerHost, reducerIndex ) )
+		self.availableReducerList[ reducerHost ][ reducerIndex ] = HostStates.Busy
+		requiredReducers -= 1
+
+		return requiredMappers, requiredReducers
 		
 	def clearHostsBandwidthLogs( self ):
 		for host in self.hostList:
@@ -268,10 +275,16 @@ class MapReduceScheduler( object ):
 		except OSError as error:
 			print "mkdir folders got %s error" % error
 
-	def runTest( self, outputDirectory, workFile, maximumJobsPerTest ):
+	def runTest( self, outputDirectory, workFile, maximumJobsPerTest, linkSpeed ):
 		"""
 		This method runs the tests in the file
 		"""
+		# start the thread
+		self.handleJobQueueThreadRunning = True
+		self.handleJobThreadsThreadRunning = True
+
+		self.handleJobQueueThread.start()
+		self.handleJobThread.start()
 		try:
 			with open( workFile ) as f:
 				data = f.readlines()
@@ -284,7 +297,8 @@ class MapReduceScheduler( object ):
 		self.__preprocessJobList( data )
 		# add the jobs to the queue
 
-		self.__processJobs( data, maximumJobsPerTest, outputDirectory )
+		minJobSize, maxJobSize = self.__processJobs( data, maximumJobsPerTest, outputDirectory )
+
 		
 		if len ( self.workQueue ) == True:
 			self.terminate()
@@ -298,6 +312,13 @@ class MapReduceScheduler( object ):
 
 
 		self.clearHostsBandwidthLogs()
+		print minJobSize, maxJobSize, linkSpeed
+
+		if self.dynamicBWG == 0:
+			self.converter = None
+		else:
+			self.converter = LinearAlgorithm( Range( minJobSize, maxJobSize ), Range( 1, linkSpeed ) )
+			print "%s" % self.converter
 
 		startTime = self.getTimeTics()
 
@@ -324,78 +345,31 @@ class MapReduceScheduler( object ):
 
 			# while there are hosts required 
 			while requiredMapperHosts > 0 or requiredReducerHosts > 0:
-				# turn off the list updated flag
-				self.hasListBeenUpdated = False
+				requiredMapperHosts, requiredReducerHosts = self.findContributingPair( requiredMapperHosts, requiredReducerHosts, counter )
 
-				# print "Scheduling %s \nmapper: %s\n\nreducers: %s" % ( self.jobStats[ counter ], self.availableMapperList, self.availableReducerList )
-				# find the hosts
-				tempMappers = self.findMapperHosts( requiredMapperHosts, counter )
-				tempReducers = self.findReducerHosts( requiredReducerHosts, self.jobStats[ counter ].mapHostList, counter )
+				# time.sleep( 0.025 )
 
-				# if the hosts are the same, there are no available hosts
-				if requiredMapperHosts == tempMappers or requiredReducerHosts == tempReducers:
-					timeCounter = 0
-					if requiredMapperHosts == tempMappers:
-						waitingOn = "Mapper"
-						lister =  self.availableMapperList
-					elif requiredReducerHosts == tempReducers:
-						waitingOn = "Reducer"
-						lister =  self.availableReducerList
-
-
-					print "WAITING on %s" % ( waitingOn )#, lister )# for %i job %s queue %s" % ( requiredMapperHosts, self.jobStats[ counter ], currentJob )
-					# wait forever
-					while ( timeCounter < 100 ):
-						# print timeCounter
-					# while ( True ):
-						# if the list has been updated, break the loop
-						if self.hasListBeenUpdated == True:
-							# print "broke"
-							break
-						# sleep
-						timeCounter += 1
-						time.sleep( 0.125 )
-
-
-				# if requiredMapperHosts != tempMappers:
-				requiredMapperHosts = tempMappers
-
-				# if requiredReducersHosts != tempReducers:
-				requiredReducerHosts = tempReducers
-
-				time.sleep( 0.125 )
-
-			job = MapReduceJob( self.finishJobQueue, self.jobStats[ counter ], self.reducerManager, self.hostList )
+			job = MapReduceJob( self.finishJobQueue, self.jobStats[ counter ], self.reducerManager, self.hostList, self.converter )
 			job.start()
 			self.jobThreads.append( job ) 
-			
-			# increment the job stats counter
 			counter += 1
-
-		print "Done scheduling"
-		time.sleep( 3 )		
-		# while len( self.jobThreads ) > 0 or self.finishJobQueue.qsize() > 0:
-		# 	time.sleep( 0.125 )	
+				
+		print "@@@@@@@@@@@@@@@@@@@@@@@Done scheduling"
 
 		self.handleJobThreadsThreadRunning = False
 		self.handleJobThread.join()				
-		# print self.handleJobThread.isAlive()
 
 		self.handleJobQueueThreadRunning = False
-		# print "WAITING ON JOB QUEUE"
-		# print self.handleJobQueueThread.isAlive()
 		self.handleJobQueueThread.join()
 		
-
 		endTime = self.getTimeTics()
 		print "DONE!!!!!!"
-		time.sleep( 4 )
 
 		JSONParser.storeJobStatInFile( outputDirectory, self.jobStats )
 		self.jobStats = JSONParser.getJobStatFromFile( outputDirectory )
 
-			# log all of the job stats
-		with open('%sjobLog%sTEMP.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
+		# log all of the job stats
+		with open('%sjobLog%sTEMP.csv' % ( outputDirectory, datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S') ), 'w' ) as f:
 			f.write( "%s, %s\n" % ( endTime, startTime ) )
 			f.write( self._jobLogHeader )
 			for item in self.jobStats:
@@ -406,11 +380,10 @@ class MapReduceScheduler( object ):
 					pass
 
 		JSONParser.logTestResults( self.jobStats, outputDirectory, self.hostList )
-		JSONParser.logIperfResults( outputDirectory, self.jobStats )
-		JSONParser.logPerJobResults( outputDirectory )
+		IperfResultsParser.logPerJobResults( outputDirectory )
 
 		# log all of the job stats
-		with open('%sjobLog%s.csv' % ( outputDirectory, self.getTime() ), 'w' ) as f:
+		with open('%sjobLog%s.csv' % ( outputDirectory, datetime.datetime.now().strftime('%Y-%m-%d_%H:%M:%S') ), 'w' ) as f:
 			f.write( "%s, %s\n" % ( endTime, startTime ) )
 			f.write(self._jobLogHeader )
 			for item in self.jobStats:

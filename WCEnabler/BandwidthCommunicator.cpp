@@ -14,11 +14,14 @@
 #include "BandwidthCalculator.h"
 #include "BandwidthValues.h"
 #include "LoggingHandler.h"
-#include "PrintHandler.h"
 #include "TCControl.h"
 #include "ThreadHelper.h"
+#include "WCPrintHandler.h"
+
+#define LogBufferSize ( 1024 )
 
 namespace WCEnabler {
+
 BandwidthCommunicator::BandwidthCommunicator(
 		const std::string& bGAdaptorAddress
 		, const std::string& interface
@@ -56,6 +59,7 @@ BandwidthCommunicator::BandwidthCommunicator(
 											   , handleOutgoingBandwidthRequest
 											   , _outgoingBandwidthThreadRunning
 											   , static_cast< void* >( this ) );
+
 }
 
 BandwidthCommunicator::~BandwidthCommunicator()
@@ -79,6 +83,7 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 	unsigned int bandwidthLength = sizeof( localBandwidthGuarantee );
 	socklen_t length = sizeof( bandwidthCommunicator->_bGAdaptorAddress );
 	unsigned int receiveLength;
+	char logBuffer[ LogBufferSize ];
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthLimitLogger;
 
 	// while the thread should run
@@ -96,7 +101,7 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 		/// @todo add checking of address to make sure it is coming from BGAdaptor
 		/// instead of some random sender
 
-		printf("%u\n", localBandwidthGuarantee );
+//		PRINT("!!!!!%u %u\n", localBandwidthGuarantee, bandwidthGuarantee.load() );
 		// check for error
 		if ( receiveLength != bandwidthLength )
 		{
@@ -104,6 +109,7 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 			continue;
 		}
 
+//		PRINT("%u\n");
 		if ( bandwidthGuarantee.load() != localBandwidthGuarantee )
 		{
 			// set the values equal
@@ -113,16 +119,16 @@ void* BandwidthCommunicator::handleIncomingBandwidthRequest( void* input )
 			Common::TCControl::setEgressBandwidth( bandwidthCommunicator->_interface, localBandwidthGuarantee );
 		}
 
+//		PRINT("&&&&&&&&&!!!!!@@@@@@\n");
 		// create the stream
-		std::ostringstream stream;
-		stream << localBandwidthGuarantee << "\n";
+		snprintf( logBuffer, LogBufferSize, "%u\n"
+				  , localBandwidthGuarantee );
 
 		// log the bandwidth limit
-		logger->log( stream.str() );
+		logger->log( logBuffer );
 	}
 
-	pthread_exit( NULL );
-	return NULL;
+	pthread_exit( nullptr );
 }
 
 void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
@@ -134,6 +140,7 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 	std::atomic_uint& totalRate = bandwidthCommunicator->_bandwidthValues->totalRate;
 	std::atomic_uint& wcRate  = bandwidthCommunicator->_bandwidthValues->workConservingRate;
 	Common::LoggingHandler* logger = bandwidthCommunicator->_bandwidthUsageLogger;
+	char logBuffer[ LogBufferSize ];
 	size_t bandwidthSize = sizeof( unsigned int );
 	socklen_t length = sizeof( bandwidthCommunicator->_bGAdaptorAddress );
 	unsigned int localBWGRate;
@@ -160,20 +167,26 @@ void* BandwidthCommunicator::handleOutgoingBandwidthRequest( void* input )
 		}
 
 		// create the stream
-		/// @todo convert to C style
-		std::ostringstream stream;
+		snprintf( logBuffer, LogBufferSize, "%lu, %u, %u, %u\n"
+				  , clock()
+				  , localBWGRate
+				  , localWCRate
+				  , localTotalRate );
 
-		stream << clock() << ", " << localBWGRate << ", " << localWCRate << ", " << localTotalRate << "\n";
-
+//		PRINT( "%s", logBuffer );
 		// log the bandwidth limit
-		logger->log( stream.str() );
+		logger->log( logBuffer );
+
+//		std::ostringstream stream;
+//		stream << clock() << ", " << localBWGRate << ", " << localWCRate << ", " << localTotalRate << "\n";
+
+//		logger->log( stream.str() );
 
 		// send the bandwidth rate every second
-		sleep( 1 );
+		usleep( 250000 );
 	}
 
-	pthread_exit( NULL );
-	return NULL;
+	pthread_exit( nullptr );
 }
 
 } // namespace WCEnabler

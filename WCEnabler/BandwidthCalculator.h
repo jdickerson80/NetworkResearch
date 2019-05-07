@@ -85,7 +85,7 @@ private:
 	 *  lended: 0 borrowed: 0 giants: 0
 	 *  tokens: 2083333328 ctokens: 1203
 	 */
-	void parseTCFile( char* buffer, unsigned int bufferSize );
+	void parseTCFile( char* buffer );
 
 	/**
 	 * @brief	handlePacketSniffing is the method that the packet sniffing thread runs.
@@ -95,6 +95,8 @@ private:
 	 * @return NULL
 	 */
 	static void* handlePacketSniffing( void* input );
+
+	static unsigned int findValueAfterCharacter( char* buffer, const char deliminatingCharacter, size_t startLoopPosition );
 
 	/**
 	 * @brief	handleRateCalculation is the method that the rate calculation thread runs.

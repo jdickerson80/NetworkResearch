@@ -54,7 +54,7 @@ public:
 		_dataValues.currentValue = _dataValues.lastValue = 0;
 
 		// get the initial times
-		_timeValues.currentValue = _timeValues.lastValue = time( NULL );
+		_timeValues.currentValue = _timeValues.lastValue = time( nullptr );
 	}
 
 	/**

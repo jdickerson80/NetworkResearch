@@ -29,24 +29,25 @@ class JobStatistic( object ):
 	def __init__( self ):
 		self.bytesToSend	= None
 		self.endTime 		= 0
-		self.failedHostList = []
+		# self.failedHostList = []
 		self.mapHostList	= []
 		self.reduceHostList	= []
-		self.receiveResults	= []
-		self.sentResults	= []
+		# self.receiveResults	= []
+		# self.sentResults	= []
 		self.job 			= "Empty"
 		self.numberOfHosts 	= 0
 		self.reduceJob 		= 0
 		self.startTime 		= 0
-		self.errorCounts	= 0
+		self.bitrate		= 0
+		# self.errorCounts	= 0
 
 	def __str__( self ):
 		mapHosts 		= '[%s]' % ' '.join( map( str, self.mapHostList ) )
 		reduceHosts 	= '[%s]' % ' '.join( map( str, self.reduceHostList ) )
-		receiveResults 	= '[%s]' % ' '.join( map( str, self.receiveResults ) )
-		sentResults 	= '[%s]' % ' '.join( map( str, self.sentResults ) )
-		failedHostList 	= '[%s]' % ' '.join( map( str, self.failedHostList ) )
+		# receiveResults 	= '[%s]' % ' '.join( map( str, self.receiveResults ) )
+		# sentResults 	= '[%s]' % ' '.join( map( str, self.sentResults ) )
+		# failedHostList 	= '[%s]' % ' '.join( map( str, self.failedHostList ) )
 
 		# return "%s, %s, %s\n%s\n%s\n\n" % ( self.job, self.errorCounts, failedHostList, mapHosts, reduceHosts )
-		return "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s" % ( self.job, self.numberOfHosts, self.startTime, self.endTime, mapHosts, reduceHosts, self.errorCounts, failedHostList, self.bytesToSend, receiveResults, sentResults )
+		return "%s, %s, %s, %s, %s, %s, %s, %s" % ( self.job, self.numberOfHosts, self.startTime, self.endTime, mapHosts, reduceHosts, self.bytesToSend, self.bitrate )
 

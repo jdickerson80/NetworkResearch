@@ -21,7 +21,7 @@ void LoggingHandler::log( const std::string& stringToLog )
 	_outputStream.close();
 }
 
-void LoggingHandler::log( const char* const stringToLog)
+void LoggingHandler::log( const char* const stringToLog )
 {
 	// put the string into the file
 	_outputStream.open( _loggingPath.c_str(), std::ofstream::out | std::ofstream::app );

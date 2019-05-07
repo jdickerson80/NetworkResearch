@@ -18,7 +18,7 @@ struct BandwidthValues
 	std::atomic_uint workConservingRate;
 
 	BandwidthValues()
-		: bandwidthGuarantee( UINT32_MAX ) // use a large value, so nothing happens until we get a value from BGAdaptor
+		: bandwidthGuarantee( 0 ) // use a large value, so nothing happens until we get a value from BGAdaptor
 		, bandwidthGuaranteeRate( 0 )
 		, ecnValue( 0 )
 		, totalRate( 0 )
